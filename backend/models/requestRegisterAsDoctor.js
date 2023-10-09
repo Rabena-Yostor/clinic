@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+
+
 const request_register_as_doctor = new mongoose.Schema({
 UserName: {
     type: String,
@@ -18,7 +20,7 @@ Password: {
     required: true
 },
 DateOfBirth: {
-    type: Date,
+    type: String,
     required: true
 },
 
@@ -39,6 +41,9 @@ Education: {
 
 }, {timestamps: true})
 
-module.exports = mongoose.model('request_register_as_doctor', request_register_as_doctor)   
+
+
+module.exports = mongoose.model('request_register_as_doctor', request_register_as_doctor) 
+
 
 

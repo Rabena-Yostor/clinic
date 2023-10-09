@@ -1,18 +1,22 @@
 const express = require('express')
-const request_register_as_doctor =require('../models/WorkoutModel')
+const{
+    
+    createWorkout,
+    getAllWorkouts,
+    getOneWorkout,
+}=require('../controllers/workoutController')
+//const { create } = require('../models/addAdmin')
+//const Request_register_as_doctor =require('../models/WorkoutModel')
+const{
+    createAdmin
+} = require('../controllers/addAdminController')
 
 const router = express.Router()
 
 // get all workouts routes
-router.get('/', (req, res) => {
-    res.json({
-        mssg: 'Get all workouts'})
-})
+router.get('/', getAllWorkouts)
 // get one workout route
-router.get('/:id', (req, res) => {
-    res.json({
-        message: 'Get one workout'})
-})  
+router.get('/:id', getOneWorkout)
 //delete one workout route
 router.delete('/:id', (req, res) => {
     res.json({
@@ -26,17 +30,10 @@ router.patch('/:id', (req, res) => {
 
 
 //post new workout route
-router.post('/', async(req, res) => {
-    const{UserName,Name,Email,Password,DateOfBirth,HourlyRate,AffiliatedHospital,Education} = req.body
-    try{
-        const workout = await request_register_as_doctor.create({UserName,Name,Email,Password,DateOfBirth,HourlyRate,AffiliatedHospital,Education})
-        res.status(201).json({workout})
-    }catch(error){
-        res.status(400).json({message: 'Bad request'})
+router.post('/', createWorkout)
+//post new admin route
+router.post('/admin', createAdmin)
 
-    }
-  
-    })
 
   
 module.exports = router
