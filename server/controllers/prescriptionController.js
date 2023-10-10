@@ -30,6 +30,8 @@ const createPrescription = async (req, res) => {
     }
 }
 
+//TEST PUSHH
+
 //delete a perscription
 const deletePrescription = async (req, res) => {
     const { id } = req.params
