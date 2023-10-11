@@ -20,7 +20,7 @@ router.delete('/:id',deletePatient)
 
 router.patch('/:id', updatePatient)
 
-router.get('/upcoming-appointments',filterAppointment)
+router.get('/appointments/:id',filterAppointment)
 
 
 
