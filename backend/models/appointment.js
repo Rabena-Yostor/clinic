@@ -2,10 +2,17 @@
 const mongoose = require('mongoose');
 
 const appointmentSchema = new mongoose.Schema({
-  patientName: String,
-  doctorName: String,
-  date: Date,
-  status: String, // e.g., 'scheduled', 'completed', 'canceled'
+
+  appdate:{
+    type:Date,
+    required: true
+  } ,
+  appstatus:{
+    type:String, 
+    enum:['scheduled', 'completed', 'canceled'] ,
+    required: true
+
+  } 
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
