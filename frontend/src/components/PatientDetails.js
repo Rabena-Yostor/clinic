@@ -1,5 +1,19 @@
+import { usePatientsContext } from "../hooks/usePatientsContext"
 const PatientDetails = ({ patient }) => {
+  const {dispatch} = usePatientsContext()
+  
+  const handleClick= async () => {
+    const response = await fetch('/api/workouts/'+ patient._id , {
+      method:'DELETE'
+    })
+    const json =  await response.json()
 
+    if(response.ok){
+      console.log('Response is ok')
+      dispatch({type: 'DELETE_PATIENT', payload: json})
+
+    }
+  }
     return (
       <div className="workout-details">
         <h4>{patient.username}</h4>
@@ -12,6 +26,7 @@ const PatientDetails = ({ patient }) => {
         <p><strong>Appointment Date: </strong>{patient.Appointment}</p>
         <p><strong>Appointment Status: </strong>{patient.Appointment_Status}</p>
         <p>{patient.createdAt}</p>
+        <span onClick={handleClick}>delete</span>
       </div>
     )
   }
