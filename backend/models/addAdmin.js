@@ -12,5 +12,5 @@ const AddAdmin = new Schema({
     },
 }, {timestamps: true})
 
-module.exports=mongoose.model('AddAdmin', AddAdmin)
+module.exports=mongoose.model('AddAdminClinic', AddAdmin)
   // 'workout' is the name of the collection in the database
