@@ -127,7 +127,7 @@ const PatientForm = () => {
                 onChange={(e) => setApStatus(e.target.value)}
                 value={Appointment_Status}
             />
-            <button>Add Workout</button>
+            <button>Add New Patient</button>
             {error && <div className="error">{error}</div>}
         </form>
     )

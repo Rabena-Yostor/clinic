@@ -13,6 +13,7 @@ const PatientDetails = ({ patient }) => {
       dispatch({type: 'DELETE_PATIENT', payload: json})
 
     }
+    
   }
     return (
       <div className="workout-details">
