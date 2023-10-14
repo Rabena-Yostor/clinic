@@ -49,4 +49,42 @@ const getPatientsForDoctor = async (req, res) => {
     }
 }
 
-module.exports = {filterAllApps,getPatientsForDoctor};
+
+const addDoctor = async (req, res) => {
+    const {
+        UserName,
+        Name,
+        Email,
+        Password,
+        DateOfBirth,
+        HourlyRate,
+        AffiliatedHospital,
+        Education,
+        Appointment,
+        Appointment_Status,
+        ArrayOfPatients
+    } = req.body;
+
+    try {
+        const newDoctor = await Doctor.create({
+            UserName,
+            Name,
+            Email,
+            Password,
+            DateOfBirth,
+            HourlyRate,
+            AffiliatedHospital,
+            Education,
+            Appointment,
+            Appointment_Status,
+            ArrayOfPatients
+        });
+
+        res.status(201).json({ doctor: newDoctor });
+    } catch (error) {
+        console.error('Error creating doctor:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+module.exports = { filterAllApps, getPatientsForDoctor, addDoctor };
