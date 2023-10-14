@@ -5,9 +5,9 @@ const app = express();
 const MongoURI = process.env.MONGO_URI ;
 const PORT = process.env.PORT || 8000;
 const bodyParser = require('body-parser');
-const cors = require('cors');
+//const cors = require('cors');
 
-app.use(cors());
+//app.use(cors());
 
 // connect to db
 mongoose.connect("mongodb+srv://hanakandil1610:kny0NMgtqHuDKUc7@cluster0.7kow66n.mongodb.net/")
