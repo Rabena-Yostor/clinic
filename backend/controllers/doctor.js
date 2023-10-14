@@ -1,4 +1,6 @@
 
+const { mongo, default: mongoose } = require('mongoose')
+const patient = require('../models/patientmodel')
 
 
 const filterAllApps = async (req, res) => {
