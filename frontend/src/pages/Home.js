@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import workdetails from '../components/workdetails'
 const Home= ()=> {
 
     const [workouts, updatework]= useState(null)

@@ -1,7 +1,7 @@
 import { BrowserRouter,  Route, Routes} from 'react-router-dom'
-import Home from './pages/Home'
 import React from 'react';
 import Navbar from './components/navbar'
+import Addfamily  from './pages/addfam';
 function App() {
   return (
     <div className="App">
@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route
           path="/"
-          element={ <Home />}
+          element={ <Addfamily />}
 
            />
 
