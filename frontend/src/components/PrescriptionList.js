@@ -1,8 +1,10 @@
-// PrescriptionList.js
 import React, { useState, useEffect } from 'react';
 
 function PrescriptionList() {
   const [prescriptions, setPrescriptions] = useState([]);
+
+  // Create a state to keep track of selected prescriptions
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
 
   useEffect(() => {
     // Fetch the prescriptions data when the component mounts
@@ -23,12 +25,28 @@ function PrescriptionList() {
     }
   };
 
+  const handlePrescriptionClick = (prescriptionId) => {
+    // Check if the prescription is already in the selectedPrescriptions array
+    const isSelected = selectedPrescriptions.includes(prescriptionId);
+
+    // Toggle the selection by adding or removing the prescription ID
+    if (isSelected) {
+      setSelectedPrescriptions(selectedPrescriptions.filter((id) => id !== prescriptionId));
+    } else {
+      setSelectedPrescriptions([...selectedPrescriptions, prescriptionId]);
+    }
+  };
+
   return (
     <div>
       <h1>Prescription List</h1>
       <ul>
         {prescriptions.map((prescription) => (
-          <li key={prescription._id}>
+          <li
+            key={prescription._id}
+            className={selectedPrescriptions.includes(prescription._id) ? 'selected' : ''}
+            onClick={() => handlePrescriptionClick(prescription._id)}
+          >
             <p>Name: {prescription.name}</p>
             <p>Price: {prescription.price}</p>
             <p>Grams: {prescription.grams}</p>

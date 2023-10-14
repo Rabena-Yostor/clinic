@@ -97,3 +97,9 @@ div.error {
   border-radius: 4px;
   margin: 20px 0;
 }
+
+.selected {
+  background-color: var(--primary); /* Change the background color to your desired highlight color */
+  color: #fff; /* Change the text color to ensure visibility */
+  /* You can add other styling properties as needed */
+}
