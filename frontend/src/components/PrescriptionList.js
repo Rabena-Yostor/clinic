@@ -1,9 +1,31 @@
-import React from 'react';
+// PrescriptionList.js
+import React, { useState, useEffect } from 'react';
 
-const PrescriptionList = ({ prescriptions }) => {
+function PrescriptionList() {
+  const [prescriptions, setPrescriptions] = useState([]);
+
+  useEffect(() => {
+    // Fetch the prescriptions data when the component mounts
+    fetchPrescriptions();
+  }, []);
+
+  const fetchPrescriptions = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/routers/prescriptions');
+      if (response.ok) {
+        const data = await response.json();
+        setPrescriptions(data);
+      } else {
+        console.error('Failed to fetch prescriptions.');
+      }
+    } catch (error) {
+      console.error('Error fetching prescriptions:', error);
+    }
+  };
+
   return (
     <div>
-      <h2>Your Prescriptions</h2>
+      <h1>Prescription List</h1>
       <ul>
         {prescriptions.map((prescription) => (
           <li key={prescription._id}>
@@ -18,6 +40,6 @@ const PrescriptionList = ({ prescriptions }) => {
       </ul>
     </div>
   );
-};
+}
 
 export default PrescriptionList;

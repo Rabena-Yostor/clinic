@@ -12,12 +12,13 @@ const {
     getPrescription,
     filterPrescriptionsForPatient,
     viewPrescription,
+    filterPrescriptionn,
 } = require ('../controllers/prescriptionController')
 
 const router = express.Router()
 
 //GET ALL perscriptions
-router.get('/', getPrescriptions)
+router.get('/prescriptions', getPrescriptions)
 
 
 //GET Single workout
@@ -35,6 +36,10 @@ router.patch ('/:id',updatePrescription)
 
 //FILTERED 
 router.get('/filter',filterPrescriptions)
+
+
+//FILTERR
+router.get('/filterr',filterPrescriptionn)
 
 
 

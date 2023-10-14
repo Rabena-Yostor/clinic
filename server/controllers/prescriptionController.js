@@ -230,8 +230,28 @@ const viewPrescription = async (req, res) => {
     }
 };
 
+//FILTERRR BEGADDD
+const filterPrescriptionn = async (req, res) => {
+try {
+    const { date, doctor, filled } = req.query;
+    const filter = {};
 
+    if (date) {
+      filter.date = date;
+    }
+    if (doctor) {
+      filter.doctor = doctor;
+    }
+    if (filled !== undefined) {
+      filter.filled = filled;
+    }
 
+    const prescriptions = await Prescription.find(filter);
+    res.status(200).json(prescriptions);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
 module.exports = {
     createPrescription,
     getSinglePrescription,
@@ -244,4 +264,5 @@ module.exports = {
     getPrescription,
     filterPrescriptionsForPatient,
     viewPrescription,
+    filterPrescriptionn,
 };
