@@ -19,9 +19,6 @@ mongoose.connect("mongodb+srv://khaled:ACLproj@mernapp.xnikpnh.mongodb.net/?retr
   }) 
 const appointement = require('./routes/clinic');
 
-module.exports = {
-  Patient,
-  Doctor,
-};
+
 
 app.use('/appt', appointement);

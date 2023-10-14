@@ -1,4 +1,8 @@
+
+
+
 const filterAllApps = async (req, res) => {
+
     try {
         const { date, status } = req.params;
 
@@ -12,7 +16,7 @@ const filterAllApps = async (req, res) => {
             filter.appstatus = status;
         }
 
-        const filteredAppointments = await patient.find(filter);
+        const filteredAppointments = await Appointment.find(filter);
 
         if (filteredAppointments.length === 0) {
             return res.status(404).send('No matching appointments found');

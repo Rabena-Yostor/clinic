@@ -1,3 +1,6 @@
+
+
+
 const filterAllApps = async (req, res) => {
     try {
         const { date, status } = req.params;
@@ -12,7 +15,7 @@ const filterAllApps = async (req, res) => {
             filter.appstatus = status;
         }
 
-        const filteredAppointments = await patient.find(filter);
+        const filteredAppointments = await Appointment.find(filter);
 
         if (filteredAppointments.length === 0) {
             return res.status(404).send('No matching appointments found');
@@ -25,4 +28,22 @@ const filterAllApps = async (req, res) => {
     }
 };
 
-module.exports = {filterAllApps};
+const getPatientsForDoctor = async (req, res) => {
+    const username = req.params.UserName;
+
+    try {
+        const doctor = await Doctor.findById(username).populate('ArrayOfPatients');
+
+        if (!doctor) {
+            return res.status(404).json({ error: 'Doctor not found.' });
+        }
+
+        const patients = doctor.ArrayOfPatients;
+        return res.json({ patients });
+    } catch (error) {
+        console.error('Error fetching patients:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+module.exports = {filterAllApps,getPatientsForDoctor};
