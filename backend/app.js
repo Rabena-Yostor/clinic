@@ -22,3 +22,5 @@ const appointement = require('./routes/clinic');
 
 
 app.use('/appt', appointement);
+
+app.post("/hana");
