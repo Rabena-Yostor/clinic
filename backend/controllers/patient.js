@@ -9,11 +9,11 @@ const filterAllApps = async (req, res) => {
         const filter = {};
 
         if (date) {
-            filter.appdate = date;
+            filter.Appointment = date;
         }
 
         if (status) {
-            filter.appstatus = status;
+            filter.Appointment_Status = status;
         }
 
         const filteredAppointments = await Appointment.find(filter);

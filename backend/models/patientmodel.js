@@ -38,10 +38,16 @@ const patientSchema = new Schema({
     EmergencyContactNo:{
         type: String,
         required: true
+    },
+    Appointment:{
+        type: Date,
+        
+    },
+    Appointment_Status:{
+        type:String,
+        enum: ['upcoming', 'completed', 'cancelled','rescheduled'],
+        
     }
-  
 },{timestamps: true})
 
-const Patient = mongoose.model('Patient', patientSchema);
-
-module.exports = Patient;
+module.exports  = mongoose.model('Patient', patientSchema)
