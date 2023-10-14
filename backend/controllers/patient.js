@@ -18,7 +18,7 @@ const filterAllApps = async (req, res) => {
             filter.Appointment_Status = status;
         }
 
-        const filteredAppointments = await Appointment.find(filter);
+        const filteredAppointments = await patient.find(filter);
 
         if (filteredAppointments.length === 0) {
             return res.status(404).send('No matching appointments found');
