@@ -4,8 +4,11 @@ const express = require('express')
 const routers = require('./routes/routers.js')
 const app = express()
 const mongoose = require('mongoose')
+const cors = require('cors');
+
 
 //MIDDLEWARE
+app.use(cors());
 app.use(express.json())
 app.use((req, res, next) => {
     console.log(req.path, req.method)

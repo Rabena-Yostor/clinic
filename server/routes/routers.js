@@ -36,10 +36,14 @@ router.patch ('/:id',updatePrescription)
 //FILTERED 
 router.get('/filter',filterPrescriptions)
 
+
+
+
+
+
+
 //CREATE PRESCRIPTON FOR SPECIFIC PATIENT
 router.post('/create-prescription', createPrescriptionForPatient);
-
-
 
 //CREATE PATIENT
 router.post('/create-patient', createPatient);
@@ -53,5 +57,4 @@ router.get('/prescription-filter/:username', filterPrescriptionsForPatient);
 // VIEW PERSCRIPTION
 router.get('/view-prescription/:id', viewPrescription);
 
-router.get('')
 module.exports = router

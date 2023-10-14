@@ -65,7 +65,7 @@ const createPrescriptionForPatient = async (req, res) => {
 };
 
 
-module.exports = createPrescriptionForPatient;
+
 
 
 
