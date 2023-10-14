@@ -1,9 +1,9 @@
 
 
-import React, { useState, useEffect } from 'react';
+//import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const DoctorDashboard = () => {
+//const DoctorDashboard = () => {
   const [doctor, setDoctor] = useState({});
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [dateFilter, setDateFilter] = useState('');
@@ -54,6 +54,6 @@ const DoctorDashboard = () => {
       </div>
     </div>
   );
-};
+//};
 
-export default DoctorDashboard;
+//export default DoctorDashboard;
