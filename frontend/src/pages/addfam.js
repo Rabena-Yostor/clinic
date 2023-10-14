@@ -3,7 +3,7 @@ import{useEffect,useState} from 'react'
 //components
 //import WorkoutDetails from '../components/WorkoutDetails'
 
-import FamilyForm from './components/FamilyForm'
+import FamilyForm from '../components/FamilyForm'
 
 const Addfamily = () => {
     const [family, setFamily] = useState(null)
@@ -16,6 +16,7 @@ useEffect(() => {
             setFamily(json)
         }
     }
+
 
 
     fetchFamily()
