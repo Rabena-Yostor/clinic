@@ -6,7 +6,7 @@ const MongoURI = process.env.MONGO_URI ;
 const PORT = process.env.PORT || 8000;
 
 // connect to db
-mongoose.connect("mongodb+srv://khaled:ACLproj@mernapp.xnikpnh.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://hanakandil1610:kny0NMgtqHuDKUc7@cluster0.7kow66n.mongodb.net/")
   .then(() => {
     console.log('connected to database')
     // listen to port
