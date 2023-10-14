@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
 const prescriptionsSchema = new Schema({
     name: {
@@ -8,11 +8,11 @@ const prescriptionsSchema = new Schema({
         required: true
     },
     price: {
-        type:Number,
-        required:true
+        type: Number,
+        required: true
     },
     grams: {
-        type:Number,
+        type: Number,
         required: true
     },
     date: {
@@ -20,15 +20,17 @@ const prescriptionsSchema = new Schema({
         required: true
     },
     doctor: {
-        type:String,
+        type: String,
         required: true
     },
-    filled:{
+    filled: {
         type: Boolean,
-        required:true
+        required: true
+    },
+    patientUsername: {
+        type: String,
+        required: true
     }
+}, { timestamps: true });
 
-}, {timestamps: true})
-
-module.exports = mongoose.model('Prescriptions', prescriptionsSchema)
-
+module.exports = mongoose.model('Prescriptions', prescriptionsSchema);
