@@ -1,14 +1,5 @@
 const express = require('express')
 const{
-    createPatient,
-    getAllPatients,
-    getPatient,
-    updatePatient,
-    deletePatient
-}=require('../controllers/patientController')
-
-
-const{
     
     createWorkout,
     getAllWorkouts,
@@ -39,16 +30,6 @@ router.post('/doctor', createWorkout)
 router.post('/admin', createAdmin)
 //get all admins route
 router.get('/getadmin', getAllAdmins)
-//get all patients route
-router.get('/getpatient', getAllPatients)
-//post new patient route
-router.post('/patient', createPatient)
-//get one patient route
-router.get('/patient/:id', getPatient)
-//update patient route
-router.patch('/patient/:id', updatePatient)
-//delete patient route
-router.delete('/patient/:id', deletePatient)
 
 
   
