@@ -18,12 +18,12 @@ const workSchema= new Schema({
     relation:{
         type: String,
         required: true
-        //enum: ['WIFE', 'HUSBAND', 'CHILDREN']
+        enum: ['WIFE', 'HUSBAND', 'CHILDREN']
     }
-    //patient:(
-      //  type: mongoose.Schema.Types.ObjectId,
-      //  ref:'patient',
-   // )
+    patient:(
+        type: mongoose.Schema.Types.ObjectId,
+         ref:'patient',
+    )
 
 
 
