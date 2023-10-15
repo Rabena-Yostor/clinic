@@ -31,5 +31,13 @@ const filterAllApps = async (req, res) => {
     }
 };
 
-
-module.exports = {filterAllApps};
+const createPatient = async (req, res) => {
+    const { username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status } = req.body
+    try {
+        const newPatient = await patient.create({ username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status })
+        res.status(200).json(newPatient)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
+module.exports = {filterAllApps,createPatient};
