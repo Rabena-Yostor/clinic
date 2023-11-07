@@ -11,7 +11,10 @@ const{
     loginPatient,
     getFamilyMembers,
     addFamilyMember,
-    filterAllApps
+    filterAllApps,
+    createAppointment,
+    getAvailableAppointments,
+
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -36,6 +39,12 @@ router.get('/getFamilyMembers/:username',getFamilyMembers)
 router.post('/addFamilyMember',addFamilyMember)
 
 router.get('/filterAppointmentPatient',filterAllApps)
+
+
+router.get('/doctors/:doctorId/appointments', getAvailableAppointments)
+
+
+router.get('/doctors/:doctorId/appointments', createAppointment)
 
 
 module.exports = router
