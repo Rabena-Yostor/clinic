@@ -3,7 +3,7 @@ const patient = require('../models/PatientModel')
 const bcrypt =require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
-
+const HealthRecord = require('../models/HealthRecordModel');
 // get all patients
 const getAllPatients = async (req, res) => {
     const patients = await patient.find({})
@@ -207,6 +207,35 @@ const filterAllApps = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+const getHealthRecord = async (req, res) => {
+    try {
+        const { patientUsername, patientPassword } = req.body;
+  
+        // Validate patient credentials
+        const validPatient = await Patient.findOne({
+          username: patientUsername,
+        });
+  
+        if (!validPatient) {
+          return res.status(401).json({ error: "Invalid patient credentials" });
+        }
+  
+        // Check if the provided password matches the stored hashed password
+        const passwordMatch = await validPatient.comparePassword(patientPassword);
+  
+        if (!passwordMatch) {
+          return res.status(401).json({ error: "Invalid patient credentials" });
+        }
+  
+        // Fetch health records for the patient
+        const healthRecords = await HealthRecord.find({ patientId: validPatient._id });
+  
+        res.status(200).json(healthRecords);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+  };
 
 
 
@@ -222,5 +251,6 @@ module.exports = {
     getFamilyMembers,
     addFamilyMember,
     filterAllApps,
+    getHealthRecord
         
 }

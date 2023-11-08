@@ -21,6 +21,7 @@ app.use('/api/doctors',doctorRoutes)
 app.use('/api/admin',adminRoutes)
 app.use('/api/prescription',prescriptionRoutes)
 
+
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         app.listen(process.env.PORT, () =>{

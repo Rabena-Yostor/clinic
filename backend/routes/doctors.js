@@ -11,7 +11,9 @@ const {
     updateDoctorHourlyRate,
     addDoctor,
     filterAllApps,
-    getPatientsForDoctor    
+    getPatientsForDoctor,
+    createHealthRecord,
+    getPatientHealthRecords
 }= require('../controllers/doctorController')
 
 
@@ -39,4 +41,7 @@ router.post('/addDoctor', addDoctor)
 
 router.get('/filterAllApps/doctor', filterAllApps)
 router.get('/getPatientsForDoctor', getPatientsForDoctor)
+
+router.post('/createHealthRecord', createHealthRecord); 
+router.get('/getPatientHealthRecords', getPatientHealthRecords);
 module.exports = router 
