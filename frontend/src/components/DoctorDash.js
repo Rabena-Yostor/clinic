@@ -18,14 +18,6 @@ const DoctorDashboard = () => {
     }
   };
 
-  // const handleViewPatients = async (username) => {
-  //   try {
-  //     const response = await axios.get(`/api/doctors/getPatientForDoctors/${username}`);
-  //     setPatients(response.data.patients);
-  //   } catch (error) {
-  //     console.error('Error fetching patients:', error);
-  //   }
-  // };
 
   const handleGetPatientsForDoctor = async () => {
     try {
