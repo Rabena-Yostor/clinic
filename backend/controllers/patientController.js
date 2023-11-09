@@ -207,7 +207,22 @@ const filterAllApps = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-
+const viewPatientAccount = async (req, res) => {
+    const { username } = req.params;
+  
+    try {
+      const patient = await Patient.findOne({ username });
+  
+      if (!patient) {
+        return res.status(404).json({ error: 'Patient not found.' });
+      }
+  
+      res.status(200).json(patient);
+    } catch (error) {
+      console.error('Error fetching patient account:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
 
 
 module.exports = {
@@ -222,5 +237,6 @@ module.exports = {
     getFamilyMembers,
     addFamilyMember,
     filterAllApps,
+    viewPatientAccount
         
 }

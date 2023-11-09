@@ -47,6 +47,11 @@ const patientSchema = new Schema({
         type:String,
         enum: ['upcoming', 'completed', 'cancelled','rescheduled'],
         
+    },
+    WalletAmount:{
+        type:Number,
+        default: 0,
+
     }
 },{timestamps: true})
 

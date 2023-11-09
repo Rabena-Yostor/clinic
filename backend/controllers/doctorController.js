@@ -1,6 +1,8 @@
 const Doctor = require("../models/doctorModel");
 const mongoose = require("mongoose");
+const Patient= require('../models/PatientModel')
 const PendingDoctorRequest = require('../models/pendingdoctorModel');
+const HealthRecord = require("../models/HealthRecordModel");
 const bcrypt =require('bcrypt')
 
 // get all doctors
@@ -258,6 +260,62 @@ const addDoctor = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+const addHealthRecord = async (req, res) => {
+  const { patientId, bloodPressure, heartRate, allergies, medications } = req.body;
+
+  try {
+    const healthRecord = await HealthRecord.create({
+      patientId,
+      bloodPressure,
+      heartRate,
+      allergies,
+      medications,
+    });
+
+    res.status(201).json({ healthRecord });
+  } catch (error) {
+    console.error('Error creating health record:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// View health records for a specific patient
+const viewHealthRecords = async (req, res) => {
+  const { patientId } = req.params;
+
+  try {
+    const healthRecords = await HealthRecord.find({ patientId });
+
+    if (healthRecords.length === 0) {
+      return res.status(404).json({ message: 'No health records found for the specified patient' });
+    }
+
+    res.status(200).json(healthRecords);
+  } catch (error) {
+    console.error('Error fetching health records:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+const viewDoctorAccount = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const doctor = await Doctor.findOne({ username });
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found.' });
+    }
+
+    res.status(200).json(doctor);
+  } catch (error) {
+    console.error('Error fetching doctor account:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 ///////////////////////////////////////// END OF HANA'S FOLDER
 module.exports = {
   getDoctors,
@@ -271,5 +329,8 @@ module.exports = {
   updateDoctorAffiliation,
   filterAllApps,
   getPatientsForDoctor,
-  addDoctor
+  addDoctor,
+  addHealthRecord,
+  viewHealthRecords,
+  viewDoctorAccount
 };

@@ -51,6 +51,11 @@ const doctorSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Patient', // This should be the model name for the patient schema
     }],
+    WalletAmount:{
+      type:Number,
+      default: 0,
+
+  }
   },
   { timestamps: true }
 );
