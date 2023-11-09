@@ -1,5 +1,6 @@
 const Doctor = require("../models/doctorModel");
 const mongoose = require("mongoose");
+const Patient= require('../models/PatientModel')
 const PendingDoctorRequest = require('../models/pendingdoctorModel');
 const HealthRecord = require("../models/HealthRecordModel");
 const bcrypt =require('bcrypt')
@@ -260,92 +261,42 @@ const addDoctor = async (req, res) => {
   }
 };
 
-const createHealthRecord =async (req, res)=> {
-  try {
-    const { doctorUsername, doctorPassword, patientId } = req.body;
+const addHealthRecord = async (req, res) => {
+  const { patientId, bloodPressure, heartRate, allergies, medications } = req.body;
 
-    // Validate doctor credentials
-    const validDoctor = await Doctor.findOne({
-      username: doctorUsername,
+  try {
+    const healthRecord = await HealthRecord.create({
+      patientId,
+      bloodPressure,
+      heartRate,
+      allergies,
+      medications,
     });
 
-    if (!validDoctor) {
-      return res.status(401).json({ error: "Invalid doctor credentials" });
-    }
-
-    // Check if the provided password matches the stored hashed password
-    const passwordMatch = await validDoctor.comparePassword(doctorPassword);
-
-    if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid doctor credentials" });
-    }
-
-    // Check if the doctor has permission to access the patient's records
-    const patient = await Patient.findById(patientId);
-
-    if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
-    }
-
-    // Check if the doctor is authorized to access the patient's records
-    // This check can be based on your application's logic and requirements
-    if (!validDoctor.hasPermissionToAccess(patient)) {
-      return res.status(403).json({ error: "Permission denied" });
-    }
-
-    // Proceed to create health record
-    const healthRecordData = req.body.healthRecordData;
-    healthRecordData.patientId = patientId;
-
-    const healthRecord = await HealthRecord.create(healthRecordData);
-    res.status(201).json(healthRecord);
+    res.status(201).json({ healthRecord });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error('Error creating health record:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-const getPatientHealthRecords=async (req, res)=> {
+
+// View health records for a specific patient
+const viewHealthRecords = async (req, res) => {
+  const { patientId } = req.params;
+
   try {
-    const { doctorUsername, doctorPassword, patientId } = req.body;
-
-    // Validate doctor credentials
-    const validDoctor = await Doctor.findOne({
-      username: doctorUsername,
-    });
-
-    if (!validDoctor) {
-      return res.status(401).json({ error: "Invalid doctor credentials" });
-    }
-
-    // Check if the provided password matches the stored hashed password
-    const passwordMatch = await validDoctor.comparePassword(doctorPassword);
-
-    if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid doctor credentials" });
-    }
-
-    // Check if the doctor has permission to access the patient's records
-    const patient = await Patient.findById(patientId);
-
-    if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
-    }
-
-    // Check if the doctor is authorized to access the patient's records
-    // This check can be based on your application's logic and requirements
-    if (!validDoctor.hasPermissionToAccess(patient)) {
-      return res.status(403).json({ error: "Permission denied" });
-    }
-
-    // Fetch health records for the patient
     const healthRecords = await HealthRecord.find({ patientId });
+
+    if (healthRecords.length === 0) {
+      return res.status(404).json({ message: 'No health records found for the specified patient' });
+    }
 
     res.status(200).json(healthRecords);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error('Error fetching health records:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+};
 
 ///////////////////////////////////////// END OF HANA'S FOLDER
 module.exports = {
@@ -361,6 +312,6 @@ module.exports = {
   filterAllApps,
   getPatientsForDoctor,
   addDoctor,
-  createHealthRecord,
-  getPatientHealthRecords
+  addHealthRecord,
+  viewHealthRecords
 };

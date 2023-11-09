@@ -12,8 +12,9 @@ const {
     addDoctor,
     filterAllApps,
     getPatientsForDoctor,
-    createHealthRecord,
-    getPatientHealthRecords
+    addHealthRecord,
+  viewHealthRecords
+
 }= require('../controllers/doctorController')
 
 
@@ -42,6 +43,6 @@ router.post('/addDoctor', addDoctor)
 router.get('/filterAllApps/doctor', filterAllApps)
 router.get('/getPatientsForDoctor', getPatientsForDoctor)
 
-router.post('/createHealthRecord', createHealthRecord); 
-router.get('/getPatientHealthRecords', getPatientHealthRecords);
+router.post('/addHealthRecord', addHealthRecord); 
+router.get('/viewHealthRecords',   viewHealthRecords);
 module.exports = router 
