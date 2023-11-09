@@ -38,6 +38,7 @@ router.post('/addFamilyMember',addFamilyMember)
 
 router.get('/filterAppointmentPatient',filterAllApps)
 router.get('/viewPatientAccount',viewPatientAccount)
+router.get('/getHealthRecord/:username',getHealthRecord)
 
 
 module.exports = router

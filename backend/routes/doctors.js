@@ -44,7 +44,7 @@ router.post('/addDoctor', addDoctor)
 router.get('/filterAllApps/doctor', filterAllApps)
 router.get('/getPatientsForDoctor', getPatientsForDoctor)
 
-router.post('/addHealthRecord', addHealthRecord); 
-router.get('/viewHealthRecords', viewHealthRecords);
-router.get('/viewDoctorAccount',viewDoctorAccount);
+router.post('/addHealthRecord', addHealthRecord)
+router.get('/viewHealthRecords', viewHealthRecords)
+router.get('/viewDoctorAccount',viewDoctorAccount)
 module.exports = router 

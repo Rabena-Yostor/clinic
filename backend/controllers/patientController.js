@@ -223,7 +223,35 @@ const viewPatientAccount = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
-
+  const getHealthRecord = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+  
+        // Validate patient credentials
+        const validPatient = await Patient.findOne({
+          Username: username,
+        });
+  
+        if (!validPatient) {
+          return res.status(401).json({ error: "Invalid patient credentials" });
+        }
+  
+        // Check if the provided password matches the stored hashed password
+        const passwordMatch = await validPatient.comparePassword(password);
+  
+        if (!passwordMatch) {
+          return res.status(401).json({ error: "Invalid patient credentials" });
+        }
+  
+        // Fetch health records for the patient
+        const healthRecords = await HealthRecord.find({ patientId: validPatient._id });
+  
+        res.status(200).json(healthRecords);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+  };
 
 module.exports = {
     createPatient,
@@ -237,6 +265,7 @@ module.exports = {
     getFamilyMembers,
     addFamilyMember,
     filterAllApps,
-    viewPatientAccount
+    viewPatientAccount,
+    getHealthRecord
         
 }
