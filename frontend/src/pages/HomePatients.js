@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import PatientDetails from '../components/PatientDetails'
 import PatientForm from '../components/PatientFrom'
 import { usePatientsContext } from "../hooks/usePatientsContext"
+//import WalletInfo from '../components/WalletInfo';
 
 const HomePatients = () => {
   const { patients, dispatch } = usePatientsContext()
