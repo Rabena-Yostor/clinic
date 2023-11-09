@@ -36,20 +36,18 @@ const HomeDoctors = () => {
     if (!doctors) return;
 
     const nameFiltered = doctors.filter((doctor) =>
-      doctor.name.toLowerCase().includes(nameSearchTerm.toLowerCase())
-    );
-
-    const specialityFiltered = doctors.filter((doctor) =>
-      doctor.speciality
-        .toLowerCase()
-        .includes(specialitySearchTerm.toLowerCase())
-    );
-
-    const datetimeFiltered = doctors.filter((doctor) =>
-      doctor.availableAppointment
-        .toLowerCase()
-        .includes(datetimeSearchTerm.toLowerCase())
-    );
+    doctor.name && doctor.name.toLowerCase().includes(nameSearchTerm.toLowerCase())
+  );
+  
+  const specialityFiltered = doctors.filter((doctor) =>
+    doctor.speciality &&
+    doctor.speciality.toLowerCase().includes(specialitySearchTerm.toLowerCase())
+  );
+  
+  const datetimeFiltered = doctors.filter((doctor) =>
+    doctor.availableAppointment &&
+    doctor.availableAppointment.toLowerCase().includes(datetimeSearchTerm.toLowerCase())
+  );
 
     setFilteredDoctors(
       nameSearchTerm && specialitySearchTerm && datetimeSearchTerm
