@@ -4,6 +4,30 @@ const Patient= require('../models/PatientModel')
 const PendingDoctorRequest = require('../models/pendingdoctorModel');
 const HealthRecord = require("../models/HealthRecordModel");
 const bcrypt =require('bcrypt')
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Set up storage for uploaded files
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadDirectory = path.join(__dirname, '../../frontend/public/uploads');
+        cb(null, uploadDirectory);
+    },
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const filename = `${Date.now()}-${file.fieldname}${ext}`;
+      cb(null, filename);
+    },
+  });
+  
+  const upload = multer({ storage: storage });
+
+  const uploadMiddleware = upload.fields([
+    { name: 'idFile', maxCount: 1 },
+    { name: 'degreeFile', maxCount: 1 },
+    { name: 'licenseFile', maxCount: 1 },
+  ]);
 
 // get all doctors
 const getDoctors = async (req, res) => {
@@ -102,11 +126,18 @@ const updateDoctor = async (req, res) => {
 
 // MALAK WAEL FOLDER. DO NOT TOUCH
 const submitRequest = async (req, res) => {
+  console.log(req.body);
   const { username, name, email, password, dateofbirth, hourlyrate, affiliation, educationalbackground } = req.body;
-
-  if(!username|| !name ||!email || !password || !dateofbirth ||!hourlyrate || !affiliation || !educationalbackground){
-      return res.status(400).json({ error: 'Please provide all fields' });
-  }
+  const idFile = req.files['idFile'][0];
+  const degreeFile = req.files['degreeFile'][0];
+  const licenseFile = req.files['licenseFile'][0];
+  const idFileData = fs.readFileSync(idFile.path);
+  const degreeFileData = fs.readFileSync(degreeFile.path);
+  const licenseFileData = fs.readFileSync(licenseFile.path);
+  console.log(req.body);
+  // if(!username|| !name ||!email || !password || !dateofbirth ||!hourlyrate || !affiliation || !educationalbackground){
+  //     return res.status(400).json({ error: 'Please provide all fields' });
+  // }
   try {
       const requestExists = await PendingDoctorRequest.findOne({ email });
       if (requestExists) {
@@ -125,8 +156,19 @@ const submitRequest = async (req, res) => {
           hourlyrate,
           affiliation,
           educationalbackground,
+          idFile: {
+              data: idFileData,
+              contentType: idFile.mimetype
+          },
+          degreeFile: {
+              data: degreeFileData,
+              contentType: degreeFile.mimetype
+          },
+          licenseFile: {
+              data: licenseFileData,
+              contentType: licenseFile.mimetype
+          }
       });
-
       res.status(200).json({ message: 'Doctor registration request sent to admin for approval' });
   } catch (error) {
       console.error(error);
@@ -313,5 +355,6 @@ module.exports = {
   getPatientsForDoctor,
   addDoctor,
   addHealthRecord,
-  viewHealthRecords
+  viewHealthRecords,
+  uploadMiddleware,
 };

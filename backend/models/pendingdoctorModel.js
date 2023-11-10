@@ -38,8 +38,20 @@ const PendingDoctorRequestSchema = new Schema({
     doctor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'doctor',
-
-},})
+    },
+    idFile: {
+        data: Buffer,
+        contentType: String,
+    },
+    degreeFile: {
+        data: Buffer,
+        contentType: String,
+    },
+    licenseFile: {
+        data: Buffer,
+        contentType: String,
+    },
+})
 
 
 module.exports = mongoose.model('pendingdoctorrequest', PendingDoctorRequestSchema);

@@ -51,6 +51,19 @@ const doctorSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Patient', // This should be the model name for the patient schema
     }],
+    idFile: {
+        data: Buffer,
+        contentType: String,
+    },
+    degreeFile: {
+        data: Buffer,
+        contentType: String,
+    },
+    licenseFile: {
+        data: Buffer,
+        contentType: String,
+    },
+
   },
   { timestamps: true }
 );
