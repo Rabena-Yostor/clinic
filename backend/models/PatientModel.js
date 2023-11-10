@@ -47,7 +47,14 @@ const patientSchema = new Schema({
         type:String,
         enum: ['upcoming', 'completed', 'cancelled','rescheduled'],
         
-    }
+    },
+    medicalHistoryFiles: [
+        {
+            medicalHistoryFileData: {
+                type: Buffer,
+            },
+        },
+    ],
 },{timestamps: true})
 
 module.exports  = mongoose.model('Patient', patientSchema)

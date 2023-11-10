@@ -126,7 +126,6 @@ const updateDoctor = async (req, res) => {
 
 // MALAK WAEL FOLDER. DO NOT TOUCH
 const submitRequest = async (req, res) => {
-  console.log(req.body);
   const { username, name, email, password, dateofbirth, hourlyrate, affiliation, educationalbackground } = req.body;
   const idFile = req.files['idFile'][0];
   const degreeFile = req.files['degreeFile'][0];
@@ -134,7 +133,6 @@ const submitRequest = async (req, res) => {
   const idFileData = fs.readFileSync(idFile.path);
   const degreeFileData = fs.readFileSync(degreeFile.path);
   const licenseFileData = fs.readFileSync(licenseFile.path);
-  console.log(req.body);
   // if(!username|| !name ||!email || !password || !dateofbirth ||!hourlyrate || !affiliation || !educationalbackground){
   //     return res.status(400).json({ error: 'Please provide all fields' });
   // }
