@@ -13,7 +13,8 @@ const{
     addFamilyMember,
     filterAllApps,
     viewPatientAccount,
-    getHealthRecord
+    getHealthRecord,
+    login
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -40,6 +41,6 @@ router.post('/addFamilyMember',addFamilyMember)
 router.get('/filterAppointmentPatient',filterAllApps)
 router.get('/viewPatientAccount',viewPatientAccount)
 router.get('/getHealthRecord/:id',getHealthRecord)
-
+router.post('')
 
 module.exports = router
