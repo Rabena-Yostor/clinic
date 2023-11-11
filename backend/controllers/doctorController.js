@@ -262,30 +262,47 @@ const addDoctor = async (req, res) => {
 };
 
 const addHealthRecord = async (req, res) => {
-  const { patientId, bloodPressure, heartRate, allergies, medications } = req.body;
+  const { username } = req.params;
+  const { newHealthRecordData } = req.body;
 
   try {
-    const healthRecord = await HealthRecord.create({
-      patientId,
+    console.log('Adding health record for patient:', username);
+    const patient = await Patient.findOne({ username });
+
+    if (!patient) {
+      return res.status(404).json({ message: 'Patient not found' });
+    }
+    console.log('Patient found:', patient);
+    // Create a new health record
+    const { bloodPressure, heartRate, allergies, medications } = newHealthRecordData;
+    const newHealthRecord = await HealthRecord.create({
+      patientId: patient._id,
       bloodPressure,
       heartRate,
       allergies,
-      medications,
+      medications
     });
-
-    res.status(201).json({ healthRecord });
+    await newHealthRecord.save();
+    res.status(201).json({ message: 'Health record added successfully' });
   } catch (error) {
-    console.error('Error creating health record:', error);
+    console.error('Error adding health record:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 // View health records for a specific patient
 const viewHealthRecords = async (req, res) => {
-  const { patientId } = req.params;
+  const { username } = req.params;
 
   try {
-    const healthRecords = await HealthRecord.find({ patientId });
+    // Assuming you have a User model with a 'username' field
+    const user = await Patient.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Patient not found' });
+    }
+
+    const healthRecords = await HealthRecord.find({ patientId: user._id });
 
     if (healthRecords.length === 0) {
       return res.status(404).json({ message: 'No health records found for the specified patient' });
@@ -299,21 +316,28 @@ const viewHealthRecords = async (req, res) => {
 };
 
 
-const viewDoctorAccount = async (req, res) => {
-  const { username } = req.params;
+const login = async (req, res) => {
+  const { username, password } = req.body;
 
   try {
+    // Check if the user is a doctor
     const doctor = await Doctor.findOne({ username });
 
-    if (!doctor) {
-      return res.status(404).json({ error: 'Doctor not found.' });
+    if (doctor) {
+      // Compare the entered password with the stored password
+      if (password === doctor.password) {
+        // Generate a JWT token for the doctor
+        const token = jwt.sign({ userId: doctor._id, userType: 'doctor' }, 'yourSecretKey', { expiresIn: '1h' });
+        return res.status(200).json({ token, userType: 'doctor' });
+      }
     }
 
-    res.status(200).json(doctor);
+    // If no match found, authentication failed
+    res.status(401).json({ message: 'Authentication failed' });
   } catch (error) {
-    console.error('Error fetching doctor account:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 ///////////////////////////////////////// END OF HANA'S FOLDER
@@ -332,5 +356,5 @@ module.exports = {
   addDoctor,
   addHealthRecord,
   viewHealthRecords,
-  viewDoctorAccount
+  login
 };

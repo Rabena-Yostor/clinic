@@ -252,6 +252,29 @@ const viewPatientAccount = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
       }
   };
+  const login = async (req, res) => {
+    const { username, password } = req.body;
+  
+    try {
+      // Check if the user is a patient
+      const newpatient = await patient.findOne({ username });
+  
+      if (newpatient) {
+        // Compare the entered password with the stored password
+        if (password === newpatient.password) {
+          // Generate a JWT token for the patient
+          const token = jwt.sign({ userId: newpatient._id, userType: 'patient' }, 'yourSecretKey', { expiresIn: '1h' });
+          return res.status(200).json({ token, userType: 'patient' });
+        }
+      }
+  
+      // If no match found, authentication failed
+      res.status(401).json({ message: 'Authentication failed' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
 
 module.exports = {
     createPatient,
@@ -266,6 +289,7 @@ module.exports = {
     addFamilyMember,
     filterAllApps,
     viewPatientAccount,
-    getHealthRecord
+    getHealthRecord,
+    login
         
 }
