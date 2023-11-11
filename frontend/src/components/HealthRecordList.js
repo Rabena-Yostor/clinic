@@ -1,27 +1,24 @@
 import React from 'react';
 
-const HealthRecordsList = ({ healthRecords }) => {
+const HealthRecordList = ({ healthRecords }) => {
   return (
     <div>
-      {healthRecords.length > 0 ? (
-        <div>
-          <h3>Health Records:</h3>
-          <ul>
-            {healthRecords.map((record) => (
-              <li key={record._id}>
-                <p>Blood Pressure: {record.bloodPressure}</p>
-                <p>Heart Rate: {record.heartRate}</p>
-                <p>Allergies: {record.allergies}</p>
-                <p>Medications: {record.medications}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <h2>Health Records</h2>
+      {Array.isArray(healthRecords) && healthRecords.length > 0 ? (
+        healthRecords.map((record) => (
+          <div key={record._id}>
+            <p>Blood Pressure: {record.bloodPressure}</p>
+            <p>Heart Rate: {record.heartRate}</p>
+            <p>Allergies: {record.allergies}</p>
+            <p>Medications: {record.medications}</p>
+            {/* Add more fields as needed */}
+          </div>
+        ))
       ) : (
-        <p>No health records found.</p>
+        <p>No health records found for the specified patient.</p>
       )}
     </div>
   );
 };
 
-export default HealthRecordsList;
+export default HealthRecordList;

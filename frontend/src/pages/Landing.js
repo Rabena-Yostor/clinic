@@ -26,6 +26,9 @@ function HomePage() {
       <Link to="/hana">
         <button>filterAppointment&viewInfo</button>
       </Link>
+      <Link to="/view-health-records">
+        <button>View Health Records</button>
+      </Link>
     </div>
   );
 }

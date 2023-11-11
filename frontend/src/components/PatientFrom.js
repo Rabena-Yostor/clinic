@@ -19,7 +19,7 @@ const PatientForm = () => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-    
+       
         const patient = {username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status}
         
         const response = await fetch('/api/workouts', {

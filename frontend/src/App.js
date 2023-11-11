@@ -16,6 +16,7 @@ import PrescriptionFilter from './components/PrescriptionFilter'
 import FamilyForm from './components/FamilyForm';
 import DoctorDashboard from './components/DoctorDash';
 import AppointmentFilter from './components/DoctorFilter';
+import ViewHealthRecordsPage from './pages/ViewHealthRecordsPage';
 function App() {
   return (
     <div className="App">
@@ -39,7 +40,7 @@ function App() {
             <Route path="/safina" element={<FamilyForm />} />
             <Route path="/hana" element={<DoctorDashboard />} />
             <Route path = "/filterAppointment" element = {<AppointmentFilter />} />
-
+            <Route path="/view-health-records" element={<ViewHealthRecordsPage/>} />
 
           </Routes>
         </div>
