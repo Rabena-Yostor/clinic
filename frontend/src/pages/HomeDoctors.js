@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DoctorDetails from "../components/DoctorDetails";
 import DoctorForm from "../components/DoctorForm";
+import HealthRecordForm from '../components/HealthRecordForm';
 
 const HomeDoctors = () => {
   const [doctors, setDoctors] = useState(null);
@@ -86,6 +87,45 @@ const HomeDoctors = () => {
     );
   }, [doctors, nameSearchTerm, specialitySearchTerm, datetimeSearchTerm]);
 
+  const addHealthRecord = async (username, healthRecordData) => {
+    try {
+      const { bloodPressure, heartRate, allergies, medications } = healthRecordData;
+      const response = await fetch(`http://localhost:4000/api/doctors/addHealthRecord/${username}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // You can pass additional data in the body if needed
+        body: JSON.stringify({
+          username,
+          newHealthRecordData:{
+            bloodPressure,
+            heartRate,
+            allergies,
+            medications,
+          }
+        }),
+      });
+      console.log('Response:', response);
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Health record added successfully:', data.message);
+        alert('Health reacord added succefully')
+      } else {
+        if (response.status === 404 && data.error === 'Patient not found') {
+          console.error('Error adding health record: Patient not found');
+          alert('Patient not found. Please check the username and try again.')
+           } else {
+          console.error('Error adding health record:', data.error);
+          alert('Error adding health record. Please try again.'); 
+
+        }
+      }
+    } catch (error) {
+      console.error('Error adding health record:', error);
+    }
+  };
+
   return (
     <div className="home">
       <div className="search-bar">
@@ -123,6 +163,7 @@ const HomeDoctors = () => {
           ))}
       </div>
       <DoctorForm />
+      <HealthRecordForm onAddHealthRecord={addHealthRecord} />
       {selectedDoctor && (
         <div className="selected-doctor-info">
           <h2>Selected Doctor Information</h2>

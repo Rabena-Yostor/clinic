@@ -272,7 +272,7 @@ const addHealthRecord = async (req, res) => {
     if (!patient) {
       return res.status(404).json({ message: 'Patient not found' });
     }
-    console.log('Patient found:', patient);
+   
     // Create a new health record
     const { bloodPressure, heartRate, allergies, medications } = newHealthRecordData;
     const newHealthRecord = await HealthRecord.create({
