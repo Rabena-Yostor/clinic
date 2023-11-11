@@ -167,6 +167,88 @@ const viewPatientInfo= async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Find the admin by username
+    const admin = await Adminstrator.findOne({ username });
+
+    if (!admin) {
+      return res.status(401).json({ message: 'Authentication failed' });
+    }
+
+    // Compare the entered password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Authentication failed' });
+    }
+
+    // Generate a JWT token
+    const token = jwt.sign({ userId: admin._id }, 'yourSecretKey', { expiresIn: '1h' });
+
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+// Change password
+const hashPassword = async (password) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+};
+
+const changePassword = async (req, res) => {
+  console.log('Request Headers:', req.headers);
+  console.log('Request Body:', req.body);
+  const { currentPassword, newPassword } = req.body;
+  const userType = req.userType; // Assuming you set userType during authentication
+
+  try {
+    let user;
+
+    // Use the authenticated user information
+    if (userType === 'doctor') {
+      user = await Doctor.findById(req.user.id);
+    } else if (userType === 'patient') {
+      user = await Patient.findById(req.user.id);
+    } else if (userType === 'admin') {
+      user = await Adminstrator.findById(req.user.id);
+    } else {
+      return res.status(400).json({ message: 'Invalid user type' });
+    }
+
+    if (!user || !(await user.comparePassword(currentPassword))) {
+      return res.status(401).json({ message: 'Incorrect current password' });
+    }
+
+    // Assuming you have a function to hash passwords securely
+    user.password = await hashPassword(newPassword);
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+// Compare password method
+const comparePasswords = async (candidatePassword, hashedPassword) => {
+  try {
+    const match = await bcrypt.compare(candidatePassword, hashedPassword);
+    return match;
+  } catch (error) {
+    console.error('Error comparing passwords', error);
+    return false;
+  }
+};
+
 module.exports ={
     viewRequests,
     approveRequests,
@@ -174,6 +256,8 @@ module.exports ={
     addAdmin,
     removeUser,
     viewPatientInfo,
+    login,
+    changePassword,
 
     
 }

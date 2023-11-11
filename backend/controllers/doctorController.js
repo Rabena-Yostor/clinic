@@ -345,6 +345,26 @@ const login = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+const changeDoctorPassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    // Assuming you have a function to compare passwords securely
+    const doctor = await Doctor.findOne({ username: req.user.username });
+
+    if (!doctor || !await doctor.comparePassword(currentPassword)) {
+      return res.status(401).json({ message: 'Incorrect current password' });
+    }
+
+    doctor.password = newPassword;
+    await doctor.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 ///////////////////////////////////////// END OF HANA'S FOLDER
 module.exports = {
@@ -362,5 +382,6 @@ module.exports = {
   addDoctor,
   addHealthRecord,
   viewHealthRecords,
-  login
+  login,
+  changeDoctorPassword
 };

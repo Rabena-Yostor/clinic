@@ -275,6 +275,26 @@ const viewPatientAccount = async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };
+  const changePatientPassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+  
+    try {
+      // Assuming you have a function to compare passwords securely
+      const patient = await patient.findOne({ username: req.user.username });
+  
+      if (!patient || !await patient.comparePassword(currentPassword)) {
+        return res.status(401).json({ message: 'Incorrect current password' });
+      }
+  
+      patient.password = newPassword;
+      await patient.save();
+  
+      res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+      console.error('Error changing password', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
 
 module.exports = {
     createPatient,
@@ -290,6 +310,7 @@ module.exports = {
     filterAllApps,
     viewPatientAccount,
     getHealthRecord,
-    login
+    login,
+    changePatientPassword
         
 }

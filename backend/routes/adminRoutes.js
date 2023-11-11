@@ -8,6 +8,8 @@ const {
     addAdmin,
     removeUser,
     viewPatientInfo,
+    login,
+    changePassword,
 
 } = require('../controllers/adminController')
 
@@ -24,6 +26,10 @@ router.post('/addAdmin', addAdmin)
 router.delete('/removeUser',removeUser)
 
 router.get('/viewPatientInfo',viewPatientInfo)
+
+
+router.post('/login',login)
+router.post('/changePassword',changePassword)
 
 
 

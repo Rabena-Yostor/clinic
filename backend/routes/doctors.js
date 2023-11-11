@@ -14,7 +14,9 @@ const {
     getPatientsForDoctor,
     addHealthRecord,
   viewHealthRecords,
-  viewDoctorAccount
+  viewDoctorAccount,
+  login,
+  changeDoctorPassword
 
 }= require('../controllers/doctorController')
 
@@ -46,4 +48,7 @@ router.get('/getPatientsForDoctor', getPatientsForDoctor)
 
 router.post('/addHealthRecord/:username', addHealthRecord)
 router.get('/viewHealthRecords/:username', viewHealthRecords)
+
+router.post('/login', login)
+router.post('/changePassword', changeDoctorPassword)
 module.exports = router 
