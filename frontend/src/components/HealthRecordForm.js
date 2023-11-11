@@ -25,6 +25,7 @@ const HealthRecordForm = ({ onAddHealthRecord }) => {
   const handleMedicationsChange = (event) => {
     setMedications(event.target.value);
   };
+  
 
   const handleAddHealthRecord = () => {
     // Call the parent component's function to add health record

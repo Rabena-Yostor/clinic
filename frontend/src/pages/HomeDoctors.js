@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import axios from 'axios';
 import DoctorDetails from "../components/DoctorDetails";
 import DoctorForm from "../components/DoctorForm";
 import HealthRecordForm from '../components/HealthRecordForm';
+import HealthRecordList from '../components/HealthRecordList'; 
+import ViewHealthRecordsForm from '../components/ViewHealthRecordForm';
 
 const HomeDoctors = () => {
   const [doctors, setDoctors] = useState(null);
@@ -10,6 +13,7 @@ const HomeDoctors = () => {
   const [specialitySearchTerm, setSpecialitySearchTerm] = useState("");
   const [datetimeSearchTerm, setDatetimeSearchTerm] = useState("");
   const [filteredDoctors, setFilteredDoctors] = useState(null);
+  const [selectedDoctorHealthRecords, setSelectedDoctorHealthRecords] = useState([]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -109,8 +113,13 @@ const HomeDoctors = () => {
       console.log('Response:', response);
       const data = await response.json();
       if (response.ok) {
-        console.log('Health record added successfully:', data.message);
-        alert('Health reacord added succefully')
+        if (data.message === 'Health record added successfully') {
+          console.log('New health record added:', data.message);
+          alert('New health record added')
+        } else if (data.message === 'Health record updated successfully') {
+          console.log('Existing health record updated:', data.message);
+          alert('Existing health record updated')
+                }
       } else {
         if (response.status === 404 && data.error === 'Patient not found') {
           console.error('Error adding health record: Patient not found');
@@ -125,6 +134,23 @@ const HomeDoctors = () => {
       console.error('Error adding health record:', error);
     }
   };
+  const viewHealthRecords = async (username) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/doctors/viewHealthRecords/${username}`);
+      const data = await response.json();
+  
+      if (response.ok) {
+        setSelectedDoctorHealthRecords(data);
+        console.log('Health records:', data);
+      } else {
+        // Handle the error response
+        console.error('Error viewing health records:', data.error);
+      }
+    } catch (error) {
+      console.error('Error viewing health records:', error);
+    }
+  };
+  
 
   return (
     <div className="home">
@@ -164,12 +190,22 @@ const HomeDoctors = () => {
       </div>
       <DoctorForm />
       <HealthRecordForm onAddHealthRecord={addHealthRecord} />
-      {selectedDoctor && (
+      {selectedDoctor && selectedDoctorHealthRecords && selectedDoctorHealthRecords.length > 0 &&  (
         <div className="selected-doctor-info">
           <h2>Selected Doctor Information</h2>
-          <DoctorDetails doctor={selectedDoctor} />
+          <ul>
+          {selectedDoctorHealthRecords.map((record) => (
+            <li key={record._id}>
+              <p>Blood Pressure: {record.bloodPressure}</p>
+              <p>Heart Rate: {record.heartRate}</p>
+              <p>Allergies: {record.allergies}</p>
+              <p>Medications: {record.medications}</p>
+            </li>
+          ))}
+        </ul>
         </div>
       )}
+      <ViewHealthRecordsForm onViewHealthRecords={viewHealthRecords} />
     </div>
   );
 };

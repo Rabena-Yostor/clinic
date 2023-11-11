@@ -272,8 +272,13 @@ const addHealthRecord = async (req, res) => {
     if (!patient) {
       return res.status(404).json({ message: 'Patient not found' });
     }
-   
-    // Create a new health record
+    const existingHealthRecord = await HealthRecord.findOne({ patientId: patient._id });
+
+    if (existingHealthRecord) {
+
+      await existingHealthRecord.updateOne(newHealthRecordData);
+      res.status(200).json({ message: 'Health record updated successfully', healthRecord: existingHealthRecord });
+    } else {
     const { bloodPressure, heartRate, allergies, medications } = newHealthRecordData;
     const newHealthRecord = await HealthRecord.create({
       patientId: patient._id,
@@ -284,6 +289,7 @@ const addHealthRecord = async (req, res) => {
     });
     await newHealthRecord.save();
     res.status(201).json({ message: 'Health record added successfully' });
+  }
   } catch (error) {
     console.error('Error adding health record:', error);
     res.status(500).json({ error: 'Internal Server Error' });
