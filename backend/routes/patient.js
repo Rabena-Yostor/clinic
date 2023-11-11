@@ -8,7 +8,11 @@ const{
     updatePatient,
     filterAppointment,
     registerPatient,
-    loginPatient,
+    getHealthPackages,
+    subscribeToHealthPackage,
+    getSubscribedHealthPackages,
+    getSubscriptionStatus,
+    cancelSubscription,
     getFamilyMembers,
     addFamilyMember,
     filterAllApps
@@ -29,9 +33,17 @@ router.get('/filterAppointment/:id',filterAppointment)
 
 router.post('/registerPatient',registerPatient)
 
-router.post('/loginPatient',loginPatient)
+router.get('/viewHealthPackage',getHealthPackages) 
+
+router.post('/subscribeHealthPackage',subscribeToHealthPackage)
+
+router.get('/getSubscribedHealthPackages',getSubscribedHealthPackages)
+
+router.get('/getSubscriptionStatus',getSubscriptionStatus)
 
 router.get('/getFamilyMembers/:username',getFamilyMembers)
+
+router.post('/cancelSubscription',cancelSubscription)
 
 router.post('/addFamilyMember',addFamilyMember)
 

@@ -48,7 +48,58 @@ const Header = () => {
                 </Link>
 
             </div>
+            <div>
+                <Link to="/ApproveDoctorRequest">
+                    <FaUser /> Approve Doctor Request
+             </Link>
+           </div>
+           <div>
+                <Link to="/RejectDoctorRequest">
+                    <FaUser /> Reject Doctor Request
+             </Link>
+           </div>
+           <div>
+        <Link to="/CreateHealthPackage">
+          <FaUser /> Admin Create HP
+        </Link>
+      </div>
+      <div>
+        <Link to="/UpdateHealthPackage">
+          <FaUser /> Admin Update HP
+        </Link>
+      </div>
+      <div>
+        <Link to="/DeleteHealthPackage">
+          <FaUser /> Admin Delete HP
+        </Link>
+      </div>
+           <div>
+                <Link to="/ViewHealthPackages">
+                    <FaUser /> View Health Packages
+                </Link>
+            </div>
 
+      <div>
+        <Link to="/SubscribeToHealthPackage">
+          <FaUser /> Subscribe to Health Package
+        </Link>
+      </div>
+      <div>
+        <Link to="/SubscribedHealthPackages">
+          <FaUser /> The Subscribed Health Package
+        </Link>
+      </div>
+      <div>
+        <Link to="/SubscriptionStatus">
+          <FaUser /> Subscription Status
+        </Link>
+      </div>
+      <div>
+        <Link to="/cancelSubscription">
+          <FaUser /> Cancel Subscription 
+        </Link>
+      </div>
+            
         </header>
     )
 }

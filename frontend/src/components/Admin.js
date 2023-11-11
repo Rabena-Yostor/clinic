@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { useAdminContext } from '../context/AdminContext';
 
+
 const Admin = () => {
   const { state, dispatch } = useAdminContext();
 
@@ -10,7 +11,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchData = async () => {
       
-        const response = await fetch('http://localhost:4000/api/admin/all');
+        const response = await fetch('http://localhost:4000/api/admin/viewRequests');
         const data = await response.json();
 
         if (response.ok) {
@@ -45,6 +46,11 @@ const Admin = () => {
     </div>
   );
 };
+
+
+
+
+
 
 export default Admin;
 

@@ -3,6 +3,15 @@ const patient = require('../models/PatientModel')
 const bcrypt =require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
+const HealthPackage = require('../models/healthPackageModel');
+const Payment = require('../models/paymentModel'); 
+const HealthPackageSubscription = require('../models/healthPackageSubModel');
+
+
+const bodyParser = require('body-parser'); // Import body-parser
+const express = require('express');
+const app = express();
+
 
 // get all patients
 const getAllPatients = async (req, res) => {
@@ -87,11 +96,11 @@ const filterAppointment = async (req, res) => {
 const registerPatient = async (req, res) => {
     console.log('Received request body:', req.body); 
 
-    const { username, name, email, password, dateofbirth, gender, mobilenumber, emergencyfullname,emergencynumber} = req.body;
+    const { username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName,EmergencyContactNo} = req.body;
 
 
     // Check for missing fields
- if(!username || !name || !email || !password || !dateofbirth || !gender || !mobilenumber || !emergencyfullname|| !emergencynumber) {
+ if(!username || !name || !email || !password || !dateOfBirth || !gender || !mobileNumber || !EmergencyContactName|| !EmergencyContactNo) {
         return res.status(400).json({ error: 'Please provide all fields' });
     }
 
@@ -114,11 +123,11 @@ try {
         name,
         email,
         password: hashedPassword,
-        dateofbirth,
+        dateOfBirth,
         gender,
-        mobilenumber,
-        emergencyfullname,
-        emergencynumber
+        mobileNumber,
+        EmergencyContactName,
+        EmergencyContactNo
     });
 
     res.status(201).json({
@@ -126,11 +135,11 @@ try {
         username: newPatient.username,
         name: newPatient.name,
         email: newPatient.email,
-        dateofbirth: newPatient.dateOfBirth,
+        dateOfBirth: newPatient.dateOfBirth,
         gender: newPatient.gender,
-        mobilenumber: newPatient.mobileNumber,
-        emergencyfullname : newPatient.EmergencyContactName,
-        emergencynumber : newPatient.EmergencyContactNo
+        mobileNumber: newPatient.mobileNumber,
+        EmergencyContactName: newPatient.EmergencyContactName,
+        EmergencyContactNo : newPatient.EmergencyContactNo
     });
 
 } catch (error) {
@@ -142,9 +151,169 @@ try {
 
 };
 
-const loginPatient = (req, res) => {
-    res.json({message: 'User logged in'})
-}
+// view the health packages 
+const getHealthPackages = async (req, res) => {
+    try {
+        const healthPackages = await HealthPackage.find({}, '-_id type price doctorSessionDiscount medicineDiscount familySubscriptionDiscount');
+        res.status(200).json(healthPackages);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+//subscribe a health package
+
+app.use(bodyParser.json());
+
+const subscribeToHealthPackage = async (req, res) => {
+    const { patientId, healthPackageId, familyMembers, paymentMethod , accountNumber } = req.body;
+
+    try {
+        // Check if the health package exists
+        const healthPackage = await HealthPackage.findById(healthPackageId);
+        if (!healthPackage) {
+            return res.status(404).json({ error: 'Health package not found' });
+        }
+
+        // Calculate total price based on health package and family members
+        let totalPrice = 0;
+
+        // Logic to calculate total price based on health package type
+        if (healthPackage.type === 'silver') {
+            totalPrice = 3600;
+        } else if (healthPackage.type === 'gold') {
+            totalPrice = 6000;
+        } else if (healthPackage.type === 'platinum') {
+            totalPrice = 9000;
+        } else {
+            return res.status(400).json({ error: 'Invalid health package type' });
+        }
+
+        // Apply discounts based on the health package type
+        const doctorSessionDiscount = healthPackage.type === 'silver' ? 0.4 : healthPackage.type === 'gold' ? 0.6 : 0.8;
+        const medicineDiscount = healthPackage.type === 'silver' ? 0.2 : healthPackage.type === 'gold' ? 0.3 : 0.4;
+        const familySubscriptionDiscount = healthPackage.type === 'silver' ? 0.1 : healthPackage.type === 'gold' ? 0.15 : 0.2;
+
+        // Apply discounts to the total price
+        totalPrice *= (1 - doctorSessionDiscount); // Apply doctor's session discount
+        // Apply other discounts here...
+
+        // Handle payment based on the chosen payment method
+        let paymentStatus = 'completed'; // Placeholder for payment status
+        // Implement payment processing logic based on paymentMethod (wallet or credit card)
+        // Update paymentStatus based on the payment processing result
+
+        // Assuming payment is successful, create a payment record
+        const payment = new Payment({
+            patient: patientId,
+            healthPackage: healthPackageId,
+            paymentMethod: paymentMethod,
+            totalAmount: totalPrice,
+            accountNumber: accountNumber,
+            status: paymentStatus, // Set payment status (update based on payment processing)
+        });
+
+        await payment.save();
+
+        // Assuming payment is successful, create a health package subscription record
+        const HealthPackageSubscriptionInstance = new HealthPackageSubscription({
+            patient: patientId,
+            healthPackage: healthPackageId,
+            familyMembers: familyMembers,
+            totalAmount: totalPrice, // Adjust this based on your calculation logic
+            paymentMethod: paymentMethod,
+            accountNumber: accountNumber,
+            status: 'active', // Set subscription status to 'active'
+            subscriptionDate: new Date(), // Timestamp when the subscription was created
+          });
+      
+          await HealthPackageSubscriptionInstance.save();
+
+        res.status(200).json({ message: 'Health package subscribed successfully' });
+    } catch (error) {
+        console.error('Error subscribing to health package:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+module.exports = subscribeToHealthPackage;
+
+
+
+//view subscribed health package 
+
+const getSubscribedHealthPackages = async (req, res) => {
+    const { patientId } = req.query; // Use req.query instead of req.body to get query parameters
+  
+    try {
+      const subscriptions = await HealthPackageSubscription.find({
+        $or: [{ patient: patientId }, { familyMembers: patientId }],
+        status: 'active' // Filter only active subscriptions
+      }).populate('healthPackage').populate('familyMembers');
+  
+      res.status(200).json({ subscriptions });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+
+//view subscription status 
+const getSubscriptionStatus = async (req, res) => {
+    const { patientId } = req.query;
+  
+    try {
+      const subscriptions = await HealthPackageSubscription.find({
+        $or: [{ patient: patientId }, { familyMembers: { $in: [patientId] } }],
+      }).populate('familyMembers', 'name'); // Replace 'name' with the property you want to display for family members
+  
+      if (subscriptions.length === 0) {
+        return res.status(404).json({ error: 'Patient ID not found' });
+      }
+      res.status(200).json({ subscriptions });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+
+
+// cancel a subscription 
+const cancelSubscription = async (req, res) => {
+    const { patientId, subscriptionId } = req.body;
+
+    try {
+        // Check if the health package subscription exists
+        const subscription = await HealthPackageSubscription.findById(subscriptionId);
+        if (!subscription) {
+            return res.status(404).json({ error: 'Health package subscription not found' });
+        }
+
+        // Check if the subscription belongs to the specified patient
+        if (subscription.patient.toString() !== patientId) {
+            return res.status(403).json({ error: 'Unauthorized access to the subscription' });
+        }
+
+        // Check if the subscription is already cancelled
+        if (subscription.status === 'cancelled') {
+            return res.status(400).json({ error: 'Subscription is already cancelled' });
+        }
+
+        // Update subscription status and cancellation date
+        subscription.status = 'cancelled';
+        subscription.cancellationDate = new Date();
+
+        await subscription.save();
+
+        res.status(200).json({ message: 'Health package subscription cancelled successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 /////////////////////////////END OF MALAK WAEL FOLDER
 
 
@@ -218,7 +387,11 @@ module.exports = {
     updatePatient,
     filterAppointment,
     registerPatient,
-    loginPatient,
+    getHealthPackages,
+    subscribeToHealthPackage,
+    getSubscribedHealthPackages,
+    getSubscriptionStatus,
+    cancelSubscription,
     getFamilyMembers,
     addFamilyMember,
     filterAllApps,

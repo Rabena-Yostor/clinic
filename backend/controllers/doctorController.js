@@ -100,9 +100,9 @@ const updateDoctor = async (req, res) => {
 
 // MALAK WAEL FOLDER. DO NOT TOUCH
 const submitRequest = async (req, res) => {
-  const { username, name, email, password, dateofbirth, hourlyrate, affiliation, educationalbackground } = req.body;
+  const { username, name, email, password, dateOfBirth, hourlyRate, affiliation, educationalBackground } = req.body;
 
-  if(!username|| !name ||!email || !password || !dateofbirth ||!hourlyrate || !affiliation || !educationalbackground){
+  if(!username|| !name ||!email || !password || !dateOfBirth ||!hourlyRate || !affiliation || !educationalBackground){
       return res.status(400).json({ error: 'Please provide all fields' });
   }
   try {
@@ -119,10 +119,10 @@ const submitRequest = async (req, res) => {
           name,
           email,
           password: hashedPassword,
-          dateofbirth,
-          hourlyrate,
+          dateOfBirth,
+          hourlyRate,
           affiliation,
-          educationalbackground,
+          educationalBackground,
       });
 
       res.status(200).json({ message: 'Doctor registration request sent to admin for approval' });
@@ -131,7 +131,7 @@ const submitRequest = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-//////////
+/////////////////END OF MALAK WAEL
 
 
 //////KHALED MAGDY FOLDER. DO NOT TOUCH

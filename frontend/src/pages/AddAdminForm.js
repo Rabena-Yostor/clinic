@@ -56,6 +56,5 @@ function AddAdminForm() {
     </div>
   );
 }
-
 export default AddAdminForm;
 

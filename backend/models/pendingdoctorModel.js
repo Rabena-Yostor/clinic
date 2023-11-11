@@ -19,11 +19,11 @@ const PendingDoctorRequestSchema = new Schema({
         type: String,
         required: true,
     },
-    dateofbirth: {
+    dateOfBirth: {
         type: Date,
         required: true,
     },
-    hourlyrate: {
+    hourlyRate: {
         type: Number,
         required: true,
     },
@@ -31,13 +31,14 @@ const PendingDoctorRequestSchema = new Schema({
         type: String,
         required: true,
     },
-    educationalbackground: {
+    educationalBackground: {
         type: String,
         required: true,
     },
     doctor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'doctor',
+        required: false,
 
 },})
 

@@ -40,7 +40,7 @@ const SubmitRequest= () =>{
         }
     
         try {
-            const response = await fetch('http://localhost:4000/api/doctors/createDoctor', {
+            const response = await fetch('http://localhost:4000/api/doctors/submitRequest', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

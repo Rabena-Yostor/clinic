@@ -7,7 +7,7 @@ const ViewPatientInfo = () => {
 
   const handleViewPatientInfo = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/patients/patientinfo?patientId=${patientId}`, {
+      const response = await fetch(`http://localhost:4000/api/admin/viewPatientInfo?patientId=${patientId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -42,19 +42,19 @@ const ViewPatientInfo = () => {
       <button onClick={handleViewPatientInfo}>View Information</button>
       {error && <p>Error: {error}</p>}
       {patientInfo && (
-        <div>
-          <h3>Patient Information</h3>
-          <p>Username: {patientInfo.username}</p>
-          <p>Name: {patientInfo.name}</p>
-          <p>Email: {patientInfo.email}</p>
-          <p>Date of Birth: {patientInfo.dateofbirth}</p>
-          <p>Gender: {patientInfo.gender}</p>
-          <p>Mobile Number: {patientInfo.mobilenumber}</p>
-          <p>Emergency Contact: {patientInfo.emergencyfullname}</p>
-          <p>Emergency Contact Number: {patientInfo.emergencynumber}</p>
-          {/* Include other information fields as needed */}
-        </div>
-      )}
+  <div>
+    <h3>Patient Information</h3>
+    <p>Username: {patientInfo.username}</p>
+    <p>Name: {patientInfo.name}</p>
+    <p>Email: {patientInfo.email}</p>
+    <p>Date of Birth: {patientInfo.dateofbirth}</p>
+    <p>Gender: {patientInfo.gender}</p>
+    <p>Mobile Number: {patientInfo.mobilenumber}</p>
+    <p>Emergency Contact: {patientInfo.emergencyfullname}</p>
+    <p>Emergency Contact Number: {patientInfo.emergencynumber}</p>
+    {/* Include other information fields as needed */}
+  </div>
+)}
     </div>
   );
 };

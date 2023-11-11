@@ -118,4 +118,11 @@ div.error {
   color: #fff; /* Change the text color to ensure visibility */
   /* You can add other styling properties as needed */
 }
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
 
