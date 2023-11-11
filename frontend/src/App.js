@@ -33,7 +33,7 @@ function App() {
             {!isLoggedIn && <Route path="/" element={<Navigate to="/login" />} />}
             {/* Login route */}
             <Route path="/" element={<Login />} />
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/landing" element={<HomePage />} />
             {/* Continue with other routes */}
             <Route path="/patients" element={<HomePatients />} />
             <Route path="/doctors" element={<HomeDoctors />} />

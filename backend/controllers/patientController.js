@@ -1,5 +1,6 @@
 const { mongo, default: mongoose } = require('mongoose')
 const patient = require('../models/PatientModel')
+const jwt = require('jsonwebtoken');
 const bcrypt =require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
