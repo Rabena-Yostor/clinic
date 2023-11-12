@@ -3,51 +3,53 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const patientSchema = new Schema({
-    username:{
+    username: {
         type: String,
         required: true
     },
-    name:{
+    name: {
         type: String,
         required: true
     },
-    email:{
+    email: {
         type: String,
         required: true
     },
-    password:{
+    password: {
         type: String,
         required: true
     },
-    dateOfBirth:{
+    dateOfBirth: {
         type: Date,
-        required:true
+        required: true
     },
-    gender:{
+    gender: {
         type: String,
         required: true
     },
-    mobileNumber:{
+    mobileNumber: {
         type: String,
         required: true
     },
-    EmergencyContactName:{
+    EmergencyContactName: {
         type: String,
         required: true
     },
-    EmergencyContactNo:{
+    EmergencyContactNo: {
         type: String,
         required: true
     },
-    Appointment:{
+    Appointment: {
         type: Date,
-        
     },
-    Appointment_Status:{
-        type:String,
-        enum: ['upcoming', 'completed', 'cancelled','rescheduled'],
-        
+    Appointment_Status: {
+        type: String,
+        enum: ['upcoming', 'completed', 'cancelled', 'rescheduled'],
+    },
+    wallet: {
+        type: Number, // You can use a different data type depending on your requirements
+        default: 1000, // You can set an initial value for the wallet
     }
-},{timestamps: true})
+}, { timestamps: true })
 
-module.exports  = mongoose.model('Patient', patientSchema)
+module.exports = mongoose.model('Patient', patientSchema)

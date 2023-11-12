@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import BuyPage from '../pages/BuyPage';
 
 const DoctorDashboard = () => {
   const [date, setDate] = useState('');
@@ -8,6 +9,7 @@ const DoctorDashboard = () => {
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
   const [doctorUsername, setDoctorUsername] = useState(''); 
+  const navigate = useNavigate();
 
   const handleFilterAppointments = async () => {
     try {
@@ -16,16 +18,11 @@ const DoctorDashboard = () => {
     } catch (error) {
       console.error('Error filtering appointments:', error);
     }
-  };
+  };      
 
-  // const handleViewPatients = async (username) => {
-  //   try {
-  //     const response = await axios.get(`/api/doctors/getPatientForDoctors/${username}`);
-  //     setPatients(response.data.patients);
-  //   } catch (error) {
-  //     console.error('Error fetching patients:', error);
-  //   }
-  // };
+  const handlePayment = () => {
+    navigate('/BuyPage');
+  };
 
   const handleGetPatientsForDoctor = async () => {
     try {
@@ -35,7 +32,6 @@ const DoctorDashboard = () => {
       console.error('Error fetching patients:', error);
     }
   };
-
   return (
     <div>
       <h1>Doctor Dashboard</h1>
@@ -59,14 +55,16 @@ const DoctorDashboard = () => {
       <button onClick={handleFilterAppointments}>Filter Appointments</button>
 
       <h2>Filtered Appointments</h2>
-      <ul>
-        {filteredAppointments.map(doctor => (
-          <li key={doctor._id}>
-            {`Doctor Name: ${doctor.name},Date: ${doctor.availableAppointment}, Status: ${doctor.Appointment_Status}`}
+      <h2>Filtered Appointments</h2>
+<ul>
+  {filteredAppointments.map(doctor => (
+    <li key={doctor._id}>
+      {`Doctor Name: ${doctor.name}, Date: ${doctor.availableAppointment}, Status: ${doctor.Appointment_Status}`} 
+      <button onClick={() => handlePayment(doctor)}>Pay 400</button>
+    </li>
+  ))}
+</ul>
 
-          </li>
-        ))}
-      </ul>
 
 
       <label>Doctor Username:</label>

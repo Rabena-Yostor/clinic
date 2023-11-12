@@ -38,10 +38,10 @@ const doctorSchema = new Schema(
       type: String,
       required: true,
     },
-    availableAppointment: {
+    availableAppointments: [{
       type: Date,
-
-    },
+      required: true, // You can make it required if necessary
+    }],
     Appointment_Status: {
       type: String,
       enum: ['upcoming', 'completed', 'cancelled', 'rescheduled'],

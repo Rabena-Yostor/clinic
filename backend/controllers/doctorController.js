@@ -172,6 +172,31 @@ const updateDoctorAffiliation = async (req, res) => {
   }
 }
 /////////////////////////////////////////// END OF KHALED
+//add appointment
+const addAppointment = async (req, res) => {
+  const id = req.params.id;
+  const doctor = await Doctor.findById(id);
+  if (!doctor) {
+    return res.status(404).json({ error: "No such doctor" });
+  }
+  const { date } = req.body;
+  if (!date) {
+    return res.status(400).json({ error: "Please provide date" });
+  }
+  try {
+  doctor.availableAppointments.push(date);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+  await doctor.save();
+  res.status(200).json(doctor);
+}
+  
+
+
+
 
 ///////////////////////////////////////// HANA'S FOLDER
 
@@ -271,5 +296,6 @@ module.exports = {
   updateDoctorAffiliation,
   filterAllApps,
   getPatientsForDoctor,
-  addDoctor
+  addDoctor,
+  addAppointment
 };

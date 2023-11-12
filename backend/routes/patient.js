@@ -1,6 +1,5 @@
 const express = require('express');
-const patient = require('../models/PatientModel')
-const{
+const {
     createPatient,
     getAllPatients,
     getPatient,
@@ -11,31 +10,26 @@ const{
     loginPatient,
     getFamilyMembers,
     addFamilyMember,
-    filterAllApps
+    filterAllApps,
+    depositToWallet,
+    withdrawFromWallet, // Include the wallet functions
 } = require('../controllers/patientController');
-const router = express.Router()
+const router = express.Router();
 
-router.get('/getAllPatients',getAllPatients)
+router.get('/getAllPatients', getAllPatients);
+router.get('/getPatient/:id', getPatient);
+router.post('/createPatient', createPatient);
+router.delete('/deletePatient/:id', deletePatient);
+router.patch('/updatePatient/:id', updatePatient);
+router.get('/filterAppointment/:id', filterAppointment);
+router.post('/registerPatient', registerPatient);
+router.post('/loginPatient', loginPatient);
+router.get('/getFamilyMembers/:username', getFamilyMembers);
+router.post('/addFamilyMember/:id', addFamilyMember);
+router.get('/filterAppointmentPatient', filterAllApps);
 
-router.get('/getPatient/:id', getPatient)
+// New routes for wallet operations
+router.post('/depositToWallet/:id', depositToWallet);
+router.post('/withdrawFromWallet/:id', withdrawFromWallet);
 
-router.post('/createPatient', createPatient)
-
-router.delete('/deletePatient/:id',deletePatient)
-
-router.patch('/updatePatient/:id', updatePatient)
-
-router.get('/filterAppointment/:id',filterAppointment)
-
-router.post('/registerPatient',registerPatient)
-
-router.post('/loginPatient',loginPatient)
-
-router.get('/getFamilyMembers/:username',getFamilyMembers)
-
-router.post('/addFamilyMember',addFamilyMember)
-
-router.get('/filterAppointmentPatient',filterAllApps)
-
-
-module.exports = router
+module.exports = router;

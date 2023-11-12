@@ -52,7 +52,7 @@ const AppointmentFilter = () => {
       <ul>
         {filteredAppointments.map((appointment) => (
           <li key={appointment._id}>
-            {`Date: ${appointment.availableAppointment}, Status: ${appointment.Appointment_Status}`}
+            {`Date: ${appointment.availableAppointment}, Status: ${appointment.Appointment_Status}`} 
           </li>
         ))}
       </ul>

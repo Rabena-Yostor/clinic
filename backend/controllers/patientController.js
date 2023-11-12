@@ -157,7 +157,7 @@ const getFamilyMembers= async(req, res)=>{
         console.log(familyMembers)
 
         if(familyMembers.length==0){
-            return res.status(404).json({message:'no solution'});
+            return res.status(404).json({message:'no family members found'});
             
         }
         res.status(200).json(familyMembers);
@@ -168,10 +168,19 @@ const getFamilyMembers= async(req, res)=>{
 }
 
 const addFamilyMember = async (req, res) =>{
-    const {Name,National_id, age, gender, relation}=req.body
+    const {Name,National_id, age, gender, relation,EmailorPhoneNumber}=req.body
 try {
-    const workout= await familyMemberModel.create({Name,National_id, age, gender, relation})
-    res.status(200).json(workout)
+    const patientOwner = await patient.findOne(req.params.userid); 
+    if (!patientOwner) {
+        return res.status(404).json({ error: 'No Owner pa' });
+    }
+
+    let patientMember = await patient.findOne({ $or: [{ email: EmailorPhoneNumber }, { mobileNumber: EmailorPhoneNumber}] });
+    if (!patientMember) {
+        return res.status(404).json({ error: 'No member Patient' });
+    }
+    const newFamilyMember= await familyMemberModel.create({Name,National_id, age, gender, relation,patientMember,patientOwner})
+    res.status(200).json(newFamilyMember)
 } catch (error) {
     res.status(400).json({error: error.message})
 }
@@ -206,9 +215,70 @@ const filterAllApps = async (req, res) => {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
-};
+};const depositToWallet = async (req, res) => {
+    const { id } = req.params;
+    const { amount } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid patient ID' });
+    }
 
+    if (!amount || amount <= 0) {
+        return res.status(400).json({ error: 'Invalid deposit amount' });
+    }
+
+    try {
+        const existingPatient = await patient.findById(id);
+        if (!existingPatient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        // Update the wallet balance
+        existingPatient.wallet += amount;
+        await existingPatient.save();
+
+        res.status(200).json({ message: 'Funds deposited successfully', walletBalance: existingPatient.wallet });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// Withdraw funds from a patient's wallet
+const withdrawFromWallet = async (req, res) => {
+    const { id } = req.params;
+    const { amount } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid patient ID' });
+    }
+
+    if (!amount || amount <= 0) {
+        return res.status(400).json({ error: 'Invalid withdrawal amount' });
+    }
+
+    try {
+        const existingPatient = await patient.findById(id);
+        if (!existingPatient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        if (existingPatient.wallet < amount) {
+            return res.status(400).json({ error: 'Insufficient funds in the wallet' });
+        }
+
+        // Update the wallet balance
+        existingPatient.wallet -= amount;
+        await existingPatient.save();
+
+        res.status(200).json({ message: 'Funds withdrawn successfully', walletBalance: existingPatient.wallet });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+// ... (other controller functions)
 
 module.exports = {
     createPatient,
@@ -222,5 +292,10 @@ module.exports = {
     getFamilyMembers,
     addFamilyMember,
     filterAllApps,
-        
+    depositToWallet,
+    withdrawFromWallet,
 }
+
+
+
+

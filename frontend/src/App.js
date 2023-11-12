@@ -16,6 +16,12 @@ import PrescriptionFilter from './components/PrescriptionFilter'
 import FamilyForm from './components/FamilyForm';
 import DoctorDashboard from './components/DoctorDash';
 import AppointmentFilter from './components/DoctorFilter';
+import BuyPage from './pages/BuyPage';
+import AddAppointment from './pages/addAppointments';
+import ViewEmploymentContractInfo from './pages/ViewContracts';
+import Payment from './pages/Payment';
+import Completion from './components/Completion';
+import Wallet from './components/Wallet';
 function App() {
   return (
     <div className="App">
@@ -39,6 +45,14 @@ function App() {
             <Route path="/safina" element={<FamilyForm />} />
             <Route path="/hana" element={<DoctorDashboard />} />
             <Route path = "/filterAppointment" element = {<AppointmentFilter />} />
+            <Route path = "/buy" element = {<BuyPage />} />
+            <Route path = "/contracts" element = {<ViewEmploymentContractInfo />} />
+            <Route path = "/addAppointment/:id" element = {<AddAppointment />} />
+            <Route path = "/payment" element = {<Payment />} />
+            <Route path = "/completion" element = {<Completion />} />
+            <Route path = "/wallet" element = {<Wallet />} />
+
+
 
 
           </Routes>

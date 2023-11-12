@@ -1,11 +1,15 @@
 import{useState} from 'react';
+import { useParams } from 'react-router-dom';
 
 const FamilyForm = () => {
+
+    const {id} = useParams()
     const [Name, setName] = useState('')
     const [National_id, setNational] = useState('')
     const [age, setAge] = useState('')
     const [gender, setGender] = useState('')
     const [relation, setRelation] = useState('')
+    const [EmailorPhoneNumber, setEmailorPhoneNumber] = useState('')
 
 
 
@@ -15,8 +19,8 @@ const FamilyForm = () => {
 
     const handleSubmit = async(e) => {
         e.preventDefault()
-        const family = {Name,National_id,age, gender, relation}
-        const response = await fetch('/api/patient/addFamilyMember', {
+        const family = {Name,National_id,age, gender, relation,EmailorPhoneNumber}
+        const response = await fetch(`/api/patient/addFamilyMember/${id}`, {
             method: 'POST',
            
             body: JSON.stringify(family),
@@ -33,7 +37,8 @@ const FamilyForm = () => {
         setNational('')
         setAge('')
         setGender('')  
-        setRelation('')  
+        setRelation('') 
+        setEmailorPhoneNumber('') 
            setError(null)
            console.log('fam Created')
        }
@@ -45,12 +50,12 @@ const FamilyForm = () => {
         <form className="add-form" onSubmit={handleSubmit}>
             <h3>Add FamilyMember</h3>
 
-            <label>Family name</label>
+            <label> name</label>
             <input type="text"
              onChange={(e) => setName(e.target.value)}
                 value={Name}
             />
-            <label>family id</label>
+            <label>National id</label>
             <input type="text"
              onChange={(e) => setNational(e.target.value)}
                 value={National_id}
@@ -73,6 +78,12 @@ const FamilyForm = () => {
             <input type="text"
              onChange={(e) => setRelation(e.target.value)}
                 value={relation}
+            />
+
+            <label>EmailorPhoneNumber </label>
+            <input type="text"
+             onChange={(e) => setEmailorPhoneNumber(e.target.value)}
+                value={EmailorPhoneNumber}
             />
            
 
