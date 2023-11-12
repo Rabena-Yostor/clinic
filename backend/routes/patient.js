@@ -12,14 +12,12 @@ const{
     getFamilyMembers,
     addFamilyMember,
     filterAllApps,
-    viewPatientAccount,
     getHealthRecord,
     signUp,
-    logout,
     login,
+    logout,
     updatePatientPassword,
     sendOtpAndSetPassword
-
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -44,9 +42,22 @@ router.get('/getFamilyMembers/:username',getFamilyMembers)
 router.post('/addFamilyMember',addFamilyMember)
 
 router.get('/filterAppointmentPatient',filterAllApps)
-router.get('/viewPatientAccount',viewPatientAccount)
-router.get('/viewHealthRecords',getHealthRecord)
-router.post('/login', login)
-router.post('/changePassword',updatePatientPassword)
+
+router.get('/viewHealthRecords',getHealthRecord);
+
+//sign up
+router.post('/signup',signUp)
+
+//login
+router.post('/login',login)
+
+//logout
+router.get('/logout',logout)
+
+//update password
+router.post('/updatePatientPassword',updatePatientPassword)
+
+//send otp and set password
+router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
 
 module.exports = router

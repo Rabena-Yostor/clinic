@@ -32,6 +32,13 @@ function HomePage() {
       <Link to="/view-patient-records">
         <button>View patient record</button>
       </Link>
+      <br />
+      <hr />
+      <br />
+      <Link to="/change-password">
+        <button>Change Password</button>
+      </Link>
+
       
     </div>
   );

@@ -1,98 +1,95 @@
+// Login.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [userType, setUserType] = useState('doctor'); // Default to pharmacist
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
 
-    try {
-        console.log(JSON.stringify({ username, password }));
-      const userTypes = ['admin', 'doctors', 'patient'];
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-      for (const userType of userTypes) {
-        const response = await fetch(`http://localhost:4000/api/${userType}/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-        });
-        console.log(response);
-        if (response.ok) {
-          const userData = await response.json();
-          console.log(userData);
+        try {
 
-          // Store user data in local storage based on user type
-          switch (userType) {
-            case 'admin':
-              localStorage.setItem('adminToken', userData.token);
-              localStorage.setItem('adminData', JSON.stringify(userData));
-              break;
-            case 'doctors':
-              localStorage.setItem('doctorToken', userData.token);
-              localStorage.setItem('doctorData', JSON.stringify(userData));
-              break;
-            case 'patient':
-              localStorage.setItem('patientToken', userData.token);
-              localStorage.setItem('patientData', JSON.stringify(userData));
-              break;
-            default:
-              break;
-          }
+            if (userType === 'doctor') {
+                var response = await fetch('/api/doctors/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({username : username, password: password }),
+                });
+            } else if (userType === 'admin') {
+                var response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+            }else{
+                var response = await fetch('/api/patient/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+            }
+            const data = await response.json();
 
-          localStorage.setItem('userType', userType);
-          localStorage.setItem('authToken', userData.token);
-          localStorage.setItem('username', username);
-          navigate(`/landing`);
-          return;
+            if (response.status === 200) {
+                
+                  localStorage.setItem('userType', userType);
+                  localStorage.setItem('username', username);
+                  localStorage.setItem('password', password);
+                  
+                navigate('/landing');
+            } else {
+                console.error(data.error);
+            }
+        } catch (error) {
+            console.error(error.message);
         }
-      }
+    };
+    const handleResetPassword = () => {
+        // Navigate to the reset-password path
+        navigate('/reset-password');
+      };
 
-      // If all login attempts fail, show an error message
-      console.error('Authentication failed');
-    } catch (error) {
-      console.error('Authentication failed', error);
-    }
-  };
-  const handleForgotPassword = () => {
-    // Redirect to the reset password page
-    navigate('/reset-password');
-  };
-
-  return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        <br />
-        <button type="submit">Login</button>
-      </form>
-      <div>
-        <p>Forgot your password?</p>
-        <button onClick={handleForgotPassword}>Reset Password</button>
-      </div>
-    </div>
-  );
+    return (
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={handleLogin}>
+                <label>
+                    User Type:
+                    <select value={userType} onChange={(e) => setUserType(e.target.value)}>
+                        <option value="doctor">Doctor</option>
+                        <option value="admin">Admin</option>
+                        <option value="Patient">Patient</option> 
+                    </select>
+                </label>
+                <br />
+                <label>
+                    Username:
+                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+                </label>
+                <br />
+                <label>
+                    Password:
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </label>
+                <br />
+                <button type="submit">Login</button>
+                
+            </form>
+            <button onClick={handleResetPassword}>Reset Password</button>
+        </div>
+    );
 };
 
-export default Login;
+export default Login;
