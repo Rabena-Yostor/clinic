@@ -1,5 +1,7 @@
 const express = require('express');
 const patient = require('../models/PatientModel')
+const authenticatePatient = require('../Middleware/authenticatePatient'); 
+const { requireAuth } = require('../Middleware/authMiddleware');
 const{
     createPatient,
     getAllPatients,
@@ -13,6 +15,7 @@ const{
     addFamilyMember,
     filterAllApps,
     getHealthRecord,
+    getWalletAmount,
     signUp,
     login,
     logout,
@@ -43,7 +46,8 @@ router.post('/addFamilyMember',addFamilyMember)
 
 router.get('/filterAppointmentPatient',filterAllApps)
 
-router.get('/viewHealthRecords',getHealthRecord);
+router.get('/viewHealthRecords', requireAuth, getHealthRecord);
+router.get('/wallet-amount', authenticatePatient, getWalletAmount);
 
 //sign up
 router.post('/signup',signUp)

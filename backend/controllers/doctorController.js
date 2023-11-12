@@ -272,6 +272,7 @@ const addHealthRecord = async (req, res) => {
     if (!patient) {
       return res.status(404).json({ message: 'Patient not found' });
     }
+    newHealthRecordData.patientId = patient._id;
     const existingHealthRecord = await HealthRecord.findOne({ patientId: patient._id });
 
     if (existingHealthRecord) {

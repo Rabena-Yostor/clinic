@@ -237,33 +237,41 @@ const viewPatientAccount = async (req, res) => {
 
   module.exports = comparePasswords;
   
+ 
   const getHealthRecord = async (req, res) => {
     try {
-        const { username, password } = req.body;
-  
-        // Validate patient credentials
-        const validPatient = await patient.findOne({username,
-        });
-  
-        if (!validPatient) {
-          return res.status(401).json({ error: "Invalid patient credentials" });
-        }
-  
-        // Check if the provided password matches the stored hashed password
-        const passwordMatch = await bcrypt.compare(password, validPatient.password);
-  
-        if (!passwordMatch) {
-          return res.status(401).json({ error: "Invalid patient credentials" });
-        }
-  
+        // Retrieve patient information from the authentication middleware
+        const patientId = req.user.userId;
+
         // Fetch health records for the patient
-        const healthRecords = await healthRecords.find({ patientId: validPatient._id });
-  
+        const healthRecords = await HealthRecord.find({ patientId });
+
         res.status(200).json(healthRecords);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+    } catch (error) {
+        console.error('Error fetching patient health records:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+  const getWalletAmount = async (req, res) => {
+    try {
+      // Retrieve patient information from the authentication middleware
+      const patientId = req.user.userId;
+  
+      // Assuming you have a Patient model with a walletAmount field
+      const patient = await patient.findById(patientId);
+  
+      if (!patient) {
+        return res.status(404).json({ error: 'Patient not found' });
       }
+  
+      // Send the wallet amount in the response
+      res.json({ walletAmount: patient.walletAmount });
+    } catch (error) {
+      console.error('Error retrieving wallet amount:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   };
   const maxAge = 3 * 24 * 60 * 60;
 const createToken = (name) => {
@@ -427,6 +435,7 @@ module.exports = {
     addFamilyMember,
     filterAllApps,
     getHealthRecord,
+    getWalletAmount,
     signUp,
     login,
     logout,
