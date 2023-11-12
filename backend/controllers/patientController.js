@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt =require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
+const HealthRecord = require('../models/HealthRecordModel');
 
 // get all patients
 const getAllPatients = async (req, res) => {
@@ -224,13 +225,24 @@ const viewPatientAccount = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+  const comparePasswords = async (plainTextPassword, hashedPassword) => {
+    try {
+      const match = await bcrypt.compare(plainTextPassword, hashedPassword);
+      return match;
+    } catch (error) {
+      console.error('Error comparing passwords:', error);
+      throw new Error('Error comparing passwords');
+    }
+  };
+
+  module.exports = comparePasswords;
+  
   const getHealthRecord = async (req, res) => {
     try {
         const { username, password } = req.body;
   
         // Validate patient credentials
-        const validPatient = await Patient.findOne({
-          Username: username,
+        const validPatient = await patient.findOne({username,
         });
   
         if (!validPatient) {
@@ -238,14 +250,14 @@ const viewPatientAccount = async (req, res) => {
         }
   
         // Check if the provided password matches the stored hashed password
-        const passwordMatch = await validPatient.comparePassword(password);
+        const passwordMatch = await bcrypt.compare(password, validPatient.password);
   
         if (!passwordMatch) {
           return res.status(401).json({ error: "Invalid patient credentials" });
         }
   
         // Fetch health records for the patient
-        const healthRecords = await HealthRecord.find({ patientId: validPatient._id });
+        const healthRecords = await healthRecords.find({ patientId: validPatient._id });
   
         res.status(200).json(healthRecords);
       } catch (error) {

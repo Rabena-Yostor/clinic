@@ -3,8 +3,7 @@ import axios from 'axios';
 import DoctorDetails from "../components/DoctorDetails";
 import DoctorForm from "../components/DoctorForm";
 import HealthRecordForm from '../components/HealthRecordForm';
-//import HealthRecordList from '../components/HealthRecordList'; 
-//import ViewHealthRecordsForm from '../components/ViewHealthRecordForm';
+
 
 const HomeDoctors = () => {
   const [doctors, setDoctors] = useState(null);
@@ -134,7 +133,6 @@ const HomeDoctors = () => {
       console.error('Error adding health record:', error);
     }
   };
-  // const viewHealthRecords = async (username) => {
 
   return (
     <div className="home">

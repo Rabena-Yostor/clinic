@@ -45,6 +45,7 @@ const Login = () => {
           }
 
           localStorage.setItem('userType', userType);
+          localStorage.setItem('authToken', userData.token);
           localStorage.setItem('username', username);
           navigate(`/landing`);
           return;

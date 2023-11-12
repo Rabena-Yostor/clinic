@@ -29,6 +29,10 @@ function HomePage() {
       <Link to="/view-health-records">
         <button>View Health Records</button>
       </Link>
+      <Link to="/view-patient-records">
+        <button>View patient record</button>
+      </Link>
+      
     </div>
   );
 }

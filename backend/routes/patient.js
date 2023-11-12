@@ -41,7 +41,7 @@ router.post('/addFamilyMember',addFamilyMember)
 
 router.get('/filterAppointmentPatient',filterAllApps)
 router.get('/viewPatientAccount',viewPatientAccount)
-router.get('/getHealthRecord/:id',getHealthRecord)
+router.get('/viewHealthRecords',getHealthRecord)
 router.post('/login', login)
 router.post('/changePassword',changePatientPassword)
 

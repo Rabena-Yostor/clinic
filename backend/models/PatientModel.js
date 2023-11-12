@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema
 
 const patientSchema = new Schema({
@@ -54,5 +54,16 @@ const patientSchema = new Schema({
 
     }
 },{timestamps: true})
+
+patientSchema.methods.comparePassword = async function(candidatePassword) {
+    return bcrypt.compare(candidatePassword, this.password);
+  };
+  patientSchema.pre('save', async function(next) {
+    if (this.isModified('password')) {
+      const saltRounds = 10;
+      this.password = await bcrypt.hash(this.password, saltRounds);
+    }
+    next();
+  });
 
 module.exports  = mongoose.model('Patient', patientSchema)
