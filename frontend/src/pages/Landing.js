@@ -2,9 +2,23 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function HomePage() {
+  const userType = localStorage.getItem('userType');
+  const username = localStorage.getItem('username');
+  // Change userType to the correct user type
+  var type = "";
+  if(userType === "admin") {
+    type = "Admin";
+  } else if(userType === "doctor") { 
+    type = "Doctor";
+  } else  {
+    type = "";
+  }
   return (
     <div>
       <h1>Welcome to the Clinic</h1>
+      <h2>{type} {username}</h2>
+      <br />
+      <hr />
       <Link to="/patients">
         <button>View All Patients</button>
       </Link>
@@ -25,6 +39,12 @@ function HomePage() {
       </Link>
       <Link to="/hana">
         <button>filterAppointment&viewInfo</button>
+      </Link>
+      <br />
+      <hr />
+      <br />
+      <Link to="/change-password">
+        <button>Change Password</button>
       </Link>
     </div>
   );

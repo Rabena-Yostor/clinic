@@ -1,21 +1,25 @@
 const express = require('express')
 const {
-    createDoctor,
-    getDoctor,
-    getDoctors,
-    updateDoctor,
-    deleteDoctor,
-    submitRequest,
-    updateDoctorAffiliation,
-    updateDoctorEmail,
-    updateDoctorHourlyRate,
-    addDoctor,
-    filterAllApps,
-    getPatientsForDoctor,
-    addHealthRecord,
-  viewHealthRecords
-
-}= require('../controllers/doctorController')
+  createDoctor,
+  getDoctor,
+  getDoctors,
+  updateDoctor,
+  deleteDoctor,
+  submitRequest,
+  updateDoctorAffiliation,
+  updateDoctorEmail,
+  updateDoctorHourlyRate,
+  addDoctor,
+  filterAllApps,
+  getPatientsForDoctor,
+  addHealthRecord,
+  viewHealthRecords,
+  signUp,
+  login,
+  logout,
+  updateDoctorPassword,
+  sendOtpAndSetPassword
+} = require('../controllers/doctorController')
 
 
 const router = express.Router()
@@ -29,13 +33,13 @@ router.post('/createDoctor', createDoctor)
 // delete a Doctor
 router.delete('/deleteDoctor/:id', deleteDoctor)
 // update a Doctor
-router.patch('/updateDoctor/:id',updateDoctor)
+router.patch('/updateDoctor/:id', updateDoctor)
 
 //MALAK
-router.post ('/submitRequest', submitRequest)
+router.post('/submitRequest', submitRequest)
 //KHALED
 router.put('/updateDoctorEmail', updateDoctorEmail)
-router.put('/updateDoctorHourlyRate', updateDoctorHourlyRate)   
+router.put('/updateDoctorHourlyRate', updateDoctorHourlyRate)
 router.put('/updateDoctorAffiliation', updateDoctorAffiliation)
 
 router.post('/addDoctor', addDoctor)
@@ -43,6 +47,22 @@ router.post('/addDoctor', addDoctor)
 router.get('/filterAllApps/doctor', filterAllApps)
 router.get('/getPatientsForDoctor', getPatientsForDoctor)
 
-router.post('/addHealthRecord', addHealthRecord); 
-router.get('/viewHealthRecords',   viewHealthRecords);
+router.post('/addHealthRecord', addHealthRecord);
+router.get('/viewHealthRecords', viewHealthRecords);
+
+//sign up
+router.post('/signup', signUp)
+
+//login
+router.post('/login', login)
+
+//logout
+router.get('/logout', logout)
+
+//update password
+router.post('/updateDoctorPassword', updateDoctorPassword)
+
+//send otp and set password
+router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
+
 module.exports = router 

@@ -8,7 +8,11 @@ const {
     addAdmin,
     removeUser,
     viewPatientInfo,
-
+    signUp,
+    login,
+    logout,
+    updateAdminPassword,
+    sendOtpAndSetPassword
 } = require('../controllers/adminController')
 
 
@@ -25,6 +29,19 @@ router.delete('/removeUser',removeUser)
 
 router.get('/viewPatientInfo',viewPatientInfo)
 
+//sign up
+router.post('/signup',signUp)
 
+//login
+router.post('/login',login)
+
+//logout
+router.get('/logout',logout)
+
+//update password
+router.post('/updateAdminPassword',updateAdminPassword)
+
+//send otp and set password
+router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
 
 module.exports = router

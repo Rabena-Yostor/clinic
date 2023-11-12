@@ -16,6 +16,10 @@ import PrescriptionFilter from './components/PrescriptionFilter'
 import FamilyForm from './components/FamilyForm';
 import DoctorDashboard from './components/DoctorDash';
 import AppointmentFilter from './components/DoctorFilter';
+import Login from './pages/Login';
+import ChangePassword from './pages/ChangePassword';
+import ResetPassword from './pages/ResetPassword';
+
 function App() {
   return (
     <div className="App">
@@ -23,7 +27,8 @@ function App() {
         <Navbar />
         <div className="pages">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/landing" element={<HomePage />} />
             <Route path="/patients" element={<HomePatients />}/>
             <Route path="/doctors" element={<HomeDoctors />}/>
             <Route path="/malak" element={<Header />}/>
@@ -39,8 +44,8 @@ function App() {
             <Route path="/safina" element={<FamilyForm />} />
             <Route path="/hana" element={<DoctorDashboard />} />
             <Route path = "/filterAppointment" element = {<AppointmentFilter />} />
-
-
+            <Route path = "/change-password" element = {<ChangePassword />} />
+            <Route path = "/reset-password" element = {<ResetPassword />} />
           </Routes>
         </div>
       </BrowserRouter>
