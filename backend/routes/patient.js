@@ -14,8 +14,12 @@ const{
     filterAllApps,
     viewPatientAccount,
     getHealthRecord,
+    signUp,
+    logout,
     login,
-    changePatientPassword
+    updatePatientPassword,
+    sendOtpAndSetPassword
+
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -43,6 +47,6 @@ router.get('/filterAppointmentPatient',filterAllApps)
 router.get('/viewPatientAccount',viewPatientAccount)
 router.get('/viewHealthRecords',getHealthRecord)
 router.post('/login', login)
-router.post('/changePassword',changePatientPassword)
+router.post('/changePassword',updatePatientPassword)
 
 module.exports = router
