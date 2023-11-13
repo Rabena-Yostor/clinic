@@ -6,6 +6,7 @@ const Doctor = require('../models/doctorModel'); // Assuming Doctor model schema
 const Patient =require('../models/PatientModel')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
+const HealthPackage = require('../models/healthPackageModel');
 
 
 
@@ -313,6 +314,72 @@ const sendOtpAndSetPassword = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const createHealthPackage = async (req, res) => {
+  const { type, price, doctorSessionDiscount, medicineDiscount, familySubscriptionDiscount } = req.body;
+
+  try {
+      const healthPackage = await HealthPackage.create({
+          type: type,
+          price: price,
+          doctorSessionDiscount: doctorSessionDiscount,
+          medicineDiscount: medicineDiscount,
+          familySubscriptionDiscount: familySubscriptionDiscount
+      });
+
+      res.status(201).json(healthPackage);
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+};
+
+
+
+
+
+// update health package 
+const updateHealthPackage = async (req, res) => {
+const { healthPackageId, price, doctorSessionDiscount, medicineDiscount, familySubscriptionDiscount } = req.body;
+
+
+try {
+    const updatedPackage = await HealthPackage.findByIdAndUpdate(
+        healthPackageId,
+        {
+            price: price,
+            doctorSessionDiscount: doctorSessionDiscount,
+            medicineDiscount: medicineDiscount,
+            familySubscriptionDiscount: familySubscriptionDiscount
+        },
+        { new: true }
+    );
+
+    if (!updatedPackage) {
+        return res.status(404).json({ error: 'Health Package not found.' });
+    }
+
+    res.status(200).json(updatedPackage);
+} catch (error) {
+    res.status(400).json({ error: error.message });
+}
+};
+
+
+// delete health package
+const deleteHealthPackage = async (req, res) => {
+const { healthPackageId } = req.body; 
+
+try {
+    const deletedPackage = await HealthPackage.findByIdAndDelete(healthPackageId);
+
+    if (!deletedPackage) {
+        return res.status(404).json({ error: 'Health Package not found.' });
+    }
+
+    res.status(200).json({ message: 'Health Package deleted successfully.' });
+} catch (error) {
+    res.status(500).json({ error: error.message });
+}
+};
 
 module.exports ={
     viewRequests,
@@ -325,5 +392,8 @@ module.exports ={
     login,
     logout,
     updateAdminPassword,
+    createHealthPackage ,
+    updateHealthPackage,
+    deleteHealthPackage,
     sendOtpAndSetPassword
 }

@@ -12,7 +12,10 @@ const {
     login,
     logout,
     updateAdminPassword,
-    sendOtpAndSetPassword
+    sendOtpAndSetPassword,
+    createHealthPackage ,
+    updateHealthPackage,
+    deleteHealthPackage,
 } = require('../controllers/adminController')
 
 
@@ -43,5 +46,9 @@ router.post('/updateAdminPassword',updateAdminPassword)
 
 //send otp and set password
 router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
+
+router.post('/createHP',createHealthPackage)
+router.put('/updateHP',updateHealthPackage)
+router.delete('/deleteHP',deleteHealthPackage)
 
 module.exports = router

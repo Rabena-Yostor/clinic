@@ -20,7 +20,12 @@ const{
     login,
     logout,
     updatePatientPassword,
-    sendOtpAndSetPassword
+    sendOtpAndSetPassword,
+    getHealthPackages,
+    subscribeToHealthPackage,
+    getSubscribedHealthPackages,
+    getSubscriptionStatus,
+    cancelSubscription,
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -48,6 +53,15 @@ router.get('/filterAppointmentPatient',filterAllApps)
 
 router.get('/viewHealthRecords/:username', getHealthRecord);
 router.get('/wallet-amount/:username', getWalletAmount);
+
+router.get('/viewHealthPackage',getHealthPackages) 
+
+router.post('/subscribeHealthPackage',subscribeToHealthPackage)
+
+router.get('/getSubscribedHealthPackages',getSubscribedHealthPackages)
+
+router.get('/getSubscriptionStatus',getSubscriptionStatus)
+router.post('/cancelSubscription',cancelSubscription)
 
 //sign up
 router.post('/signup',signUp)
