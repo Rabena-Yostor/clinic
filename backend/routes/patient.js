@@ -1,43 +1,111 @@
-const express = require('express');
-const patient = require('../models/PatientModel')
-const{
-    createPatient,
-    getAllPatients,
-    getPatient,
-    deletePatient,
-    updatePatient,
-    filterAppointment,
-    registerPatient,
-    loginPatient,
-    getFamilyMembers,
-    addFamilyMember,
-    filterAllApps,
-    getHealthRecord
-} = require('../controllers/patientController');
-const router = express.Router()
+const express = require("express");
+const patient = require("../models/PatientModel");
+const {
+  createPatient,
+  getAllPatients,
+  getPatient,
+  deletePatient,
+  updatePatient,
+  filterAppointment,
+  registerPatient,
+  loginPatient,
+  getFamilyMembers,
+  addFamilyMember,
+  filterAllApps,
+  updatePatientAppointments, // Add this line
+} = require("../controllers/patientController");
+const router = express.Router();
 
-router.get('/getAllPatients',getAllPatients)
+router.get("/getAllPatients", getAllPatients);
 
-router.get('/getPatient/:id', getPatient)
+router.get("/getPatient/:id", getPatient);
 
-router.post('/createPatient', createPatient)
+router.post("/createPatient", createPatient);
 
-router.delete('/deletePatient/:id',deletePatient)
+router.delete("/deletePatient/:id", deletePatient);
 
-router.patch('/updatePatient/:id', updatePatient)
+router.patch("/updatePatient/:id", updatePatient);
 
-router.get('/filterAppointment/:id',filterAppointment)
+router.get("/filterAppointment/:id", filterAppointment);
 
-router.post('/registerPatient',registerPatient)
+router.post("/registerPatient", registerPatient);
 
-router.post('/loginPatient',loginPatient)
+router.post("/loginPatient", loginPatient);
 
-router.get('/getFamilyMembers/:username',getFamilyMembers)
+router.get("/getFamilyMembers/:username", getFamilyMembers);
 
-router.post('/addFamilyMember',addFamilyMember)
+router.post("/addFamilyMember", addFamilyMember);
 
-router.get('/filterAppointmentPatient',filterAllApps)
+router.get("/filterAppointmentPatient", filterAllApps);
 
-router.get('/getHealthRecord/:id',getHealthRecord);
+// New route to handle updating patient appointments
+router.post("/updatePatientAppointments", updatePatientAppointments);
 
-module.exports = router
+// Updated route to accept username parameter
+router.get("/getPatientAppointments/:username", async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const doctor = await patient.findOne({ username });
+
+    if (!doctor) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    res.status(200).json({ appointments: doctor.appointments });
+  } catch (error) {
+    console.error("Error fetching patient appointments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+// Route for filtering doctor appointments
+router.post("/filterAppointments", async (req, res) => {
+  try {
+    console.log("Request received:", req.body);
+
+    const { username, date, status } = req.body;
+
+    // Check if the username is correctly received
+    console.log("Username from request:", username);
+
+    // Construct the query to find the doctor
+    const query = { username };
+
+    // Log the query
+    console.log("Patient query:", query);
+
+    // Find the doctor in the database
+    const patientOne = await patient.findOne(query);
+
+    // Log the doctor found (or not found)
+    console.log("Doctor found:", patientOne);
+
+    if (!patientOne) {
+      console.log("Doctor not found with the provided username.");
+      return res
+        .status(404)
+        .json({ error: "Doctor not found with the provided username." });
+    }
+
+    // Filter the appointments based on date and/or status
+    let filteredAppointments = patientOne.appointments;
+
+    if (date) {
+      filteredAppointments = filteredAppointments.filter(
+        (appointment) => appointment.date.toISOString().split("T")[0] === date
+      );
+    }
+
+    if (status) {
+      filteredAppointments = filteredAppointments.filter(
+        (appointment) => appointment.status === status
+      );
+    }
+
+    res.json({ appointments: filteredAppointments });
+  } catch (error) {
+    console.error("Error filtering doctor appointments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+module.exports = router;

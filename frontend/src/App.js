@@ -38,6 +38,7 @@ function App() {
             <Route path="/filter-prescriptions" element={<PrescriptionFilter />} /> {/* Add this route */}
             <Route path="/safina" element={<FamilyForm />} />
             <Route path="/hana" element={<DoctorDashboard />} />
+            <Route path="/hana" element={<DoctorDashboard />} />
             <Route path = "/filterAppointment" element = {<AppointmentFilter />} />
 
 

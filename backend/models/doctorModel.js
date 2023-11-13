@@ -32,7 +32,6 @@ const doctorSchema = new Schema(
     },
     speciality: {
       type: String,
-
     },
     educationalBackground: {
       type: String,
@@ -40,17 +39,26 @@ const doctorSchema = new Schema(
     },
     availableAppointment: {
       type: Date,
-
     },
     Appointment_Status: {
       type: String,
-      enum: ['upcoming', 'completed', 'cancelled', 'rescheduled'],
-
+      enum: ["upcoming", "completed", "cancelled", "rescheduled"],
     },
-    ArrayOfPatients: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Patient', // This should be the model name for the patient schema
-    }],
+    appointments: [
+      {
+        date: { type: Date },
+        status: {
+          type: String,
+          enum: ["upcoming", "completed", "cancelled", "rescheduled"],
+        },
+      },
+    ],
+    ArrayOfPatients: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Patient", // This should be the model name for the patient schema
+      },
+    ],
   },
   { timestamps: true }
 );

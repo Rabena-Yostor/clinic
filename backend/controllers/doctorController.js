@@ -1,9 +1,7 @@
 const Doctor = require("../models/doctorModel");
 const mongoose = require("mongoose");
-const Patient= require('../models/PatientModel')
-const PendingDoctorRequest = require('../models/pendingdoctorModel');
-const HealthRecord = require("../models/HealthRecordModel");
-const bcrypt =require('bcrypt')
+const PendingDoctorRequest = require("../models/pendingdoctorModel");
+const bcrypt = require("bcrypt");
 
 // get all doctors
 const getDoctors = async (req, res) => {
@@ -102,125 +100,143 @@ const updateDoctor = async (req, res) => {
 
 // MALAK WAEL FOLDER. DO NOT TOUCH
 const submitRequest = async (req, res) => {
-  const { username, name, email, password, dateofbirth, hourlyrate, affiliation, educationalbackground } = req.body;
+  const {
+    username,
+    name,
+    email,
+    password,
+    dateofbirth,
+    hourlyrate,
+    affiliation,
+    educationalbackground,
+  } = req.body;
 
-  if(!username|| !name ||!email || !password || !dateofbirth ||!hourlyrate || !affiliation || !educationalbackground){
-      return res.status(400).json({ error: 'Please provide all fields' });
+  if (
+    !username ||
+    !name ||
+    !email ||
+    !password ||
+    !dateofbirth ||
+    !hourlyrate ||
+    !affiliation ||
+    !educationalbackground
+  ) {
+    return res.status(400).json({ error: "Please provide all fields" });
   }
   try {
-      const requestExists = await PendingDoctorRequest.findOne({ email });
-      if (requestExists) {
-          return res.status(400).json({ error: 'User already exists' });
-      }
+    const requestExists = await PendingDoctorRequest.findOne({ email });
+    if (requestExists) {
+      return res.status(400).json({ error: "User already exists" });
+    }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Save the request in the pending requests collection
-      const newPendingDoctorRequest = await PendingDoctorRequest.create({
-          username,
-          name,
-          email,
-          password: hashedPassword,
-          dateofbirth,
-          hourlyrate,
-          affiliation,
-          educationalbackground,
-      });
+    // Save the request in the pending requests collection
+    const newPendingDoctorRequest = await PendingDoctorRequest.create({
+      username,
+      name,
+      email,
+      password: hashedPassword,
+      dateofbirth,
+      hourlyrate,
+      affiliation,
+      educationalbackground,
+    });
 
-      res.status(200).json({ message: 'Doctor registration request sent to admin for approval' });
+    res.status(200).json({
+      message: "Doctor registration request sent to admin for approval",
+    });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 //////////
 
-
 //////KHALED MAGDY FOLDER. DO NOT TOUCH
 const updateDoctorEmail = async (req, res) => {
   const { username, email } = req.body;
- try {
-     const doctor = await Doctor.findOne({ username: username });
-     doctor.email = email;
-     console.log(doctor.username)
-     doctor.save();
-     res.status(200).json(doctor);
- } catch (error) {
-     res.status(404).json({ message: error.message });
- }
-}
+  try {
+    const doctor = await Doctor.findOne({ username: username });
+    doctor.email = email;
+    console.log(doctor.username);
+    doctor.save();
+    res.status(200).json(doctor);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 const updateDoctorHourlyRate = async (req, res) => {
   const { username, hourlyRate } = req.body;
   try {
-      const doctor = await Doctor.findOne({ username: username });
-      doctor.hourlyRate = hourlyRate;
-      doctor.save();
-      res.status(200).json(doctor);
+    const doctor = await Doctor.findOne({ username: username });
+    doctor.hourlyRate = hourlyRate;
+    doctor.save();
+    res.status(200).json(doctor);
   } catch (error) {
-      res.status(404).json({ message: error.message });
+    res.status(404).json({ message: error.message });
   }
-}
+};
 
 const updateDoctorAffiliation = async (req, res) => {
   const { username, affiliation } = req.body;
   try {
-      const doctor = await Doctor.findOne({ username: username });
-      doctor.affiliation = affiliation;
-      doctor.save();
-      res.status(200).json(doctor);
+    const doctor = await Doctor.findOne({ username: username });
+    doctor.affiliation = affiliation;
+    doctor.save();
+    res.status(200).json(doctor);
   } catch (error) {
-      res.status(404).json({ message: error.message });
+    res.status(404).json({ message: error.message });
   }
-}
+};
 /////////////////////////////////////////// END OF KHALED
 
 ///////////////////////////////////////// HANA'S FOLDER
 
 const filterAllApps = async (req, res) => {
   try {
-      const { date, status } = req.query;
+    const { date, status } = req.query;
 
-      const filter = {};
+    const filter = {};
 
-      if (date) {
-          filter.availableAppointment = date;
-      }
+    if (date) {
+      filter.availableAppointment = date;
+    }
 
-      if (status) {
-          filter.Appointment_Status = status;
-      }
+    if (status) {
+      filter.Appointment_Status = status;
+    }
 
-      const filteredAppointments = await Doctor.find(filter);
+    const filteredAppointments = await Doctor.find(filter);
 
-      if (filteredAppointments.length === 0) {
-          return res.status(404).send('No matching appointments found');
-      }
-  const doctors = await Doctor.find(filter);
+    if (filteredAppointments.length === 0) {
+      return res.status(404).send("No matching appointments found");
+    }
+    const doctors = await Doctor.find(filter);
     res.status(200).json(doctors);
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 const getPatientsForDoctor = async (req, res) => {
   const username = req.params.username;
 
   try {
-      const doctor = await Doctor.findById(username).populate('ArrayOfPatients');
+    const doctor = await Doctor.findById(username).populate("ArrayOfPatients");
 
-      if (!doctor) {
-          return res.status(404).json({ error: 'Doctor not found.' });
-      }
+    if (!doctor) {
+      return res.status(404).json({ error: "Doctor not found." });
+    }
 
-      const patients = doctor.ArrayOfPatients;
-      return res.json({ patients });
+    const patients = doctor.ArrayOfPatients;
+    return res.json({ patients });
   } catch (error) {
-      console.error('Error fetching patients:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching patients:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 const addDoctor = async (req, res) => {
   const {
@@ -235,69 +251,31 @@ const addDoctor = async (req, res) => {
     educationalBackground,
     availableAppointment,
     Appointment_Status,
-    arrayOfPatients
+    arrayOfPatients,
   } = req.body;
 
   try {
-      const newDoctor = await Doctor.create({
-        username,
-        name,
-        email,
-        password,
-        dateOfBirth,
-        hourlyRate,
-        affiliation,
-        speciality,
-        educationalBackground,
-        availableAppointment,
-        Appointment_Status,
-        arrayOfPatients
-      });
-
-      res.status(201).json({ doctor: newDoctor });
-  } catch (error) {
-      console.error('Error creating doctor:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-const addHealthRecord = async (req, res) => {
-  const { patientId, bloodPressure, heartRate, allergies, medications } = req.body;
-
-  try {
-    const healthRecord = await HealthRecord.create({
-      patientId,
-      bloodPressure,
-      heartRate,
-      allergies,
-      medications,
+    const newDoctor = await Doctor.create({
+      username,
+      name,
+      email,
+      password,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      speciality,
+      educationalBackground,
+      availableAppointment,
+      Appointment_Status,
+      arrayOfPatients,
     });
 
-    res.status(201).json({ healthRecord });
+    res.status(201).json({ doctor: newDoctor });
   } catch (error) {
-    console.error('Error creating health record:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error creating doctor:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-// View health records for a specific patient
-const viewHealthRecords = async (req, res) => {
-  const { patientId } = req.params;
-
-  try {
-    const healthRecords = await HealthRecord.find({ patientId });
-
-    if (healthRecords.length === 0) {
-      return res.status(404).json({ message: 'No health records found for the specified patient' });
-    }
-
-    res.status(200).json(healthRecords);
-  } catch (error) {
-    console.error('Error fetching health records:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
 ///////////////////////////////////////// END OF HANA'S FOLDER
 module.exports = {
   getDoctors,
@@ -312,6 +290,4 @@ module.exports = {
   filterAllApps,
   getPatientsForDoctor,
   addDoctor,
-  addHealthRecord,
-  viewHealthRecords
 };
