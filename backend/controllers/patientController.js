@@ -241,16 +241,17 @@ const createAppointment = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-
-        // Check if the selected appointment date is available
-        const isAppointmentAvailable = !(user.zz && user.zz.includes(appointmentDate) || user.familyMembers.some(member => member.zz && member.zz.includes(appointmentDate)));
+        console.log('User:', user);
+        const isAppointmentAvailable = !(user.zz && user.zz.filter(appt => appt).includes(appointmentDate) || user.familyMembers.some(member => member.zz && member.zz.filter(appt => appt).includes(appointmentDate)));
 
         if (!isAppointmentAvailable) {
             console.log('Selected appointment date is not available');
             return res.status(400).json({ error: 'Selected appointment date is not available' });
         }
-else{
-        // Add appointment information to the patient or family member object
+        
+        console.log('User Appointments after:', user.zz);
+        
+  // Add appointment information to the patient or family member object
         user.zz = user.zz || [];
         user.zz.push(appointmentDate);
         user.Appointment_Status = 'upcoming'; // Assuming the default status is 'upcoming'
@@ -260,7 +261,7 @@ else{
 
         console.log('Appointment created successfully');
         res.status(201).json({ message: 'Appointment created successfully', user });
-    } }catch (error) {
+    }catch (error) {
         console.error('Error creating appointment:', error);
         res.status(500).json({ error: `Internal Server Error: ${error.message}` });
     }

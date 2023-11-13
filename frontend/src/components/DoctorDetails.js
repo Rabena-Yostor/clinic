@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const DoctorDetails = ({ doctor }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [selectedAppointment] = useState("");
+  const [selectedAppointment, setSelectedAppointment] = useState("");
   const [localAppointments, setLocalAppointments] = useState([]);
   const [error, setError] = useState("");
 
@@ -15,6 +15,8 @@ const DoctorDetails = ({ doctor }) => {
   const simulateCreateAppointment = async () => {
     if (!selectedAppointment) {
         console.error('Selected appointment date is empty or invalid');
+        setError('Selected appointment date is required');
+
         return;
     }
 
@@ -24,6 +26,7 @@ const DoctorDetails = ({ doctor }) => {
         const response = await axios.post('http://localhost:4000/api/patient/createAppointment', {
             patientId: '652edbfe0faefd92d6187dae',
             appointmentDate: selectedAppointment,
+            
         });
 
         if (response.status === 201) {
@@ -42,9 +45,11 @@ const DoctorDetails = ({ doctor }) => {
   
 
 
-  const handleDropdownClick = (e) => {
-    e.stopPropagation(); // Stop the event from propagating to the parent div
-  };
+const handleDropdownClick = (e) => {
+  const selectedDate = e.target.value;
+  setSelectedAppointment(selectedDate);
+  e.stopPropagation(); // Stop the event from propagating to the parent div
+};
 
   return (
     <div className="doctor-details" onClick={toggleDetails}>
@@ -87,9 +92,7 @@ const DoctorDetails = ({ doctor }) => {
                   ))}
                   
                 </select>
-                <label>Appointment Date:</label>
-
-
+               
                 <button onClick={simulateCreateAppointment}>
                   Create Appointment
                 </button>
