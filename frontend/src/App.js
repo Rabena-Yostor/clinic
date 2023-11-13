@@ -4,7 +4,6 @@ import HomePatients from './pages/HomePatients';
 import Navbar from './components/Navbar';
 import HomePage from './pages/Landing';
 import HomeDoctors from './pages/HomeDoctors';
-import Header from './components/Header';
 import Register from './pages/Register';
 import SubmitRequest from './pages/SubmitRequest';
 import Admin from './pages/Admin';
@@ -23,6 +22,22 @@ import PatientHealthRecord from './pages/PatientHealthRecord';
 import ChangePassword from './pages/ChangePassword';
 import ResetPassword from './pages/ResetPassword';
 import WalletPage from './pages/WalletPage';
+import AdminHome from './pages/AdminHome';
+import ApproveDoctorRequest from './components/ApproveDoctorRequest';
+import RejectDoctorRequest from './components/RejectDoctorRequest';
+import CreateHealthPackage from './components/CreateHealthPackage'; 
+import UpdateHealthPackage from './components/UpdateHealthPackage'; 
+import DeleteHealthPackage from './components/DeleteHealthPackage'; 
+import ViewHealthPackages from './components/ViewHealthPackages';
+import SubscribeToHealthPackage from './components/SubscribeToHealthPackage'; 
+import SubscribedHealthPackages from './components/SubscribedHealthPackages';
+import SubscriptionStatus from './components/SubscriptionStatus';
+import CancelSubscription from './components/CancelSubscription'; 
+import AddHealthRecord from './pages/AddHealthRecord';
+import DoctorHomePage from'./pages/DoctorHomePage'
+import WalletDoc from './pages/WalletDoc';
+import PatientHome from './pages/PatientHome';
+
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
@@ -39,9 +54,10 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/landing" element={<HomePage />} />
             {/* Continue with other routes */}
+            <Route path="/signup" element={<Register />} />
             <Route path="/patients" element={<HomePatients />} />
             <Route path="/doctors" element={<HomeDoctors />} />
-            <Route path="/malak" element={<Header />} />
+            <Route path="/AdminHome" element={<AdminHome />} />
             <Route path="/Register" element={<Register />} />
             <Route path="/SubmitRequest" element={<SubmitRequest />} />
             <Route path="/Admin" element={<Admin />} />
@@ -59,6 +75,20 @@ function App() {
             <Route path = "/change-password" element = {<ChangePassword />} />
             <Route path = "/reset-password" element = {<ResetPassword />} />
             <Route path = "/wallet-info" element = {<WalletPage />} />
+            <Route path = "/wallet-doc" element = {<WalletDoc />} />
+            <Route path="/ApproveDoctorRequest" element={<ApproveDoctorRequest />} />
+            <Route path="/RejectDoctorRequest" element={<RejectDoctorRequest />} />
+            <Route path="/CreateHealthPackage" element={<CreateHealthPackage/>} />
+            <Route path="/UpdateHealthPackage" element={<UpdateHealthPackage/>} />
+            <Route path="/DeleteHealthPackage" element={<DeleteHealthPackage/>} />
+            <Route path="/viewHealthPackages" element={<ViewHealthPackages />} />
+            <Route path='/SubscribeToHealthPackage' element={<SubscribeToHealthPackage />} />
+            <Route path="/SubscribedHealthPackages" element={<SubscribedHealthPackages />} />
+            <Route path="/SubscriptionStatus" element={<SubscriptionStatus />} />
+            <Route path="/cancelSubscription" element={<CancelSubscription/>} />
+            <Route path="/AddHealthRecord" element={<AddHealthRecord/>} />
+            <Route path="/DoctorHomePage" element={<DoctorHomePage/>} />
+            <Route path="/PatientHome" element={<PatientHome/>} />
             
           </Routes>
         </div>

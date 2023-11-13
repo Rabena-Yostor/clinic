@@ -58,9 +58,9 @@ router.get('/viewHealthPackage',getHealthPackages)
 
 router.post('/subscribeHealthPackage',subscribeToHealthPackage)
 
-router.get('/getSubscribedHealthPackages',getSubscribedHealthPackages)
+router.get('/getSubscribedHealthPackages/:username',getSubscribedHealthPackages)
 
-router.get('/getSubscriptionStatus',getSubscriptionStatus)
+router.get('/getSubscriptionStatus/:username',getSubscriptionStatus)
 router.post('/cancelSubscription',cancelSubscription)
 
 //sign up

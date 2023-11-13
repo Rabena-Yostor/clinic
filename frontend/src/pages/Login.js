@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -47,8 +48,14 @@ const Login = () => {
                   localStorage.setItem('userType', userType);
                   localStorage.setItem('username', username);
                   localStorage.setItem('password', password);
-                  
-                navigate('/landing');
+                  if (userType === 'doctor') {
+                    navigate('/DoctorHomePage'); // Adjust the path based on your routes
+                } else if (userType === 'admin') {
+                    navigate('/AdminHome'); // Adjust the path based on your routes
+                } else {
+                    navigate('PatientHome'); // Adjust the path based on your routes
+                }
+               
             } else {
                 console.error(data.error);
             }
@@ -88,6 +95,13 @@ const Login = () => {
                 
             </form>
             <button onClick={handleResetPassword}>Reset Password</button>
+
+            <div>
+                <Link to ="/signUp">
+                    <button>Sign up</button>
+                    </Link>
+
+            </div>
         </div>
     );
 };

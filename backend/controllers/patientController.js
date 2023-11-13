@@ -527,40 +527,77 @@ module.exports = subscribeToHealthPackage;
 //view subscribed health package 
 
 const getSubscribedHealthPackages = async (req, res) => {
-    const { patientId } = req.query; // Use req.query instead of req.body to get query parameters
-  
+    const { username } = req.params;
+
     try {
-      const subscriptions = await HealthPackageSubscription.find({
-        $or: [{ patient: patientId }, { familyMembers: patientId }],
-        status: 'active' // Filter only active subscriptions
-      }).populate('healthPackage').populate('familyMembers');
-  
-      res.status(200).json({ subscriptions });
+        // Assuming you have a function to find the patient's ID by username
+        const patientInstance = await patient.findOne({ username });
+        
+        if (!patientInstance) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        try {
+            const subscriptions = await HealthPackageSubscription.find({
+                $or: [{ patient: patientInstance._id }, { familyMembers: patientInstance._id }],
+                status: 'active' // Filter only active subscriptions
+            }).populate('healthPackage').populate('familyMembers');
+        
+            res.status(200).json({ subscriptions });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
+};
+
+
+
 
 
 //view subscription status 
 const getSubscriptionStatus = async (req, res) => {
-    const { patientId } = req.query;
-  
+    const { username } = req.params;
+
     try {
-      const subscriptions = await HealthPackageSubscription.find({
-        $or: [{ patient: patientId }, { familyMembers: { $in: [patientId] } }],
-      }).populate('familyMembers', 'name'); // Replace 'name' with the property you want to display for family members
-  
-      if (subscriptions.length === 0) {
-        return res.status(404).json({ error: 'Patient ID not found' });
-      }
-      res.status(200).json({ subscriptions });
+        // Assuming you have a function to find the patient's ID by username
+        const patientInstance = await patient.findOne({ username });
+
+        if (!patientInstance) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        try {
+            const subscriptions = await HealthPackageSubscription.find({
+                $or: [{ patient: patientInstance._id }, { familyMembers: { $in: [patientInstance._id] } }],
+            }).populate('familyMembers', 'name'); // Replace 'name' with the property you want to display for family members
+
+            if (subscriptions.length === 0) {
+                return res.status(404).json({ error: 'Patient ID not found' });
+            }
+
+            // Find the subscription that matches the patient's ID
+            const patientSubscription = subscriptions.find(subscription => subscription.patient.toString() === patientInstance._id.toString());
+
+            if (!patientSubscription) {
+                return res.status(404).json({ error: 'Patient subscription not found' });
+            }
+
+            res.status(200).json({ status: patientSubscription.status });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
+};
+
+
   
 
 
