@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import DoctorDetails from "../components/DoctorDetails";
 import DoctorForm from "../components/DoctorForm";
-
 const HomeDoctors = () => {
   const [doctors, setDoctors] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -34,23 +33,21 @@ const HomeDoctors = () => {
 
   useEffect(() => {
     if (!doctors) return;
-
     const nameFiltered = doctors.filter((doctor) =>
-      doctor.name.toLowerCase().includes(nameSearchTerm.toLowerCase())
-    );
+    doctor.name && doctor.name.toLowerCase().includes(nameSearchTerm.toLowerCase())
+  );
+  
+  const specialityFiltered = doctors.filter((doctor) =>
+    doctor.speciality &&
+    doctor.speciality.toLowerCase().includes(specialitySearchTerm.toLowerCase())
+  );
+  
+  const datetimeFiltered = doctors.filter((doctor) =>
+    doctor.availableAppointment &&
+    doctor.availableAppointment.toLowerCase().includes(datetimeSearchTerm.toLowerCase())
+  );
 
-    const specialityFiltered = doctors.filter((doctor) =>
-      doctor.speciality
-        .toLowerCase()
-        .includes(specialitySearchTerm.toLowerCase())
-    );
-
-    const datetimeFiltered = doctors.filter((doctor) =>
-      doctor.availableAppointment
-        .toLowerCase()
-        .includes(datetimeSearchTerm.toLowerCase())
-    );
-
+  
     setFilteredDoctors(
       nameSearchTerm && specialitySearchTerm && datetimeSearchTerm
         ? nameFiltered
@@ -87,7 +84,7 @@ const HomeDoctors = () => {
         : doctors
     );
   }, [doctors, nameSearchTerm, specialitySearchTerm, datetimeSearchTerm]);
-
+ 
   return (
     <div className="home">
       <div className="search-bar">

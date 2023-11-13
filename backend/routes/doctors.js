@@ -1,4 +1,5 @@
 const express = require('express')
+
 const {
     createDoctor,
     getDoctor,
@@ -11,7 +12,11 @@ const {
     updateDoctorHourlyRate,
     addDoctor,
     filterAllApps,
-    getPatientsForDoctor    
+    getPatientsForDoctor  , 
+    addAppointments,
+    getAvailableAppointments,
+    
+     
 }= require('../controllers/doctorController')
 
 
@@ -39,4 +44,10 @@ router.post('/addDoctor', addDoctor)
 
 router.get('/filterAllApps/doctor', filterAllApps)
 router.get('/getPatientsForDoctor', getPatientsForDoctor)
+
+router.post('/addAppointments/:id', addAppointments)
+
+router.get('/getAvailableAppointments/:id', getAvailableAppointments)
+
+
 module.exports = router 

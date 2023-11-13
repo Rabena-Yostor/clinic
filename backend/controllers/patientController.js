@@ -1,10 +1,11 @@
 const { mongo, default: mongoose } = require('mongoose')
-const patient = require('../models/PatientModel')
+//const patient = require('../models/PatientModel')
 const bcrypt =require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
 const Doctor = require('../models/doctorModel')
 
+const Patient = require('../models/PatientModel'); // Adjust the path based on your project structure
 
 
 // get all patients
@@ -213,70 +214,60 @@ const filterAllApps = async (req, res) => {
 
 
 
-
-const getAvailableAppointments = async (req, res) => {
-  const { doctorId } = req.params;
-
-  try {
-    // Find the doctor by ID
-    const doctor = await Doctor.findById(doctorId);
-
-    if (!doctor) {
-      return res.status(404).json({ error: 'Doctor not found' });
-    }
-
-    // Get all available appointments of the selected doctor
-    const availableAppointments = doctor.availableAppointment;
-
-    if (!availableAppointments || availableAppointments.length === 0) {
-      return res.status(404).json({ message: 'No available appointments for this doctor' });
-    }
-
-    res.status(200).json({ availableAppointments });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-
-
-
+// patientController.js
 const createAppointment = async (req, res) => {
-  const { patientId, familyMemberId, appointmentDate } = req.body;
+    const { patientId, familyMemberId, appointmentDate } = req.body;
+    console.log('Received Appointment Date:', appointmentDate);
 
-  try {
-    // Check if the patient or family member exists
-    let user;
+    try {
+        // Check if the patient or family member exists
+        let user;
 
-    if (patientId) {
-      user = await Patient.findById(patientId);
-    } else if (familyMemberId) {
-      // Assuming family members are stored in the patient model
-      user = await Patient.findById(familyMemberId);
-    } else {
-      return res.status(400).json({ error: 'Invalid request' });
+        if (patientId) {
+            user = await Patient.findById(patientId);
+        } else if (familyMemberId) {
+            // Assuming family members are stored in the FamilyMember model
+            const familyMember = await FamilyMember.findById(familyMemberId).populate('patient');
+
+            if (!familyMember) {
+                return res.status(404).json({ error: 'Family member not found' });
+            }
+
+            user = familyMember.patient;
+        } else {
+            return res.status(400).json({ error: 'Invalid request' });
+        }
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if the selected appointment date is available
+        const isAppointmentAvailable = !(user.zz && user.zz.includes(appointmentDate) || user.familyMembers.some(member => member.zz && member.zz.includes(appointmentDate)));
+
+        if (!isAppointmentAvailable) {
+            console.log('Selected appointment date is not available');
+            return res.status(400).json({ error: 'Selected appointment date is not available' });
+        }
+else{
+        // Add appointment information to the patient or family member object
+        user.zz = user.zz || [];
+        user.zz.push(appointmentDate);
+        user.Appointment_Status = 'upcoming'; // Assuming the default status is 'upcoming'
+
+        // Save the updated patient or family member object with appointment details
+        await user.save();
+
+        console.log('Appointment created successfully');
+        res.status(201).json({ message: 'Appointment created successfully', user });
+    } }catch (error) {
+        console.error('Error creating appointment:', error);
+        res.status(500).json({ error: `Internal Server Error: ${error.message}` });
     }
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Add appointment information to the patient or family member object
-    user.Appointment = appointmentDate;
-    user.Appointment_Status = 'upcoming'; // Assuming the default status is 'upcoming'
-
-    // Save the updated patient or family member object with appointment details
-    await user.save();
-
-    res.status(201).json({ message: 'Appointment created successfully', user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
 };
 
 
+  
 
 module.exports = {
     createPatient,
@@ -290,6 +281,7 @@ module.exports = {
     getFamilyMembers,
     addFamilyMember,
     filterAllApps,
-    getAvailableAppointments,
-    createAppointment,
+    
+    createAppointment
+    
 }

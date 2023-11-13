@@ -40,8 +40,13 @@ const doctorSchema = new Schema(
     },
     availableAppointment: {
       type: Date,
-
     },
+
+    Appointments: [{
+      type: Date,
+    }],
+
+
     Appointment_Status: {
       type: String,
       enum: ['upcoming', 'completed', 'cancelled', 'rescheduled'],

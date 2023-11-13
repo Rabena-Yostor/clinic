@@ -39,15 +39,25 @@ const patientSchema = new Schema({
         type: String,
         required: true
     },
-    Appointment:{
+   
+    Appointment: {
         type: Date,
-        
     },
+
+    zz: [{
+        type: Date,
+    }],
+    
+
     Appointment_Status:{
         type:String,
         enum: ['upcoming', 'completed', 'cancelled','rescheduled'],
         
-    }
+    },
+    familyMembers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FamilyMember'
+      }]
 },{timestamps: true})
 
 module.exports  = mongoose.model('Patient', patientSchema)
