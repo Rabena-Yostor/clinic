@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const DoctorDetails = ({ doctor }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [selectedAppointment, setSelectedAppointments] = useState("");
+  const [selectedAppointment] = useState("");
   const [localAppointments, setLocalAppointments] = useState([]);
   const [error, setError] = useState("");
 
@@ -88,13 +88,6 @@ const DoctorDetails = ({ doctor }) => {
                   
                 </select>
                 <label>Appointment Date:</label>
-<input
-    type="date"
-    onChange={(e) => setSelectedAppointments(e.target.value)}
-    value={selectedAppointment}
-    onFocus={(e) => e.stopPropagation()}
-    onClick={(e) => e.stopPropagation()}
-/>
 
 
                 <button onClick={simulateCreateAppointment}>
