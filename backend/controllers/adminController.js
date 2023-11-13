@@ -4,8 +4,8 @@ const Adminstrator=require('../models/adminModel')
 const PendingDoctorModel = require('../models/pendingdoctorModel'); // Assuming DoctorRequest model schema for pending doctor requests
 const Doctor = require('../models/doctorModel'); // Assuming Doctor model schema for approved doctors
 const Patient =require('../models/PatientModel')
-
-
+const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer');
 
 
 
@@ -166,86 +166,151 @@ const viewPatientInfo= async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+//signup and login
+const maxAge = 3 * 24 * 60 * 60;
+const createToken = (name) => {
+    return jwt.sign({ name }, 'supersecret', {
+        expiresIn: maxAge
+    });
+};
+
+const signUp = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const user = await Adminstrator.create({ username, password: hashedPassword });
+      const token = createToken(user.username);
+
+      res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+      res.status(200).json(user)
+  } catch (error) {
+      res.status(400).json({ error: error.message })
+  }
+}
 
 const login = async (req, res) => {
+  // TODO: Login the user
   const { username, password } = req.body;
-
   try {
-    // Find the admin by username
-    const admin = await Adminstrator.findOne({ username });
-
-    if (!admin) {
-      return res.status(401).json({ message: 'Authentication failed' });
-    }
-
-    // Compare the entered password with the hashed password in the database
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Authentication failed' });
-    }
-
-    // Generate a JWT token
-    const token = jwt.sign({ userId: admin._id }, 'yourSecretKey', { expiresIn: '1h' });
-
-    res.status(200).json({ token });
+      const user = await Adminstrator.findOne({ username : username});
+      if (user) {
+          const auth = await bcrypt.compare(password, user.password);
+          if (auth) {
+              const token = createToken(user.username);
+              res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+              res.status(200).json({user})
+          } else {
+              res.status(400).json({ error: "Wrong password" })
+          }
+      } else {
+          res.status(400).json({ error: "User not found" })
+      }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+      res.status(400).json({ error: error.message })
   }
-};
+}
 
-// Change password
-const hashPassword = async (password) => {
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-  return hashedPassword;
-};
+//logout
+const logout = async (req, res) => {
+  // TODO Logout the user
+  res.cookie('jwt', '', { maxAge: 1 });
+  res.status(200).json("logged out")
+  //res.clearCookie('jwt');
+  //res.status(200)
+}
 
-const changePassword = async (req, res) => {
-  console.log('Request Headers:', req.headers);
-  console.log('Request Body:', req.body);
-  const { currentPassword, newPassword } = req.body;
-  const userType = req.userType; // Assuming you set userType during authentication
+//update password
+const updateAdminPassword = async (req, res) => {
+  const { username, currentPassword, newPassword } = req.body;
 
   try {
-    let user;
+    // Retrieve the admin user by username
+    const user = await Adminstrator.findOne({ username });
 
-    // Use the authenticated user information
-    if (userType === 'doctor') {
-      user = await Doctor.findById(req.user.id);
-    } else if (userType === 'patient') {
-      user = await Patient.findById(req.user.id);
-    } else if (userType === 'admin') {
-      user = await Adminstrator.findById(req.user.id);
-    } else {
-      return res.status(400).json({ message: 'Invalid user type' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    if (!user || !(await user.comparePassword(currentPassword))) {
-      return res.status(401).json({ message: 'Incorrect current password' });
+    // Check if the current password is correct
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({ error: 'Current password is incorrect' });
     }
 
-    // Assuming you have a function to hash passwords securely
-    user.password = await hashPassword(newPassword);
+    // Check if the new password meets the specified criteria
+    const newPasswordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+
+    if (!newPassword.match(newPasswordRegex)) {
+      return res.status(400).json({
+        error: 'New password must contain at least one capital letter and one number, and be at least 6 characters long',
+      });
+    }
+
+    // Hash and update the password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
     await user.save();
 
-    res.json({ message: 'Password changed successfully' });
+    res.status(200).json({ message: 'Password updated successfully' });
   } catch (error) {
-    console.error('Error changing password', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ error: error.message });
   }
 };
+//Reset password
+const generateNumericOTP = (length) => {
+  const otpLength = length || 6; // Default length is 6 if not provided
+  let otp = '';
 
+  for (let i = 0; i < otpLength; i++) {
+    otp += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
+  }
 
-// Compare password method
-const comparePasswords = async (candidatePassword, hashedPassword) => {
+  return otp;
+};
+
+const sendOtpAndSetPassword = async (req, res) => {
+  const { username , Email } = req.body;
+
   try {
-    const match = await bcrypt.compare(candidatePassword, hashedPassword);
-    return match;
+    const user = await Adminstrator.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Generate OTP
+    const otp = generateNumericOTP(); // You may need to configure OTP generation options
+
+    // Update user's password with the OTP
+    const hashedNewPassword = await bcrypt.hash(otp, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+
+    // Send OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'peteraclsender@gmail.com',
+        pass: 'tayr rzwl yvip tqjt',
+      },
+    });
+    const mailOptions = {
+      from: 'peteraclsender@gmail.com',
+      to: Email,
+      subject: 'Password Reset OTP',
+      text: `Your new Admin OTP is: ${otp}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sending OTP via email' });
+      }
+      res.status(200).json({ message: 'OTP sent successfully' });
+    });
   } catch (error) {
-    console.error('Error comparing passwords', error);
-    return false;
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -256,8 +321,9 @@ module.exports ={
     addAdmin,
     removeUser,
     viewPatientInfo,
+    signUp,
     login,
-    changePassword,
-
-    
+    logout,
+    updateAdminPassword,
+    sendOtpAndSetPassword
 }

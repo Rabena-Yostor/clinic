@@ -16,8 +16,11 @@ const {
   viewHealthRecords,
   viewDoctorAccount,
   login,
-  changeDoctorPassword,
-  getWalletAmount
+  updateDoctorPassword,
+  getWalletAmount,
+  signUp,
+  sendOtpAndSetPassword,
+  logout
 
 }= require('../controllers/doctorController')
 
@@ -51,6 +54,18 @@ router.post('/addHealthRecord/:username', addHealthRecord)
 router.get('/viewHealthRecords/:username', viewHealthRecords)
 
 router.get('/wallet-amount/:username', getWalletAmount);
+router.post('/signup', signUp)
+
+//login
 router.post('/login', login)
-router.post('/changePassword', changeDoctorPassword)
+
+//logout
+router.get('/logout', logout)
+
+//update password
+router.post('/updateDoctorPassword', updateDoctorPassword)
+
+//send otp and set password
+router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
+
 module.exports = router 

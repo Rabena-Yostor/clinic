@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
 const HealthRecord = require('../models/HealthRecordModel');
-
+const nodemailer = require('nodemailer');
 // get all patients
 const getAllPatients = async (req, res) => {
     const patients = await patient.find({})
