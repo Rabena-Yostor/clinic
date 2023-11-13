@@ -39,7 +39,7 @@ const DoctorDetails = ({ doctor }) => {
         setError(`Failed to create appointment: ${error.message}`);
     }
 };
-
+  
 
 
   const handleDropdownClick = (e) => {
