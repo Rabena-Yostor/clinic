@@ -22,6 +22,8 @@ import ViewEmploymentContractInfo from './pages/ViewContracts';
 import Payment from './pages/Payment';
 import Completion from './components/Completion';
 import Wallet from './components/Wallet';
+//import { BrowserRouter as Router, Switch, Route, Link, useHistory } from 'react-router-dom';
+
 function App() {
   return (
     <div className="App">
@@ -45,7 +47,7 @@ function App() {
             <Route path="/safina" element={<FamilyForm />} />
             <Route path="/hana" element={<DoctorDashboard />} />
             <Route path = "/filterAppointment" element = {<AppointmentFilter />} />
-            <Route path = "/buy" element = {<BuyPage />} />
+            <Route path = "/buyPage" element = {<BuyPage />} />
             <Route path = "/contracts" element = {<ViewEmploymentContractInfo />} />
             <Route path = "/addAppointment/:id" element = {<AddAppointment />} />
             <Route path = "/payment" element = {<Payment />} />

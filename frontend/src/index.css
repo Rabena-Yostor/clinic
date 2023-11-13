@@ -118,4 +118,24 @@ div.error {
   color: #fff; /* Change the text color to ensure visibility */
   /* You can add other styling properties as needed */
 }
+/* Add this CSS in a separate stylesheet or within your component */
+.buy-button {
+  background-color: #007bff; /* Blue background color */
+  color: white; /* Text color */
+  padding: 10px 20px; /* Padding for better spacing */
+  border: none; /* Remove the default button border */
+  margin: 5px; /* Add margin for spacing between buttons */
+  cursor: pointer; /* Add cursor pointer on hover */
+  text-decoration: none; /* Remove underline from link */
+  display: inline-block; /* Display as a block element */
+  border-radius: 4px; /* Add some border radius for rounded corners */
+  text-align: center; /* Center text within the button */
+  font-weight: bold; /* Bold text */
+  font-size: 16px; /* Adjust the font size as needed */
+}
+
+.buy-button:hover {
+  background-color: #0056b3; /* Change color on hover */
+}
+
 

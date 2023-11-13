@@ -60,7 +60,9 @@ const DoctorDashboard = () => {
   {filteredAppointments.map(doctor => (
     <li key={doctor._id}>
       {`Doctor Name: ${doctor.name}, Date: ${doctor.availableAppointment}, Status: ${doctor.Appointment_Status}`} 
+      <link to="/BuyPage">
       <button onClick={() => handlePayment(doctor)}>Pay 400</button>
+      </link>
     </li>
   ))}
 </ul>
