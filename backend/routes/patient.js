@@ -46,8 +46,8 @@ router.post('/addFamilyMember',addFamilyMember)
 
 router.get('/filterAppointmentPatient',filterAllApps)
 
-router.get('/viewHealthRecords', requireAuth, getHealthRecord);
-router.get('/wallet-amount', authenticatePatient, getWalletAmount);
+router.get('/viewHealthRecords/:username', getHealthRecord);
+router.get('/wallet-amount/:username', getWalletAmount);
 
 //sign up
 router.post('/signup',signUp)

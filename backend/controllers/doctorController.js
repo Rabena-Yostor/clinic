@@ -322,7 +322,23 @@ const viewHealthRecords = async (req, res) => {
   }
 };
 
+const getWalletAmount = async (req, res) => {
+  try {
+      // Retrieve patient information based on the provided username parameter
+      const username = req.params.username;
+      const doc = await Doctor.findOne({ username });
 
+      if (!doc) {
+          return res.status(404).json({ error: 'Doctor not found' });
+      }
+
+      // Send the wallet amount in the response
+      res.json({ walletAmount: doc.WalletAmount });
+  } catch (error) {
+      console.error('Error retrieving wallet amount:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 const login = async (req, res) => {
   const { username, password } = req.body;
 
@@ -384,5 +400,6 @@ module.exports = {
   addHealthRecord,
   viewHealthRecords,
   login,
-  changeDoctorPassword
+  changeDoctorPassword,
+  getWalletAmount
 };

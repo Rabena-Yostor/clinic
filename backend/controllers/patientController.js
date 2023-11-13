@@ -1,7 +1,7 @@
 const { mongo, default: mongoose } = require('mongoose')
 const patient = require('../models/PatientModel')
 const jwt = require('jsonwebtoken');
-const bcrypt =require('bcrypt')
+const bcrypt = require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
 const HealthRecord = require('../models/HealthRecordModel');
@@ -87,96 +87,96 @@ const filterAppointment = async (req, res) => {
 ////MALAK WAEL FOLDER
 
 const registerPatient = async (req, res) => {
-    console.log('Received request body:', req.body); 
+    console.log('Received request body:', req.body);
 
-    const { username, name, email, password, dateofbirth, gender, mobilenumber, emergencyfullname,emergencynumber} = req.body;
+    const { username, name, email, password, dateofbirth, gender, mobilenumber, emergencyfullname, emergencynumber } = req.body;
 
 
     // Check for missing fields
- if(!username || !name || !email || !password || !dateofbirth || !gender || !mobilenumber || !emergencyfullname|| !emergencynumber) {
+    if (!username || !name || !email || !password || !dateofbirth || !gender || !mobilenumber || !emergencyfullname || !emergencynumber) {
         return res.status(400).json({ error: 'Please provide all fields' });
     }
 
     // Check if patient with the same email exists
-   
-try {
 
- const patientExists = await patient.findOne({ email });
+    try {
 
- if (patientExists) {
-        return res.status(400).json({ error: 'User already exists' });
+        const patientExists = await patient.findOne({ email });
+
+        if (patientExists) {
+            return res.status(400).json({ error: 'User already exists' });
+        }
+
+        // Hash the password securely before saving to the database
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new patient instance with hashed password
+        const newPatient = await patient.create({
+            username,
+            name,
+            email,
+            password: hashedPassword,
+            dateofbirth,
+            gender,
+            mobilenumber,
+            emergencyfullname,
+            emergencynumber
+        });
+
+        res.status(201).json({
+            _id: newPatient.id,
+            username: newPatient.username,
+            name: newPatient.name,
+            email: newPatient.email,
+            dateofbirth: newPatient.dateOfBirth,
+            gender: newPatient.gender,
+            mobilenumber: newPatient.mobileNumber,
+            emergencyfullname: newPatient.EmergencyContactName,
+            emergencynumber: newPatient.EmergencyContactNo
+        });
+
+    } catch (error) {
+        // Handle database or other errors
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    // Hash the password securely before saving to the database
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create a new patient instance with hashed password
-    const newPatient = await patient.create({
-        username,
-        name,
-        email,
-        password: hashedPassword,
-        dateofbirth,
-        gender,
-        mobilenumber,
-        emergencyfullname,
-        emergencynumber
-    });
-
-    res.status(201).json({
-        _id: newPatient.id,
-        username: newPatient.username,
-        name: newPatient.name,
-        email: newPatient.email,
-        dateofbirth: newPatient.dateOfBirth,
-        gender: newPatient.gender,
-        mobilenumber: newPatient.mobileNumber,
-        emergencyfullname : newPatient.EmergencyContactName,
-        emergencynumber : newPatient.EmergencyContactNo
-    });
-
-} catch (error) {
-    // Handle database or other errors
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-}
 
 
 };
 
 const loginPatient = (req, res) => {
-    res.json({message: 'User logged in'})
+    res.json({ message: 'User logged in' })
 }
 /////////////////////////////END OF MALAK WAEL FOLDER
 
 
 ///////////////////////////// SAFINA FOLDER
-const getFamilyMembers= async(req, res)=>{
+const getFamilyMembers = async (req, res) => {
     try {
-        const{username}= req.params;
-        console.log({username})
-        const familyMembers= await familyMemberModel.find({patientusername: username});
+        const { username } = req.params;
+        console.log({ username })
+        const familyMembers = await familyMemberModel.find({ patientusername: username });
         console.log(familyMembers)
 
-        if(familyMembers.length==0){
-            return res.status(404).json({message:'no solution'});
-            
+        if (familyMembers.length == 0) {
+            return res.status(404).json({ message: 'no solution' });
+
         }
         res.status(200).json(familyMembers);
     } catch (error) {
-        console.error('error:',error);
-        res.status(500).json({message:'error'});
+        console.error('error:', error);
+        res.status(500).json({ message: 'error' });
     }
 }
 
-const addFamilyMember = async (req, res) =>{
-    const {Name,National_id, age, gender, relation}=req.body
-try {
-    const workout= await familyMemberModel.create({Name,National_id, age, gender, relation})
-    res.status(200).json(workout)
-} catch (error) {
-    res.status(400).json({error: error.message})
-}
+const addFamilyMember = async (req, res) => {
+    const { Name, National_id, age, gender, relation } = req.body
+    try {
+        const workout = await familyMemberModel.create({ Name, National_id, age, gender, relation })
+        res.status(200).json(workout)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
 }
 ////////////////////////////// END SAFINA
 
@@ -211,69 +211,78 @@ const filterAllApps = async (req, res) => {
 };
 const viewPatientAccount = async (req, res) => {
     const { username } = req.params;
-  
-    try {
-      const patient = await Patient.findOne({ username });
-  
-      if (!patient) {
-        return res.status(404).json({ error: 'Patient not found.' });
-      }
-  
-      res.status(200).json(patient);
-    } catch (error) {
-      console.error('Error fetching patient account:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
-  const comparePasswords = async (plainTextPassword, hashedPassword) => {
-    try {
-      const match = await bcrypt.compare(plainTextPassword, hashedPassword);
-      return match;
-    } catch (error) {
-      console.error('Error comparing passwords:', error);
-      throw new Error('Error comparing passwords');
-    }
-  };
 
-  module.exports = comparePasswords;
-  
- 
-  const getHealthRecord = async (req, res) => {
     try {
-        // Retrieve patient information from the authentication middleware
-        const patientId = req.user.userId;
+        const patient = await Patient.findOne({ username });
 
-        // Fetch health records for the patient
-        const healthRecords = await HealthRecord.find({ patientId });
+        if (!patient) {
+            return res.status(404).json({ error: 'Patient not found.' });
+        }
+
+        res.status(200).json(patient);
+    } catch (error) {
+        console.error('Error fetching patient account:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const comparePasswords = async (plainTextPassword, hashedPassword) => {
+    try {
+        const match = await bcrypt.compare(plainTextPassword, hashedPassword);
+        return match;
+    } catch (error) {
+        console.error('Error comparing passwords:', error);
+        throw new Error('Error comparing passwords');
+    }
+};
+
+module.exports = comparePasswords;
+
+
+const getHealthRecord = async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        // Assuming you have a User model with a 'username' field
+        const user = await patient.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+
+        const healthRecords = await HealthRecord.find({ patientId: user._id });
+
+        if (healthRecords.length === 0) {
+            return res.status(404).json({ message: 'No health records found for the specified patient' });
+        }
 
         res.status(200).json(healthRecords);
     } catch (error) {
-        console.error('Error fetching patient health records:', error);
+        console.error('Error fetching health records:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
 
-  const getWalletAmount = async (req, res) => {
+
+const getWalletAmount = async (req, res) => {
     try {
-      // Retrieve patient information from the authentication middleware
-      const patientId = req.user.userId;
-  
-      // Assuming you have a Patient model with a walletAmount field
-      const patient = await patient.findById(patientId);
-  
-      if (!patient) {
-        return res.status(404).json({ error: 'Patient not found' });
-      }
-  
-      // Send the wallet amount in the response
-      res.json({ walletAmount: patient.walletAmount });
+        // Retrieve patient information based on the provided username parameter
+        const username = req.params.username;
+        const Patient = await patient.findOne({ username });
+
+        if (!Patient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        // Send the wallet amount in the response
+        res.json({ walletAmount: Patient.WalletAmount });
     } catch (error) {
-      console.error('Error retrieving wallet amount:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error retrieving wallet amount:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
-  const maxAge = 3 * 24 * 60 * 60;
+};
+
+const maxAge = 3 * 24 * 60 * 60;
 const createToken = (name) => {
     return jwt.sign({ name }, 'supersecret', {
         expiresIn: maxAge

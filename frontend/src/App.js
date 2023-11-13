@@ -22,6 +22,7 @@ import Login from './pages/Login'; // Import your login page component
 import PatientHealthRecord from './pages/PatientHealthRecord';
 import ChangePassword from './pages/ChangePassword';
 import ResetPassword from './pages/ResetPassword';
+import WalletPage from './pages/WalletPage';
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
@@ -57,7 +58,8 @@ function App() {
             <Route path="/view-patient-records" element={<PatientHealthRecord />} />
             <Route path = "/change-password" element = {<ChangePassword />} />
             <Route path = "/reset-password" element = {<ResetPassword />} />
-
+            <Route path = "/wallet-info" element = {<WalletPage />} />
+            
           </Routes>
         </div>
       </BrowserRouter>

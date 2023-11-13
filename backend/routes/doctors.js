@@ -16,7 +16,8 @@ const {
   viewHealthRecords,
   viewDoctorAccount,
   login,
-  changeDoctorPassword
+  changeDoctorPassword,
+  getWalletAmount
 
 }= require('../controllers/doctorController')
 
@@ -49,6 +50,7 @@ router.get('/getPatientsForDoctor', getPatientsForDoctor)
 router.post('/addHealthRecord/:username', addHealthRecord)
 router.get('/viewHealthRecords/:username', viewHealthRecords)
 
+router.get('/wallet-amount/:username', getWalletAmount);
 router.post('/login', login)
 router.post('/changePassword', changeDoctorPassword)
 module.exports = router 

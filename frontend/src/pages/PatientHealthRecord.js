@@ -21,16 +21,17 @@ const HealthRecordsPage = () => {
   }, [navigate]);
 
   const handleViewRecords = async () => {
+    const username = localStorage.getItem('username');
     try {
       console.log('Fetching health records...');
-      const response = await fetch('http://localhost:4000/api/patient/viewHealthRecords', {
+      const response = await fetch(`http://localhost:4000/api/patient/viewHealthRecords/${username}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       });
-
+  
       if (response.ok) {
         console.log('Health records fetched successfully');
         const data = await response.json();
@@ -47,7 +48,7 @@ const HealthRecordsPage = () => {
       setError('Error fetching health records');
     }
   };
-
+  
   console.log('Rendering HealthRecordsPage component');
 
   return (
