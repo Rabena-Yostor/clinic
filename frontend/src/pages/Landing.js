@@ -26,6 +26,13 @@ function HomePage() {
       <Link to="/hana">
         <button>filterAppointment&viewInfo</button>
       </Link>
+      <Link to="/contracts">
+        <button>doctorContract</button>
+      </Link>
+      <Link to="addAppointment/:id">
+        <button>Add Appointment</button>
+      </Link>
+
     </div>
   );
 }
