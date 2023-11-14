@@ -548,6 +548,26 @@ const sendOtpAndSetPassword = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const addAppointment = async (req, res) => {
+  const username = req.params;
+  const doctor = await Doctor.findOne({ username });
+  if (!doctor) {
+    return res.status(404).json({ error: "No such doctor" });
+  }
+  const { date } = req.body;
+  if (!date) {
+    return res.status(400).json({ error: "Please provide date" });
+  }
+  try {
+  doctor.availableAppointments.push(date);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+  await doctor.save();
+  res.status(200).json(doctor);
+}
 ///////////////////////////////////////// END OF HANA'S FOLDER
 module.exports = {
   getDoctors,
@@ -571,4 +591,5 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
+  addAppointment
 };

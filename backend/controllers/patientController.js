@@ -722,8 +722,67 @@ const removeDocument = async (req, res) => {
     }
 };
 const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
+//HAZEM
+const depositToWallet = async (req, res) => {
+    const { id } = req.params;
+    const { amount } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid patient ID' });
+    }
 
+    if (!amount || amount <= 0) {
+        return res.status(400).json({ error: 'Invalid deposit amount' });
+    }
+
+    try {
+        const existingPatient = await patient.findById(id);
+        if (!existingPatient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        // Update the wallet balance
+        existingPatient.WalletAmount += amount;
+        await existingPatient.save();
+
+        res.status(200).json({ message: 'Funds deposited successfully', walletBalance: existingPatient.WalletAmount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const withdrawFromWallet = async (req, res) => {
+    const { id } = req.params;
+    const { amount } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid patient ID' });
+    }
+
+    if (!amount || amount <= 0) {
+        return res.status(400).json({ error: 'Invalid withdrawal amount' });
+    }
+
+    try {
+        const existingPatient = await patient.findById(id);
+        if (!existingPatient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        if (existingPatient.WalletAmount < amount) {
+            return res.status(400).json({ error: 'Insufficient funds in the wallet' });
+        }
+
+        // Update the wallet balance
+        existingPatient.WalletAmount -= amount;
+        await existingPatient.save();
+
+        res.status(200).json({ message: 'Funds withdrawn successfully', walletBalance: existingPatient.WalletAmount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 
@@ -755,5 +814,7 @@ module.exports = {
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument, 
+    depositToWallet,
+    withdrawFromWallet,
 }

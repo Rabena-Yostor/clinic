@@ -24,8 +24,8 @@ const {
   signUp,
   sendOtpAndSetPassword,
   logout, 
-  uploadMiddleware
-
+  uploadMiddleware,
+  addAppointment    
 }= require('../controllers/doctorController')
 
 
@@ -71,6 +71,9 @@ router.post('/updateDoctorPassword', updateDoctorPassword)
 
 //send otp and set password
 router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
+
+router.post('/addAppointment/:id', addAppointment)
+
 
 router.get("/getDoctorAppointments/:username", async (req, res) => {
   const { username } = req.params;

@@ -1,13 +1,14 @@
 import React from "react";
-import {FaUser} from 'react-icons/fa'
+import { FaUser } from 'react-icons/fa'
 import { Link } from "react-router-dom";
 
-function PatientHome(){
-
-    return ( 
-        <div>
-            <h1>Welcome Patient</h1>
-            <div>
+function PatientHome() {
+  //const Patient = findOne(PatientUsername);
+  //const PatientId = Patient._id;
+  return (
+    <div>
+      <h1>Welcome Patient</h1>
+      <div>
         <Link to="/SubscribeToHealthPackage">
           <FaUser /> Subscribe to Health Package
         </Link>
@@ -24,12 +25,12 @@ function PatientHome(){
       </div>
       <div>
         <Link to="/cancelSubscription">
-          <FaUser /> Cancel Subscription 
+          <FaUser /> Cancel Subscription
         </Link>
       </div>
       <div>
         <Link to="/wallet-info">
-          <FaUser /> View Wallet Amount 
+          <FaUser /> View Wallet Amount
         </Link>
       </div>
       <div>
@@ -44,13 +45,13 @@ function PatientHome(){
       </div>
       <div>
         <Link to="/patientDocuments">
-          <FaUser /> Document Management 
+          <FaUser /> Document Management
         </Link>
       </div>
-            
+     
 
-        </div>
-    );
+    </div>
+  );
 
 }
 export default PatientHome;

@@ -29,7 +29,9 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    depositToWallet,
+    withdrawFromWallet,
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -85,6 +87,10 @@ router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
 
 // New route to handle updating patient appointments
 router.post("/updatePatientAppointments", updatePatientAppointments);
+
+// New routes for wallet operations
+router.post('/depositToWallet/:id', depositToWallet);
+router.post('/withdrawFromWallet/:id', withdrawFromWallet);
 
 router.get("/getPatientAppointments/:username", async (req, res) => {
     const { username } = req.params;

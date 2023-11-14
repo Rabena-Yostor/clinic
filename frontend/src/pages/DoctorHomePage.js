@@ -3,6 +3,7 @@ import { FaUser } from 'react-icons/fa'
 import { Link } from "react-router-dom";
 
 function DoctorPage() {
+    const PatientUsername = localStorage.getItem('username');
 
     const handleAddHealthRecord = () => {
         // Implement logic to handle updates after adding a health record
@@ -29,18 +30,28 @@ function DoctorPage() {
                     <FaUser /> view wallet amount
                 </Link>
             </div>
-            
+
             <div>
                 <Link to="/doctorPeter">
                     <FaUser /> DoctorAppointments
                 </Link>
             </div>
+            <div>
+                <Link to="/contracts">
+                    <button>doctorContract</button>
+                </Link>
+            </div>
+            <div>
+                <Link to={`/addAppointment/${PatientUsername}`}>
+                    <button>Add Appointment</button>
+                </Link>
+            </div>
             <br />
-            <hr/>
-            
-      <Link to="/change-password">
-        <button>Change Password</button>
-      </Link>
+            <hr />
+
+            <Link to="/change-password">
+                <button>Change Password</button>
+            </Link>
 
         </div>
     );

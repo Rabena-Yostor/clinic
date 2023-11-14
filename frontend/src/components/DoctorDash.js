@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import BuyPage from '../pages/BuyPage';
 
 const DoctorDash = () => {
   const DoctorUsername = localStorage.getItem('username');
@@ -9,6 +11,8 @@ const DoctorDash = () => {
   const [newDoctorAppointmentDate, setNewDoctorAppointmentDate] = useState("");
   const [newDoctorAppointmentStatus, setNewDoctorAppointmentStatus] =
     useState("");
+
+    const navigate = useNavigate();
 
   // State variables for patient appointments
   
@@ -32,6 +36,11 @@ const DoctorDash = () => {
   const [filterPatientStatus, setFilterPatientStatus] = useState("");
   const [filteredPatientAppointments, setFilteredPatientAppointments] =
     useState([]);
+
+    //handle payment
+    const handlePayment = () => {
+      navigate('/BuyPage');
+    };
 
   // Function to filter doctor appointments
   const filterDoctorAppointments = async () => {
