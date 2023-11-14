@@ -102,6 +102,13 @@ const Login = () => {
                     </Link>
 
             </div>
+<p>If you want to Submit a request and become a doctor</p>
+            <div>
+                <Link to="/SubmitRequest">
+                    <button> SubmitRequest</button>
+                </Link>
+
+            </div>
         </div>
     );
 };

@@ -42,10 +42,10 @@ const approveRequests = async (req, res) => {
         name: pendingDoctor.name,
         email: pendingDoctor.email,
         password: hashedPassword, 
-        dateOfBirth: pendingDoctor.dateofbirth,
-        hourlyRate: pendingDoctor.hourlyrate,
+        dateOfBirth: pendingDoctor.dateOfBirth,
+        hourlyRate: pendingDoctor.hourlyRate,
         affiliation: pendingDoctor.affiliation,
-        educationalBackground: pendingDoctor.educationalbackground,
+        educationalBackground: pendingDoctor.educationalBackground,
       });
       await newDoctor.save();
       // Remove the doctor request from the pending requests collection
@@ -54,30 +54,29 @@ const approveRequests = async (req, res) => {
       res.status(201).json({ message: 'Doctor approved successfully and added to doctors database' });
   } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 
 //to reject requests
-    const rejectRequests = async (req, res) => {
-    const { doctorId } = req.params;
-  
-    try {
-      // Remove the doctor request from the pending requests collection
-      const deletedPindingDoctorRequest = await PendingDoctorRequest .findByIdAndDelete(doctorId);
-  
-      // Check if the doctor request exists
-      if (!deletedPendingDoctorRequest) {
-        return res.status(404).json({ error: 'Doctor request not found' });
-      }
-  
-      res.status(200).json({ message: 'Doctor registration request rejected' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
+const rejectRequests = async (req, res) => {
+  const { doctorId } = req.body;
+ 
+  try {
+   const pendingDoctor = await PendingDoctorModel.findById(doctorId);
+
+   if (!pendingDoctor) {
+       return res.status(404).json({ error: 'Doctor request not found' });
+   }
+   await PendingDoctorModel.findByIdAndDelete(doctorId);
+
+   res.status(200).json({ message: 'Doctor registration request rejected successfully' });
+ } catch (error) {
+   console.error(error);
+   res.status(500).json({ error: 'Internal Server Error' });
+ }
+};
   
 
   const addAdmin = async (req, res) => {

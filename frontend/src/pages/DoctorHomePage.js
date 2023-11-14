@@ -35,6 +35,12 @@ function DoctorPage() {
                     <FaUser /> DoctorAppointments
                 </Link>
             </div>
+            <br />
+            <hr/>
+            
+      <Link to="/change-password">
+        <button>Change Password</button>
+      </Link>
 
         </div>
     );

@@ -17,12 +17,7 @@ function AdminPage() {
                 </Link>
 
             </div>
-            <div>
-                <Link to="/SubmitRequest">
-                    <FaUser /> SubmitRequest
-                </Link>
-
-            </div>
+        
 
             <div>
                 <Link to="/Admin">
@@ -79,7 +74,12 @@ function AdminPage() {
                 </Link>
             </div>
 
-     
+            <br />
+            <hr/>
+            
+      <Link to="/change-password">
+        <button>Change Password</button>
+      </Link>
         </header>
 
 
