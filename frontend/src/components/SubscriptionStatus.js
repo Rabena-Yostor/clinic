@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SubscriptionStatus = () => {
-  const [patientId, setPatientId] = useState('');
+  const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState([]);
   const [error, setError] = useState(null);
 
-  const handleInputChange = (e) => {
-    setPatientId(e.target.value);
-  };
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    if (!authToken) {
+      console.log('User not authenticated, redirecting to login');
+      navigate('/login');
+    } else {
+      console.log('User authenticated, fetching subscription status');
+      fetchSubscriptionStatus();
+    }
+  }, [navigate]);
 
   const fetchSubscriptionStatus = async () => {
+    const username = localStorage.getItem('username');
     try {
-      const response = await fetch(`http://localhost:4000/api/patient/getSubscriptionStatus?patientId=${patientId}`);
+      const response = await fetch(`http://localhost:4000/api/patient/getSubscriptionStatus/${username}`);
       const data = await response.json();
 
       if (response.ok) {
-        setSubscriptions(data.subscriptions);
+        setSubscriptions([data]); // Wrap data in an array to map over it in the render
         setError(null);
       } else {
-        setError(data.error);
+        setError(data.error || 'Internal Server Error');
       }
     } catch (error) {
       console.error('Error fetching subscription status:', error);
@@ -33,8 +42,6 @@ const SubscriptionStatus = () => {
         <FaUser /> Subscription Status
       </h2>
       <div className="form-group">
-        <label htmlFor="patientId">Enter Patient ID:</label>
-        <input type="text" id="patientId" value={patientId} onChange={handleInputChange} required />
         <button className="btn btn-primary" onClick={fetchSubscriptionStatus}>
           Fetch Subscription Status
         </button>
@@ -44,13 +51,11 @@ const SubscriptionStatus = () => {
         <div className="subscription-list">
           <h3>Subscriptions:</h3>
           {subscriptions.map((subscription) => (
-            <div key={subscription._id} className="subscription-item">
-              <strong>Subscription ID:</strong> {subscription._id}<br />
-              <strong>Patient ID:</strong> {subscription.patient}<br />
+            <div key={subscription.subscriptionId} className="subscription-item">
+              <strong>Subscription ID:</strong> {subscription.subscriptionId}<br />
               <strong>Status:</strong> {subscription.status}<br />
               <strong>Subscription Date:</strong> {subscription.subscriptionDate ? new Date(subscription.subscriptionDate).toLocaleString() : 'N/A'}<br />
-              <strong>Expiration Date:</strong> {subscription.expirationDate ? new Date(subscription.expirationDate).toLocaleString() : 'N/A'}<br />
-              <strong>Cancellation Date:</strong> {subscription.cancellationDate ? new Date(subscription.cancellationDate).toLocaleString() : 'N/A'}<br />
+             
               <hr />
             </div>
           ))}

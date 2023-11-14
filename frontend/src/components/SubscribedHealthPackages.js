@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUser } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const SubscribedHealthPackages = () => {
-  const [patientId, setPatientId] = useState('');
+  const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState([]);
   const [error, setError] = useState(null);
 
-  const handleInputChange = (e) => {
-    setPatientId(e.target.value);
-  };
+  useEffect(() => {
+    // Check if the user is authenticated
+    const authToken = localStorage.getItem('authToken');
+    console.log('Auth Token:', authToken); 
+    if (!authToken) {
+      console.log('User not authenticated, redirecting to login');
+      navigate('/login');
+    } else {
+      console.log('User authenticated, fetching health records');
+      fetchSubscribedHealthPackages();
+    }
+  }, [navigate]);
 
   const fetchSubscribedHealthPackages = async () => {
+    const username = localStorage.getItem('username');
     try {
-      const response = await fetch(`http://localhost:4000/api/patient/getSubscribedHealthPackages?patientId=${patientId}`);
+      const response = await fetch(`http://localhost:4000/api/patient/getSubscribedHealthPackages/${username}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -33,8 +44,6 @@ const SubscribedHealthPackages = () => {
         <FaUser /> Subscribed Health Packages
       </h2>
       <div className="form-group">
-        <label htmlFor="patientId">Enter Patient ID:</label>
-        <input type="text" id="patientId" value={patientId} onChange={handleInputChange} required />
         <button className="btn btn-primary" onClick={fetchSubscribedHealthPackages}>
           Fetch Subscriptions
         </button>
