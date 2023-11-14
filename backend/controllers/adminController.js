@@ -64,6 +64,8 @@ const approveRequests = async (req, res) => {
 
 
 
+
+
 //to reject requests
 const rejectRequests = async (req, res) => {
    const { doctorId } = req.body;
