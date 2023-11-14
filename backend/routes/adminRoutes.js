@@ -22,9 +22,9 @@ const {
 
 router.get('/viewRequests',viewRequests)
 
-router.post('/approveRequests/:id',approveRequests)
+router.post('/approveRequests',approveRequests)
 
-router.delete('/rejectRequests/:id',rejectRequests)
+router.delete('/rejectRequests',rejectRequests)
 
 router.post('/addAdmin', addAdmin)
 

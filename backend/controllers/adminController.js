@@ -24,39 +24,39 @@ const viewRequests = async (req, res) => {
 
 
 // to accept requests
-  const approveRequests = async (req, res) => {
-    const { doctorId } = req.params;
-  
-    try {
-      // Find the doctor request by ID
-      const pendingDoctor  = await PendingDoctorRequest .findById(doctorId);
-  
-      // Check if the doctor request exists
-      if (!pendingDoctor ) {
-        return res.status(404).json({ error: 'Doctor request not found' });
+const approveRequests = async (req, res) => {
+  const { doctorId } = req.body;
+
+  try {
+      const pendingDoctor = await PendingDoctorModel.findById(doctorId);
+
+      if (!pendingDoctor) {
+          return res.status(404).json({ error: 'Doctor request not found' });
       }
-  
+    
+      const hashedPassword = await bcrypt.hash(pendingDoctor.password, 10);
+
       // Create a new doctor in the doctors collection
-      const newDoctor = await Doctor.create({
-        username: pendingDoctor .username,
+      const newDoctor = new Doctor({
+        username: pendingDoctor.username,
         name: pendingDoctor.name,
         email: pendingDoctor.email,
-        password: pendingDoctor.password,
-        dateofbirth: pendingDoctor.dateOfBirth,
-        hourlyrate: pendingDoctor.hourlyRate,
+        password: hashedPassword, 
+        dateOfBirth: pendingDoctor.dateofbirth,
+        hourlyRate: pendingDoctor.hourlyrate,
         affiliation: pendingDoctor.affiliation,
-        educationalbackground: pendingDoctor.educationalBackground
+        educationalBackground: pendingDoctor.educationalbackground,
       });
-  
+      await newDoctor.save();
       // Remove the doctor request from the pending requests collection
-      await PendingDoctorRequest .findByIdAndDelete(doctorId);
-  
+      await PendingDoctorModel.findByIdAndDelete(doctorId);
+
       res.status(201).json({ message: 'Doctor approved successfully and added to doctors database' });
-    } catch (error) {
+  } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 
 //to reject requests
