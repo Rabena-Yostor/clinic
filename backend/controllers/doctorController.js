@@ -6,7 +6,31 @@ const HealthRecord = require("../models/HealthRecordModel");
 const bcrypt =require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
+
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDirectory = path.join(__dirname, '../../frontend/public/uploads');
+    cb(null, uploadDirectory);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const filename = `${Date.now()}-${file.fieldname}${ext}`;
+    cb(null, filename);
+  },
+});
+const upload = multer({ storage: storage });
+
+const uploadMiddleware = upload.fields([
+  { name: 'idFile', maxCount: 1 },
+  { name: 'degreeFile', maxCount: 1 },
+  { name: 'licenseFile', maxCount: 1 },
+]);
 // get all doctors
 const getDoctors = async (req, res) => {
   const doctors = await Doctor.find({}).sort({ createdAt: -1 });
@@ -104,35 +128,53 @@ const updateDoctor = async (req, res) => {
 
 // MALAK WAEL FOLDER. DO NOT TOUCH
 const submitRequest = async (req, res) => {
-  const { username, name, email, password, dateOfBirth, hourlyRate, affiliation, educationalBackground } = req.body;
+  const { username, name, email, password, dateofbirth, hourlyrate, affiliation, educationalbackground } = req.body;
+  const idFile = req.files['idFile'][0];
+  const degreeFile = req.files['degreeFile'][0];
+  const licenseFile = req.files['licenseFile'][0];
+  const idFileData = fs.readFileSync(idFile.path);
+  const degreeFileData = fs.readFileSync(degreeFile.path);
+  const licenseFileData = fs.readFileSync(licenseFile.path);
 
-  if(!username|| !name ||!email || !password || !dateOfBirth ||!hourlyRate || !affiliation || !educationalBackground){
-      return res.status(400).json({ error: 'Please provide all fields' });
-  }
+
+  // if(!username|| !name ||!email || !password || !dateofbirth ||!hourlyrate || !affiliation || !educationalbackground){
+  //     return res.status(400).json({ error: 'Please provide all fields' });
+  // }
   try {
-      const requestExists = await PendingDoctorRequest.findOne({ email });
-      if (requestExists) {
-          return res.status(400).json({ error: 'User already exists' });
+    const requestExists = await PendingDoctorRequest.findOne({ email });
+    if (requestExists) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+  
+    // Save the request in the pending requests collection
+    const newPendingDoctorRequest = await PendingDoctorRequest.create({
+      username,
+      name,
+      email,
+      password: hashedPassword,
+      dateOfBirth:dateofbirth,
+      hourlyRate:hourlyrate,
+      affiliation,
+      educationalBackground:educationalbackground,
+      idFile: {
+        data: idFileData,
+        contentType: idFile.mimetype
+      },
+      degreeFile: {
+        data: degreeFileData,
+        contentType: degreeFile.mimetype
+      },
+      licenseFile: {
+        data: licenseFileData,
+        contentType: licenseFile.mimetype
       }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Save the request in the pending requests collection
-      const newPendingDoctorRequest = await PendingDoctorRequest.create({
-          username,
-          name,
-          email,
-          password: hashedPassword,
-          dateOfBirth,
-          hourlyRate,
-          affiliation,
-          educationalBackground,
-      });
-
-      res.status(200).json({ message: 'Doctor registration request sent to admin for approval' });
+    });
+    res.status(200).json({ message: 'Doctor registration request sent to admin for approval' });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 //////////
@@ -527,5 +569,6 @@ module.exports = {
   logout,
   updateDoctorPassword,
   sendOtpAndSetPassword,
-  getWalletAmount
+  getWalletAmount,
+  uploadMiddleware,
 };

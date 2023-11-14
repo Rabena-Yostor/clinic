@@ -26,7 +26,10 @@ const{
     getSubscribedHealthPackages,
     getSubscriptionStatus,
     cancelSubscription,
-    updatePatientAppointments
+    updatePatientAppointments,
+    uploadDocument,
+    uploadMiddlewareSingle,
+    removeDocument
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -148,4 +151,26 @@ router.get("/getPatientAppointments/:username", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
+  router.post('/uploadDocument/:username', uploadMiddlewareSingle, uploadDocument);
+
+router.delete('/removeDocument/:username/:documentId', removeDocument);
+
+router.get('/medicalHistoryFiles/:username', async (req, res) => {
+    try {
+
+        const {username} = req.params // Replace with your authentication logic
+        console.log(username)
+        const loggedinPatient = await patient.findOne({ username });
+
+        if (!loggedinPatient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+        const medicalHistoryFiles = loggedinPatient.medicalHistoryFiles || [];
+        res.status(200).json(medicalHistoryFiles);
+    } catch (error) {
+        console.error('Error fetching medical history files:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 module.exports = router

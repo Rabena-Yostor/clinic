@@ -65,6 +65,19 @@ const doctorSchema = new Schema(
       },
     },
   ],
+  idFile: {
+    data: Buffer,
+    contentType: String,
+},
+degreeFile: {
+    data: Buffer,
+    contentType: String,
+},
+licenseFile: {
+    data: Buffer,
+    contentType: String,
+},
+
   },
   { timestamps: true }
 );

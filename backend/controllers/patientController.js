@@ -9,10 +9,14 @@ const nodemailer = require('nodemailer');
 const HealthPackage = require('../models/healthPackageModel');
 const Payment = require('../models/paymentModel'); 
 const HealthPackageSubscription = require('../models/healthPackageSubModel');
-
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const bodyParser = require('body-parser'); // Import body-parser
 const express = require('express');
 const app = express();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 // get all patients
 const getAllPatients = async (req, res) => {
     const patients = await patient.find({})
@@ -673,6 +677,54 @@ const updatePatientAppointments = async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
+  const uploadDocument = async (req, res) => {
+    const { username } = req.params;
+    try {
+        // Find the patient by username
+        const p = await patient.findOne({ username });
+
+        if (!p) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+
+        // Assuming req.files contains the uploaded document
+        const medicalHistoryFile = req.file;
+        const medicalHistoryFileData = medicalHistoryFile.buffer;
+
+        // Add the document to the medicalHistoryFiles array
+        p.medicalHistoryFiles.push({
+            medicalHistoryFileData
+        });
+
+        // Save the updated patient record
+        await p.save();
+
+        return res.status(200).json({ message: 'Document uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading document:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+const removeDocument = async (req, res) => {
+    const { username, documentId } = req.params;
+    console.log({ username, documentId });
+    try {
+        const p = await patient.findOne({ username });
+        if (!p) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+        p.medicalHistoryFiles = p.medicalHistoryFiles.filter((file) => file._id.toString() !== documentId);
+        await p.save();
+        return res.status(200).json({ message: 'Document removed successfully' });
+    } catch (error) {
+        console.error('Error removing document:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
+
+
+
 
 
 
@@ -701,4 +753,7 @@ module.exports = {
     getSubscriptionStatus,
     cancelSubscription,
     updatePatientAppointments,
+    uploadDocument,
+    uploadMiddlewareSingle,
+    removeDocument
 }

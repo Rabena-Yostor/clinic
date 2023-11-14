@@ -23,7 +23,8 @@ const {
   getWalletAmount,
   signUp,
   sendOtpAndSetPassword,
-  logout
+  logout, 
+  uploadMiddleware
 
 }= require('../controllers/doctorController')
 
@@ -42,7 +43,7 @@ router.delete('/deleteDoctor/:id', deleteDoctor)
 router.patch('/updateDoctor/:id',updateDoctor)
 
 //MALAK
-router.post ('/submitRequest', submitRequest)
+router.post ('/submitRequest',uploadMiddleware, submitRequest)
 //KHALED
 router.put('/updateDoctorEmail', updateDoctorEmail)
 router.put('/updateDoctorHourlyRate', updateDoctorHourlyRate)   

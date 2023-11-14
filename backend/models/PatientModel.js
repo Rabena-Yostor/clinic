@@ -62,6 +62,13 @@ const patientSchema = new Schema({
           },
         },
       ],
+      medicalHistoryFiles: [
+        {
+            medicalHistoryFileData: {
+                type: Buffer,
+            },
+        },
+    ],
 },{timestamps: true})
 
 patientSchema.methods.comparePassword = async function(candidatePassword) {
