@@ -11,6 +11,12 @@ const DoctorDetails = ({ doctor }) => {
     setShowDetails(!showDetails);
   };
 
+
+
+
+
+
+  
   
   const simulateCreateAppointment = async () => {
     if (!selectedAppointment) {
@@ -24,25 +30,39 @@ const DoctorDetails = ({ doctor }) => {
 
     try {
         const response = await axios.post('http://localhost:4000/api/patient/createAppointment', {
-            patientId: '652edbfe0faefd92d6187dae',
+            patientId: '652edc050faefd92d6187db0',
             appointmentDate: selectedAppointment,
             
         });
 
-        if (response.status === 201) {
+        if (response.status === 201 || response.status === 404) {
             // Simulate adding appointment to the local state
             setLocalAppointments([...localAppointments, selectedAppointment]);
+             // Remove the selected appointment from the doctor's available appointments
+             const updatedAppointments = doctor.Appointments.filter(appointment => appointment !== selectedAppointment);
+             doctor.Appointments = updatedAppointments;
+ 
+             // Make a request to the backend to remove the appointment from the doctor's array
+            await axios.delete(`http://localhost:4000/api/doctor/removeAppointment/${doctor._id}/${selectedAppointment}`);
+
             // Reset error state
             setError('');
+
+
         } else {
             throw new Error('Failed to create appointment');
         }
     } catch (error) {
-        console.error('Error creating appointment:', error);
-        setError(`Failed to create appointment: ${error.message}`);
-    }
+      console.error('Error creating appointment:', error);
+
+      // Check the status code and provide a more specific error message
+      if (error.response && error.response.status === 400) {
+          setError('Selected appointment date is not available');
+      } 
+  }
 };
   
+
 
 
 const handleDropdownClick = (e) => {

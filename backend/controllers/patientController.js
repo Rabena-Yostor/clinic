@@ -10,7 +10,7 @@ const Patient = require('../models/PatientModel'); // Adjust the path based on y
 
 // get all patients
 const getAllPatients = async (req, res) => {
-    const patients = await patient.find({})
+    const patients = await Patient.find({})
     res.status(200).json(patients)
 }
 
@@ -21,7 +21,7 @@ const getPatient = async (req, res) => {
         return res.status(400).json({ error: 'No Patient' })
     }
     const { name } = req.body;
-    const specificPatient = await patient.find({ name: { $regex: new RegExp(name, 'i') } })
+    const specificPatient = await Patient.find({ name: { $regex: new RegExp(name, 'i') } })
 
     if (!specificPatient) {
         return res.status(404).json({ error: 'No Patient' })
@@ -34,7 +34,7 @@ const getPatient = async (req, res) => {
 const createPatient = async (req, res) => {
     const { username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status } = req.body
     try {
-        const newPatient = await patient.create({ username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status })
+        const newPatient = await Patient.create({ username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status })
         res.status(200).json(newPatient)
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -47,7 +47,7 @@ const deletePatient = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ error: 'No Patient' })
     }
-    const deletePatient = await patient.findOneAndDelete({ _id: id })
+    const deletePatient = await Patient.findOneAndDelete({ _id: id })
 
     if (!deletePatient) {
         return res.status(400).json({ error: 'No Patient' })
@@ -62,7 +62,7 @@ const updatePatient = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ error: 'No Patient' })
     }
-    const updatePatient = await patient.findOneAndUpdate({ _id: id }, {
+    const updatePatient = await Patient.findOneAndUpdate({ _id: id }, {
         ...req.body
     })
     if (!updatePatient) {
@@ -78,7 +78,7 @@ const filterAppointment = async (req, res) => {
         return res.status(400).json({ error: 'No Patient' })
     }
     const { status } = req.body;
-    const specificPatient = await patient.find({ Appointment_Status: { $regex: new RegExp(status, 'i') } })
+    const specificPatient = await Patient.find({ Appointment_Status: { $regex: new RegExp(status, 'i') } })
 
     if (!specificPatient) {
         return res.status(404).json({ error: 'No Patient' })
@@ -103,7 +103,7 @@ const registerPatient = async (req, res) => {
    
 try {
 
- const patientExists = await patient.findOne({ email });
+ const patientExists = await Patient.findOne({ email });
 
  if (patientExists) {
         return res.status(400).json({ error: 'User already exists' });
@@ -113,7 +113,7 @@ try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new patient instance with hashed password
-    const newPatient = await patient.create({
+    const newPatient = await Patient.create({
         username,
         name,
         email,
@@ -216,7 +216,9 @@ const filterAllApps = async (req, res) => {
 
 // patientController.js
 const createAppointment = async (req, res) => {
-    const { patientId, familyMemberId, appointmentDate } = req.body;
+    const { patientId, familyMemberId } = req.body;
+    let appointmentDate = new Date(req.body.appointmentDate);
+
     console.log('Received Appointment Date:', appointmentDate);
 
     try {
@@ -227,7 +229,7 @@ const createAppointment = async (req, res) => {
             user = await Patient.findById(patientId);
         } else if (familyMemberId) {
             // Assuming family members are stored in the FamilyMember model
-            const familyMember = await FamilyMember.findById(familyMemberId).populate('patient');
+            const familyMember = await familyMember.findById(familyMemberId).populate('patient');
 
             if (!familyMember) {
                 return res.status(404).json({ error: 'Family member not found' });
@@ -242,16 +244,16 @@ const createAppointment = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         console.log('User:', user);
-        const isAppointmentAvailable = !(user.zz && user.zz.filter(appt => appt).includes(appointmentDate) || user.familyMembers.some(member => member.zz && member.zz.filter(appt => appt).includes(appointmentDate)));
+
+        // Check if the appointment is already taken by the patient or family member
+        const isAppointmentAvailable = !(user.zz && user.zz.filter(appt => appt && appt.toISOString() === appointmentDate.toISOString()).length > 0);
 
         if (!isAppointmentAvailable) {
             console.log('Selected appointment date is not available');
             return res.status(400).json({ error: 'Selected appointment date is not available' });
         }
-        
-        console.log('User Appointments after:', user.zz);
-        
-  // Add appointment information to the patient or family member object
+
+        // Add appointment information to the patient or family member object
         user.zz = user.zz || [];
         user.zz.push(appointmentDate);
         user.Appointment_Status = 'upcoming'; // Assuming the default status is 'upcoming'
@@ -261,11 +263,12 @@ const createAppointment = async (req, res) => {
 
         console.log('Appointment created successfully');
         res.status(201).json({ message: 'Appointment created successfully', user });
-    }catch (error) {
+    } catch (error) {
         console.error('Error creating appointment:', error);
         res.status(500).json({ error: `Internal Server Error: ${error.message}` });
     }
 };
+
 
 
   

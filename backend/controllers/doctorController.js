@@ -261,15 +261,16 @@ const addDoctor = async (req, res) => {
 ///////////////////////////////////////// END OF HANA'S FOLDER
 
 // Function to add appointments for a specific doctor by ID
+// Function to add appointments for a specific doctor by ID
 const addAppointments = async (req, res) => {
-  const { id  } = req.params;
+  const { id } = req.params;
   const { appointments } = req.body;
 
   try {
     // Validate the appointments format or any other validation as needed
 
     // Example validation logic can be added here
-    console.log('Doctor ID:', id );
+    console.log('Doctor ID:', id);
 
     // Find the doctor by ID
     const doctor = await Doctor.findOne({ _id: id });
@@ -285,12 +286,19 @@ const addAppointments = async (req, res) => {
     // Save the updated doctor with new appointments
     await doctor.save();
 
+    // Remove the selected appointments from the doctor's appointments array
+    doctor.Appointments = doctor.Appointments.filter((appointment) => !appointments.includes(appointment));
+
+    // Save the doctor again to update the appointments array
+    await doctor.save();
+
     res.status(200).json({ message: 'Appointments added successfully', doctor });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 
@@ -319,6 +327,35 @@ const getAvailableAppointments = async (req, res) => {
   }
 };
 
+// doctorController.js
+
+// Function to remove an appointment for a specific doctor by ID and appointment date
+const removeAppointment = async (req, res) => {
+  const { id, appointmentDate } = req.params;
+
+  try {
+    // Find the doctor by ID
+    const doctor = await doctor.findById(id);
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Remove the selected appointment from the Appointments array
+    doctor.Appointments = doctor.Appointments.filter((date) => date.toISOString() !== appointmentDate);
+
+    // Save the updated doctor with the removed appointment
+    await doctor.save();
+
+    res.status(200).json({ message: 'Appointment removed successfully', doctor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
 module.exports = {
   getDoctors,
   getDoctor,
@@ -334,5 +371,5 @@ module.exports = {
   addDoctor,
   addAppointments,
   getAvailableAppointments,
-  
+  removeAppointment
 };

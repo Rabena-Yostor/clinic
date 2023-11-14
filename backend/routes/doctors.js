@@ -1,4 +1,5 @@
 const express = require('express')
+const doctorController = require('../controllers/doctorController');
 
 const {
     createDoctor,
@@ -48,6 +49,7 @@ router.get('/getPatientsForDoctor', getPatientsForDoctor)
 router.post('/addAppointments/:id', addAppointments)
 
 router.get('/getAvailableAppointments/:id', getAvailableAppointments)
+router.delete('/doctor/removeAppointment/:id/:appointmentDate', doctorController.removeAppointment);
 
 
 module.exports = router 
