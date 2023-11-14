@@ -26,6 +26,7 @@ const{
     getSubscribedHealthPackages,
     getSubscriptionStatus,
     cancelSubscription,
+    updatePatientAppointments
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -78,4 +79,73 @@ router.post('/updatePatientPassword',updatePatientPassword)
 //send otp and set password
 router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
 
+
+// New route to handle updating patient appointments
+router.post("/updatePatientAppointments", updatePatientAppointments);
+
+router.get("/getPatientAppointments/:username", async (req, res) => {
+    const { username } = req.params;
+  
+    try {
+      const doctor = await patient.findOne({ username });
+  
+      if (!doctor) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+  
+      res.status(200).json({ appointments: doctor.appointments });
+    } catch (error) {
+      console.error("Error fetching patient appointments:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+  router.post("/filterAppointments", async (req, res) => {
+    try {
+      console.log("Request received:", req.body);
+  
+      const { username, date, status } = req.body;
+  
+      // Check if the username is correctly received
+      console.log("Username from request:", username);
+  
+      // Construct the query to find the doctor
+      const query = { username };
+  
+      // Log the query
+      console.log("Patient query:", query);
+  
+      // Find the doctor in the database
+      const patientOne = await patient.findOne(query);
+  
+      // Log the doctor found (or not found)
+      console.log("Doctor found:", patientOne);
+  
+      if (!patientOne) {
+        console.log("Doctor not found with the provided username.");
+        return res
+          .status(404)
+          .json({ error: "Doctor not found with the provided username." });
+      }
+  
+      // Filter the appointments based on date and/or status
+      let filteredAppointments = patientOne.appointments;
+  
+      if (date) {
+        filteredAppointments = filteredAppointments.filter(
+          (appointment) => appointment.date.toISOString().split("T")[0] === date
+        );
+      }
+  
+      if (status) {
+        filteredAppointments = filteredAppointments.filter(
+          (appointment) => appointment.status === status
+        );
+      }
+  
+      res.json({ appointments: filteredAppointments });
+    } catch (error) {
+      console.error("Error filtering doctor appointments:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 module.exports = router

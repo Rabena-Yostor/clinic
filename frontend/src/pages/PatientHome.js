@@ -37,6 +37,11 @@ function PatientHome(){
           <FaUser /> View Health record
         </Link>
       </div>
+      <div>
+        <Link to="/patientPeter">
+          <FaUser /> View Appointment
+        </Link>
+      </div>
             
 
         </div>

@@ -14,7 +14,6 @@ import DoctorUpdateEdit from './pages/DoctorUpdateEdit';
 import PrescriptionList from './components/PrescriptionList';
 import PrescriptionFilter from './components/PrescriptionFilter';
 import FamilyForm from './components/FamilyForm';
-import DoctorDashboard from './components/DoctorDash';
 import AppointmentFilter from './components/DoctorFilter';
 import ViewHealthRecordsPage from './pages/ViewHealthRecordsPage';
 import Login from './pages/Login'; // Import your login page component
@@ -37,7 +36,8 @@ import AddHealthRecord from './pages/AddHealthRecord';
 import DoctorHomePage from'./pages/DoctorHomePage'
 import WalletDoc from './pages/WalletDoc';
 import PatientHome from './pages/PatientHome';
-
+import DoctorDash from './components/DoctorDash';
+import PatientDash from './components/PatientDash'
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
@@ -68,7 +68,6 @@ function App() {
             <Route path="/hamouda" element={<PrescriptionList />} />
             <Route path="/filter-prescriptions" element={<PrescriptionFilter />} />
             <Route path="/safina" element={<FamilyForm />} />
-            <Route path="/hana" element={<DoctorDashboard />} />
             <Route path="/filterAppointment" element={<AppointmentFilter />} />
             <Route path="/view-health-records" element={<ViewHealthRecordsPage />} />
             <Route path="/view-patient-records" element={<PatientHealthRecord />} />
@@ -89,7 +88,8 @@ function App() {
             <Route path="/AddHealthRecord" element={<AddHealthRecord/>} />
             <Route path="/DoctorHomePage" element={<DoctorHomePage/>} />
             <Route path="/PatientHome" element={<PatientHome/>} />
-            
+            <Route path="/doctorPeter" element={<DoctorDash/>} />
+            <Route path="/patientPeter" element={<PatientDash/>} />
           </Routes>
         </div>
       </BrowserRouter>

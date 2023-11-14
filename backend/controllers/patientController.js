@@ -649,6 +649,30 @@ const cancelSubscription = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+const updatePatientAppointments = async (req, res) => {
+    const { username, appointments } = req.body;
+  
+    try {
+      // Fetch the patient by username
+  
+      // Update the patient's appointments
+      const patientOne = await patient.findOneAndUpdate(
+        { username },
+        { $push: { appointments: appointments } },
+        { new: true } // Return the updated doctor document
+      );
+      console.log("patientupdated");
+  
+      // Save the updated patient
+      await patientOne.save();
+  
+      // Respond with the updated appointments
+      res.status(200).json({ appointments: patientOne.appointments });
+    } catch (error) {
+      console.error("Error updating patient appointments:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
 
 
 
@@ -676,4 +700,5 @@ module.exports = {
     getSubscribedHealthPackages,
     getSubscriptionStatus,
     cancelSubscription,
+    updatePatientAppointments,
 }

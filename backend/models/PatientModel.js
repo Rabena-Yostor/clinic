@@ -52,7 +52,16 @@ const patientSchema = new Schema({
         type:Number,
         default: 0,
 
-    }
+    },
+    appointments: [
+        {
+          date: { type: Date },
+          status: {
+            type: String,
+            enum: ["upcoming", "completed", "cancelled", "rescheduled"],
+          },
+        },
+      ],
 },{timestamps: true})
 
 patientSchema.methods.comparePassword = async function(candidatePassword) {
