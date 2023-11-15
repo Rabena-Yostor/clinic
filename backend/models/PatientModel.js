@@ -69,6 +69,10 @@ const patientSchema = new Schema({
             },
         },
     ],
+    familyMembers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'FamilyMember'
+      }]
 },{timestamps: true})
 
 patientSchema.methods.comparePassword = async function(candidatePassword) {

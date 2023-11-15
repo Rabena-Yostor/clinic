@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from 'axios';
 import DoctorDetails from "../components/DoctorDetails";
 import DoctorForm from "../components/DoctorForm";
-import HealthRecordForm from '../components/HealthRecordForm';
-
-
 const HomeDoctors = () => {
   const [doctors, setDoctors] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -12,7 +8,6 @@ const HomeDoctors = () => {
   const [specialitySearchTerm, setSpecialitySearchTerm] = useState("");
   const [datetimeSearchTerm, setDatetimeSearchTerm] = useState("");
   const [filteredDoctors, setFilteredDoctors] = useState(null);
- // const [selectedDoctorHealthRecords, setSelectedDoctorHealthRecords] = useState([]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -38,7 +33,6 @@ const HomeDoctors = () => {
 
   useEffect(() => {
     if (!doctors) return;
-
     const nameFiltered = doctors.filter((doctor) =>
     doctor.name && doctor.name.toLowerCase().includes(nameSearchTerm.toLowerCase())
   );
@@ -53,6 +47,7 @@ const HomeDoctors = () => {
     doctor.availableAppointment.toLowerCase().includes(datetimeSearchTerm.toLowerCase())
   );
 
+  
     setFilteredDoctors(
       nameSearchTerm && specialitySearchTerm && datetimeSearchTerm
         ? nameFiltered
@@ -89,51 +84,7 @@ const HomeDoctors = () => {
         : doctors
     );
   }, [doctors, nameSearchTerm, specialitySearchTerm, datetimeSearchTerm]);
-
-  const addHealthRecord = async (username, healthRecordData) => {
-    try {
-      const { bloodPressure, heartRate, allergies, medications } = healthRecordData;
-      const response = await fetch(`http://localhost:4000/api/doctors/addHealthRecord/${username}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // You can pass additional data in the body if needed
-        body: JSON.stringify({
-          username,
-          newHealthRecordData:{
-            bloodPressure,
-            heartRate,
-            allergies,
-            medications,
-          }
-        }),
-      });
-      console.log('Response:', response);
-      const data = await response.json();
-      if (response.ok) {
-        if (data.message === 'Health record added successfully') {
-          console.log('New health record added:', data.message);
-          alert('New health record added')
-        } else if (data.message === 'Health record updated successfully') {
-          console.log('Existing health record updated:', data.message);
-          alert('Existing health record updated')
-                }
-      } else {
-        if (response.status === 404 && data.error === 'Patient not found') {
-          console.error('Error adding health record: Patient not found');
-          alert('Patient not found. Please check the username and try again.')
-           } else {
-          console.error('Error adding health record:', data.error);
-          alert('Error adding health record. Please try again.'); 
-
-        }
-      }
-    } catch (error) {
-      console.error('Error adding health record:', error);
-    }
-  };
-
+ 
   return (
     <div className="home">
       <div className="search-bar">
@@ -171,9 +122,12 @@ const HomeDoctors = () => {
           ))}
       </div>
       <DoctorForm />
-      <HealthRecordForm onAddHealthRecord={addHealthRecord} />
-      
-     
+      {selectedDoctor && (
+        <div className="selected-doctor-info">
+          <h2>Selected Doctor Information</h2>
+          <DoctorDetails doctor={selectedDoctor} />
+        </div>
+      )}
     </div>
   );
 };

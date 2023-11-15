@@ -549,6 +549,101 @@ const sendOtpAndSetPassword = async (req, res) => {
   }
 };
 ///////////////////////////////////////// END OF HANA'S FOLDER
+
+
+//SAFINA 
+// Function to add appointments for a specific doctor by ID
+const addAppointments = async (req, res) => {
+  const { id } = req.params;
+  const { appointments } = req.body;
+
+  try {
+    // Validate the appointments format or any other validation as needed
+
+    // Example validation logic can be added here
+    console.log('Doctor ID:', id);
+
+    // Find the doctor by ID
+    const doctor = await Doctor.findOne({ _id: id });
+    console.log('Doctor:', doctor);
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Add new appointments to the existing ones
+    doctor.Appointments = [...doctor.Appointments, ...appointments];
+
+    // Save the updated doctor with new appointments
+    await doctor.save();
+
+    // Remove the selected appointments from the doctor's appointments array
+    doctor.Appointments = doctor.Appointments.filter((appointment) => !appointments.includes(appointment));
+
+    // Save the doctor again to update the appointments array
+    await doctor.save();
+
+    res.status(200).json({ message: 'Appointments added successfully', doctor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+
+const getAvailableAppointments = async (req, res) => {
+  const { doctorId } = req.params;
+
+  try {
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Get all available appointments of the selected doctor
+    const Appointments = doctor.Appointments;
+
+    if (!Appointments || Appointments.length === 0) {
+      return res.status(404).json({ message: 'No available appointments for this doctor' });
+    }
+
+    res.status(200).json({ Appointments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// doctorController.js
+
+// Function to remove an appointment for a specific doctor by ID and appointment date
+const removeAppointment = async (req, res) => {
+  const { id, appointmentDate } = req.params;
+
+  try {
+    // Find the doctor by ID
+    const doctor = await doctor.findById(id);
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Remove the selected appointment from the Appointments array
+    doctor.Appointments = doctor.Appointments.filter((date) => date.toISOString() !== appointmentDate);
+
+    // Save the updated doctor with the removed appointment
+    await doctor.save();
+
+    res.status(200).json({ message: 'Appointment removed successfully', doctor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 module.exports = {
   getDoctors,
   getDoctor,
@@ -571,4 +666,8 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
+  addAppointments,
+  getAvailableAppointments,
+  removeAppointment
+  
 };

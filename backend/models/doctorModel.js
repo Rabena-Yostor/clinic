@@ -47,6 +47,10 @@ const doctorSchema = new Schema(
       enum: ['upcoming', 'completed', 'cancelled', 'rescheduled'],
 
     },
+    Appointments: [{
+      type: Date,
+    }],
+    
     ArrayOfPatients: [{
       type: Schema.Types.ObjectId,
       ref: 'Patient', // This should be the model name for the patient schema

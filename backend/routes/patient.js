@@ -29,7 +29,8 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    createAppointment
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -85,6 +86,8 @@ router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
 
 // New route to handle updating patient appointments
 router.post("/updatePatientAppointments", updatePatientAppointments);
+
+router.post('/createAppointment',createAppointment)
 
 router.get("/getPatientAppointments/:username", async (req, res) => {
     const { username } = req.params;
@@ -172,5 +175,6 @@ router.get('/medicalHistoryFiles/:username', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 module.exports = router

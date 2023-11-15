@@ -3,19 +3,19 @@ const express = require('express')
 const Doctor = require("../models/doctorModel");
 
 const {
-    createDoctor,
-    getDoctor,
-    getDoctors,
-    updateDoctor,
-    deleteDoctor,
-    submitRequest,
-    updateDoctorAffiliation,
-    updateDoctorEmail,
-    updateDoctorHourlyRate,
-    addDoctor,
-    filterAllApps,
-    getPatientsForDoctor,
-    addHealthRecord,
+  createDoctor,
+  getDoctor,
+  getDoctors,
+  updateDoctor,
+  deleteDoctor,
+  submitRequest,
+  updateDoctorAffiliation,
+  updateDoctorEmail,
+  updateDoctorHourlyRate,
+  addDoctor,
+  filterAllApps,
+  getPatientsForDoctor,
+  addHealthRecord,
   viewHealthRecords,
   viewDoctorAccount,
   login,
@@ -23,10 +23,13 @@ const {
   getWalletAmount,
   signUp,
   sendOtpAndSetPassword,
-  logout, 
-  uploadMiddleware
+  logout,
+  uploadMiddleware,
+  addAppointments,
+  getAvailableAppointments,
+  removeAppointment
 
-}= require('../controllers/doctorController')
+} = require('../controllers/doctorController')
 
 
 const router = express.Router()
@@ -40,13 +43,13 @@ router.post('/createDoctor', createDoctor)
 // delete a Doctor
 router.delete('/deleteDoctor/:id', deleteDoctor)
 // update a Doctor
-router.patch('/updateDoctor/:id',updateDoctor)
+router.patch('/updateDoctor/:id', updateDoctor)
 
 //MALAK
-router.post ('/submitRequest',uploadMiddleware, submitRequest)
+router.post('/submitRequest', uploadMiddleware, submitRequest)
 //KHALED
 router.put('/updateDoctorEmail', updateDoctorEmail)
-router.put('/updateDoctorHourlyRate', updateDoctorHourlyRate)   
+router.put('/updateDoctorHourlyRate', updateDoctorHourlyRate)
 router.put('/updateDoctorAffiliation', updateDoctorAffiliation)
 
 router.post('/addDoctor', addDoctor)
@@ -71,6 +74,13 @@ router.post('/updateDoctorPassword', updateDoctorPassword)
 
 //send otp and set password
 router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
+
+router.post('/addAppointments/:id', addAppointments)
+
+router.get('/getAvailableAppointments/:id', getAvailableAppointments)
+router.delete('/doctor/removeAppointment/:id/:appointmentDate', removeAppointment);
+
+
 
 router.get("/getDoctorAppointments/:username", async (req, res) => {
   const { username } = req.params;
