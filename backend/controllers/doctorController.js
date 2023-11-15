@@ -307,8 +307,8 @@ const addDoctor = async (req, res) => {
 
 const addHealthRecord = async (req, res) => {
   const { username } = req.params;
-  const { newHealthRecordData } = req.body;
-
+  let { newHealthRecordData } = req.body;
+  const healthRecordData = newHealthRecordData || {};
   try {
     console.log('Adding health record for patient:', username);
     const patient = await Patient.findOne({ username });
@@ -316,30 +316,33 @@ const addHealthRecord = async (req, res) => {
     if (!patient) {
       return res.status(404).json({ message: 'Patient not found' });
     }
-    newHealthRecordData.patientId = patient._id;
+
+    healthRecordData.patientId = patient._id;
+
     const existingHealthRecord = await HealthRecord.findOne({ patientId: patient._id });
 
     if (existingHealthRecord) {
-
-      await existingHealthRecord.updateOne(newHealthRecordData);
+      await existingHealthRecord.updateOne(healthRecordData);
       res.status(200).json({ message: 'Health record updated successfully', healthRecord: existingHealthRecord });
     } else {
-    const { bloodPressure, heartRate, allergies, medications } = newHealthRecordData;
-    const newHealthRecord = await HealthRecord.create({
-      patientId: patient._id,
-      bloodPressure,
-      heartRate,
-      allergies,
-      medications
-    });
-    await newHealthRecord.save();
-    res.status(201).json({ message: 'Health record added successfully' });
-  }
+      const { bloodPressure, heartRate, allergies, medications } = healthRecordData;
+      const newHealthRecord = await HealthRecord.create({
+        patientId: patient._id,
+        bloodPressure,
+        heartRate,
+        allergies,
+        medications
+      });
+
+      await newHealthRecord.save();
+      res.status(201).json({ message: 'Health record added successfully' });
+    }
   } catch (error) {
     console.error('Error adding health record:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 // View health records for a specific patient
 const viewHealthRecords = async (req, res) => {
