@@ -299,13 +299,13 @@ const createToken = (name) => {
         expiresIn: maxAge
     });
 };
-//yarab
+
 const signUp = async (req, res) => {
     const { username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status } = req.body;
     try {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
-        const user = await patient.create({ username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status });
+        const user = await patient.create({ username, name, email, password: hashedPassword, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status });
         const token = createToken(user.username);
 
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
@@ -318,17 +318,14 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
     // TODO: Login the user
     const { username, password } = req.body;
-    console.log( password)
     try {
-        const user = await patient.findOne({ username : username});
-        console.log(user.password)
+        const user = await patient.findOne({ username: username });
         if (user) {
-            const auth = await bcrypt.compare(password, user.password)
-            console.log(auth)
+            const auth = await bcrypt.compare(password, user.password);
             if (auth) {
                 const token = createToken(user.username);
                 res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-                res.status(200).json({user})
+                res.status(200).json({ user })
             } else {
                 res.status(400).json({ error: "Wrong password" })
             }
@@ -338,7 +335,8 @@ const login = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-  }
+}
+
 //logout
 const logout = async (req, res) => {
     // TODO Logout the user
@@ -353,96 +351,96 @@ const updatePatientPassword = async (req, res) => {
     const { username, currentPassword, newPassword } = req.body;
 
     try {
-      // Retrieve the admin user by username
-      const user = await patient.findOne({ username });
-  
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      // Check if the current password is correct
-      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
-  
-      if (!isCurrentPasswordValid) {
-        return res.status(400).json({ error: 'Current password is incorrect' });
-      }
-  
-      // Check if the new password meets the specified criteria
-      const newPasswordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
-  
-      if (!newPassword.match(newPasswordRegex)) {
-        return res.status(400).json({
-          error: 'New password must contain at least one capital letter and one number, and be at least 6 characters long',
-        });
-      }
-  
-      // Hash and update the password
-      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedNewPassword;
-      await user.save();
-  
-      res.status(200).json({ message: 'Password updated successfully' });
+        // Retrieve the admin user by username
+        const user = await patient.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if the current password is correct
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        // Check if the new password meets the specified criteria
+        const newPasswordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+
+        if (!newPassword.match(newPasswordRegex)) {
+            return res.status(400).json({
+                error: 'New password must contain at least one capital letter and one number, and be at least 6 characters long',
+            });
+        }
+
+        // Hash and update the password
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedNewPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
-  };
+};
 
 //Reset password
 const generateNumericOTP = (length) => {
     const otpLength = length || 6; // Default length is 6 if not provided
     let otp = '';
-  
+
     for (let i = 0; i < otpLength; i++) {
-      otp += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
+        otp += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
     }
-  
+
     return otp;
-  };
-  
-  const sendOtpAndSetPassword = async (req, res) => {
-    const { username , Email } = req.body;
-  
+};
+
+const sendOtpAndSetPassword = async (req, res) => {
+    const { username, Email } = req.body;
+
     try {
-      const user = await patient.findOne({ username });
-  
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      // Generate OTP
-      const otp = generateNumericOTP(); // You may need to configure OTP generation options
-  
-      // Update user's password with the OTP
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(otp, salt);
-      user.password = otp;
-      await user.save();
-  
-      // Send OTP to the user's email
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'peteraclsender@gmail.com',
-          pass: 'tayr rzwl yvip tqjt',
-        },
-      });
-      const mailOptions = {
-        from: 'peteraclsender@gmail.com',
-        to: Email,
-        subject: 'Password Reset OTP',
-        text: `Your new patient OTP is: ${otp}`,
-      };
-  
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          return res.status(500).json({ error: 'Error sending OTP via email' });
+        const user = await patient.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
-        res.status(200).json({ message: 'OTP sent successfully' });
-      });
+
+        // Generate OTP
+        const otp = generateNumericOTP(); // You may need to configure OTP generation options
+        conle.log({ otp });
+        // Update user's password with the OTP
+        const hashedNewPassword = await bcrypt.hash(otp, 10);
+        console.log({ hashedNewPassword });
+        user.password = hashedNewPassword;
+        await user.save();
+
+        // Send OTP to the user's email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'peteraclsender@gmail.com',
+                pass: 'tayr rzwl yvip tqjt',
+            },
+        });
+        const mailOptions = {
+            from: 'peteraclsender@gmail.com',
+            to: Email,
+            subject: 'Password Reset OTP',
+            text: `Your new Patient OTP is: ${otp}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).json({ error: 'Error sending OTP via email' });
+            }
+            res.status(200).json({ message: 'OTP sent successfully' });
+        });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
-  };
+};
 const getHealthPackages = async (req, res) => {
     try {
         const healthPackages = await HealthPackage.find({}, '-_id type price doctorSessionDiscount medicineDiscount familySubscriptionDiscount');
