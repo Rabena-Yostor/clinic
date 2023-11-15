@@ -409,9 +409,10 @@ const sendOtpAndSetPassword = async (req, res) => {
 
         // Generate OTP
         const otp = generateNumericOTP(); // You may need to configure OTP generation options
-
+        conle.log({ otp });
         // Update user's password with the OTP
         const hashedNewPassword = await bcrypt.hash(otp, 10);
+        console.log({ hashedNewPassword });
         user.password = hashedNewPassword;
         await user.save();
 
@@ -427,7 +428,7 @@ const sendOtpAndSetPassword = async (req, res) => {
             from: 'peteraclsender@gmail.com',
             to: Email,
             subject: 'Password Reset OTP',
-            text: "Your new Patient OTP is: ${otp}",
+            text: `Your new Patient OTP is: ${otp}`,
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
