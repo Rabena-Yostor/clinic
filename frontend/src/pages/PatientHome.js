@@ -48,7 +48,13 @@ function PatientHome(){
         </Link>
       </div>
             
-
+      <br />
+            <hr/>
+            
+      <Link to="/change-password">
+        <button>Change Password</button>
+      </Link>
+      
         </div>
     );
 
