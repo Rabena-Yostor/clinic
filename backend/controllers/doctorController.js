@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
+const prescriptions = require("../models/prescriptionsModel");
 
 
 
@@ -548,7 +548,29 @@ const sendOtpAndSetPassword = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-///////////////////////////////////////// END OF HANA'S FOLDER
+
+ const addprescription = async (req, res) => {
+  
+  try {
+    // Create a new prescription from the request body
+    const newPrescription = new prescriptions({
+        name: req.body.name,
+        price: req.body.price,
+        grams: req.body.grams,
+        date: req.body.date,
+        doctor: req.body.doctor,
+        filled: req.body.filled,
+        patientUsername: req.body.patientUsername
+          });
+
+    // Save the prescription to the database
+    await newPrescription.save();
+
+    res.status(201).send('Prescription added successfully');
+} catch (error) {
+    res.status(500).send('Error adding prescription: ' + error.message);
+}
+}
 module.exports = {
   getDoctors,
   getDoctor,
@@ -571,4 +593,5 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
+  addprescription
 };

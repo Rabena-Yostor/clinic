@@ -24,7 +24,8 @@ const {
   signUp,
   sendOtpAndSetPassword,
   logout, 
-  uploadMiddleware
+  uploadMiddleware,
+  addprescription
 
 }= require('../controllers/doctorController')
 
@@ -59,6 +60,8 @@ router.get('/viewHealthRecords/:username', viewHealthRecords)
 
 router.get('/wallet-amount/:username', getWalletAmount);
 router.post('/signup', signUp)
+
+router.post('/addprescription', addprescription)
 
 //login
 router.post('/login', login)
