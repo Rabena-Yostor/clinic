@@ -2,6 +2,9 @@ import React from "react";
 import { FaUser } from 'react-icons/fa'
 import { Link } from "react-router-dom";
 
+
+
+
 function DoctorPage() {
 
     const handleAddHealthRecord = () => {
@@ -47,8 +50,9 @@ function DoctorPage() {
         <button>Change Password</button>
       </Link>
 
-        </div>
-    );
+        </div>
+    );
 }
+
 
 export default DoctorPage;

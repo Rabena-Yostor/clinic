@@ -118,4 +118,58 @@ div.error {
   color: #fff; /* Change the text color to ensure visibility */
   /* You can add other styling properties as needed */
 }
+.btn-add-record,
+.btn-view-record,
+.btn-view-wallet {
+  display: inline-flex; /* Aligns text and icon */
+  align-items: center; /* Vertical alignment */
+  justify-content: center; /* Horizontal alignment */
+  background-color: var(--primary); /* Consistent background color */
+  color: #fff; /* White text */
+  padding: 8px 15px; /* Padding around text */
+  border-radius: 4px; /* Rounded corners */
+  font-size: 0.9em; /* Adjust font size */
+  text-decoration: none; /* Remove underline from links */
+  margin: 5px; /* Space between buttons */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
 
+.btn-add-record:hover,
+.btn-view-record:hover,
+.btn-view-wallet:hover {
+  background-color: darken(var(--primary), 10%); /* Slightly darken on hover */
+}
+
+/* Specific colors for each button */
+.btn-add-record { background-color: #4F46E5; } /* Indigo */
+.btn-view-record { background-color: #10B981; } /* Green */
+.btn-view-wallet { background-color: #EF4444; } /* Red */
+
+/* Icon styling */
+.icon-small {
+  width: 16px; /* Slightly larger for visibility */
+  height: 16px;
+  margin-left: 10px; /* More space between text and icon */
+}
+
+/* General UI improvements */
+body {
+  /* ... existing styles ... */
+  line-height: 1.6; /* Improve readability */
+}
+
+/* Typography enhancements */
+h1, h2, h3, h4 {
+  font-weight: 600; /* More weight for headers */
+  color: #333; /* Darker color for contrast */
+}
+
+p {
+  color: #555; /* Slightly darker for better readability */
+}
+.welcome-doctor {
+  font-family: 'Poppins', sans-serif; /* Use Poppins or another font */
+  font-weight: 800; /* Makes the font bolder */
+  color: #1aac83; /* A unique color, adjust as per your preference */
+  /* Additional styling as needed */
+}
