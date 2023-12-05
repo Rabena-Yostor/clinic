@@ -47,7 +47,11 @@ function PatientHome(){
           <FaUser /> Document Management 
         </Link>
       </div>
-            
+      <div>
+        <Link to="/prescriptions">
+          <FaUser /> View Prescriptions
+        </Link>
+            </div>
       <br />
             <hr/>
             

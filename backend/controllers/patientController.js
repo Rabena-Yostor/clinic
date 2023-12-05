@@ -12,6 +12,7 @@ const HealthPackageSubscription = require('../models/healthPackageSubModel');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const Prescriptions = require("../models/prescriptionsModel");
 const bodyParser = require('body-parser'); // Import body-parser
 const express = require('express');
 const app = express();
@@ -727,7 +728,25 @@ const removeDocument = async (req, res) => {
 const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
 
 
-
+const ViewPrescriptions = async (req, res) => {
+    try {
+      const username = req.params.username;
+  
+          // Finding prescriptions by patient's username
+          const prescriptions = await Prescriptions.find({ patientUsername: username });
+  
+          // Checking if prescriptions exist for the user
+          if (!prescriptions || prescriptions.length === 0) {
+              return res.status(404).json({ message: 'No prescriptions found for this user.' });
+          }
+  
+          // Sending the prescriptions as a response
+          res.json(prescriptions);
+  } catch (error) {
+      res.status(500).send('Error retrieving prescriptions: ' + error.message);
+      console.log(error);
+  }
+  }
 
 
 
@@ -758,5 +777,6 @@ module.exports = {
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    ViewPrescriptions
 }

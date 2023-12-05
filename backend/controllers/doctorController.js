@@ -9,7 +9,8 @@ const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const prescriptions = require("../models/prescriptionsModel");
+const Prescriptions = require("../models/prescriptionsModel");
+//const { default: PrescriptionsViewer } = require("../../frontend/src/pages/PrescriptionsView");
 
 
 
@@ -553,7 +554,7 @@ const sendOtpAndSetPassword = async (req, res) => {
   
   try {
     // Create a new prescription from the request body
-    const newPrescription = new prescriptions({
+    const newPrescription = new Prescriptions({
         name: req.body.name,
         price: req.body.price,
         grams: req.body.grams,
@@ -571,6 +572,32 @@ const sendOtpAndSetPassword = async (req, res) => {
     res.status(500).send('Error adding prescription: ' + error.message);
 }
 }
+
+const updatePrescription = async (req, res) => {
+  try {
+    const prescriptionId = req.params.id;
+    const updateData = req.body; // Data to update
+
+    // Find the prescription by ID
+    const prescription = await Prescriptions.findById(prescriptionId);
+    if (!prescription) {
+        return res.status(404).json({ message: 'Prescription not found' });
+    }
+
+    // Check if the prescription's filled status is false
+    if (prescription.filled) {
+        return res.status(400).json({ message: 'Prescription is already filled and cannot be updated' });
+    }
+
+    // Update the prescription
+    const updatedPrescription = await Prescriptions.findByIdAndUpdate(prescriptionId, updateData, { new: true });
+    
+    res.json(updatedPrescription);
+} catch (error) {
+    res.status(500).json({ message: error.message });
+}
+}
+
 module.exports = {
   getDoctors,
   getDoctor,
@@ -593,5 +620,6 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
-  addprescription
+  addprescription,
+  updatePrescription
 };

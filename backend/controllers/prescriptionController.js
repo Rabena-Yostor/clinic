@@ -252,6 +252,14 @@ try {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+ const fetchAllPrescriptions = async (req, res) => {
+    try {
+      const prescriptions = await Prescription.find({});
+      res.json(prescriptions);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 module.exports = {
     createPrescription,
     getSinglePrescription,
@@ -265,4 +273,5 @@ module.exports = {
     filterPrescriptionsForPatient,
     viewPrescription,
     filterPrescriptionn,
+    fetchAllPrescriptions
 };

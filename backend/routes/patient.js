@@ -29,7 +29,8 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    ViewPrescriptions
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -154,6 +155,8 @@ router.get("/getPatientAppointments/:username", async (req, res) => {
   router.post('/uploadDocument/:username', uploadMiddlewareSingle, uploadDocument);
 
 router.delete('/removeDocument/:username/:documentId', removeDocument);
+
+router.get('/ViewPrescriptions/:username', ViewPrescriptions);
 
 router.get('/medicalHistoryFiles/:username', async (req, res) => {
     try {

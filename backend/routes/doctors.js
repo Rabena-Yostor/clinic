@@ -25,7 +25,8 @@ const {
   sendOtpAndSetPassword,
   logout, 
   uploadMiddleware,
-  addprescription
+  addprescription,
+  updatePrescription
 
 }= require('../controllers/doctorController')
 
@@ -42,7 +43,7 @@ router.post('/createDoctor', createDoctor)
 router.delete('/deleteDoctor/:id', deleteDoctor)
 // update a Doctor
 router.patch('/updateDoctor/:id',updateDoctor)
-
+router.patch('/updatePrescription/:id',updatePrescription)
 //MALAK
 router.post ('/submitRequest',uploadMiddleware, submitRequest)
 //KHALED
@@ -62,6 +63,7 @@ router.get('/wallet-amount/:username', getWalletAmount);
 router.post('/signup', signUp)
 
 router.post('/addprescription', addprescription)
+
 
 //login
 router.post('/login', login)

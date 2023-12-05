@@ -13,6 +13,7 @@ const {
     filterPrescriptionsForPatient,
     viewPrescription,
     filterPrescriptionn,
+    fetchAllPrescriptions
 } = require ('../controllers/prescriptionController')
 
 const router = express.Router()
@@ -45,7 +46,7 @@ router.get('/filterr',filterPrescriptionn)
 
 
 
-
+router.get('/fetchAllPrescriptions', fetchAllPrescriptions);
 
 //CREATE PRESCRIPTON FOR SPECIFIC PATIENT
 router.post('/create-prescription', createPrescriptionForPatient);
