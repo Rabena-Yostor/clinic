@@ -40,9 +40,10 @@ const Login = () => {
                     },
                     body: JSON.stringify({ username, password }),
                 });
+                
             }
             const data = await response.json();
-
+                console.log("data is ",data)
             if (response.status === 200) {
                 
                   localStorage.setItem('userType', userType);
@@ -53,6 +54,11 @@ const Login = () => {
                 } else if (userType === 'admin') {
                     navigate('/AdminHome'); // Adjust the path based on your routes
                 } else {
+                    const username = data.user.username;
+
+            // Store the user ID in local storage
+localStorage.setItem('username', username);
+console.log('Stored username in local storage:', username);
                     navigate('PatientHome'); // Adjust the path based on your routes
                 }
                

@@ -10,6 +10,7 @@ const Navbar = () => {
       // Handle the response as needed, e.g., redirect or perform additional actions
       console.log(response.data); // You can customize this based on your API response
       alert('Logout successful!');
+      window.localStorage.removeItem("username")
       // Redirect to the home page or another route after successful logout
       // You can use the useHistory hook from react-router-dom for this
       // import { useHistory } from 'react-router-dom';

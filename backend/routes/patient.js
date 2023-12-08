@@ -29,9 +29,11 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    createAppointment
 } = require('../controllers/patientController');
 const router = express.Router()
+router.post('/createAppointment',authenticatePatient ,createAppointment);
 
 router.get('/getAllPatients',getAllPatients)
 

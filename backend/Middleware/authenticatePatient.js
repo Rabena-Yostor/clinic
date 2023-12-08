@@ -12,9 +12,14 @@ const authenticateUser = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.error('Error authenticating user:', error);
+    if (error instanceof jwt.JsonWebTokenError) {
+      console.error('JWT error:', error.message);
+    } else if (error instanceof jwt.TokenExpiredError) {
+      console.error('Token expired:', error.message);
+    } else {
+      console.error('Error verifying token:', error.message);
+    }
     res.status(401).json({ error: 'Unauthorized' });
   }
 };
-
 module.exports = authenticateUser;

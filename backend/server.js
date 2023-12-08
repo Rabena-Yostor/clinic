@@ -8,9 +8,15 @@ const adminRoutes = require('./routes/adminRoutes')
 const prescriptionRoutes = require('./routes/prescriptionRoutes')
 
 const cors = require('cors');
-
-app.use(cors());
-app.use((req,res,next)=>{
+// Allow requests from all origins with the specified headers and methods
+const corsOptions = {
+    origin: 'http://localhost:3000', // Replace with your client's origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+  };
+  app.use(cors(corsOptions));
+  app.use((req,res,next)=>{
     console.log(req.path,req.method)
     next()
 })

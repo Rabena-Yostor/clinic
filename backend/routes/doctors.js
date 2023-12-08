@@ -24,12 +24,18 @@ const {
   signUp,
   sendOtpAndSetPassword,
   logout, 
-  uploadMiddleware
+  uploadMiddleware,
+  
+  removeAppointment
+  
 
 }= require('../controllers/doctorController')
 
 
 const router = express.Router()
+router.delete('/doctor/removeAppointment/:id/:appointmentDate', removeAppointment);
+
+
 
 // get all doctors
 router.get('/getAllDoctors', getDoctors)

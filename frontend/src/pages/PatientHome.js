@@ -48,6 +48,13 @@ function PatientHome(){
         </Link>
       </div>
             
+
+      <div>
+        <Link to="/doctors">
+          <FaUser /> view all doctors
+        </Link>
+      </div>
+
       <br />
             <hr/>
             

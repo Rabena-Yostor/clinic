@@ -1,12 +1,79 @@
 import React, { useState } from "react";
-
+import axios from 'axios';
 const DoctorDetails = ({ doctor }) => {
+  console.log("doctor is ",doctor)
   const [showDetails, setShowDetails] = useState(false);
-
+  const [selectedAppointment, setSelectedAppointment] = useState("");
+  const [localAppointments, setLocalAppointments] = useState([]);
+  const [error, setError] = useState("");
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
 
+
+
+
+
+
+
+
+  const simulateCreateAppointment = async () => {
+    if (!selectedAppointment) {
+        console.error('Selected appointment date is empty or invalid');
+        setError('Selected appointment date is required');
+        return;
+    }
+    console.log('Selected Appointment Date:', selectedAppointment);
+
+    try {
+      console.log("DTESTER")
+      const username = localStorage.getItem('username')
+      console.log(username)
+      console.log("ETESTER")
+      console.log("check here", selectedAppointment.toString())
+      const token = localStorage.getItem('yourJWTToken');
+      console.log("SafinaTest")
+
+        const response = await axios.post('http://localhost:4000/api/patient/createAppointment', {
+          username, appointmentDate: selectedAppointment.toString() },
+          { headers: { Authorization: token } }
+          );
+        console.log("CTESTER")
+        if (response.status === 201 || response.status === 404) {
+            // Simulate adding appointment to the local state
+            setLocalAppointments([...localAppointments, selectedAppointment]);
+
+            // Remove the selected appointment from the doctor's available appointments
+            const updatedAppointments = doctor.appointments.filter(appointment => appointment !== selectedAppointment);
+            doctor.appointments = updatedAppointments;
+            console.log("ATESTER")
+            // Make a request to the backend to remove the appointment from the doctor's array
+            await axios.delete(`http://localhost:4000/api/doctor/removeAppointment/${doctor._id}/${selectedAppointment}`);
+
+            console.log("BTESTER")
+            // Reset error state
+            setError('');
+        } else {
+            throw new Error('Failed to create appointment');
+        }
+    } catch (error) {
+        console.error('Error creating appointment:', error);
+        setError(`Failed to create appointment: ${error.message}`);
+
+        // Check the status code and provide a more specific error message
+        if (error.response && error.response.status === 400) {
+            setError('Selected appointment date is not available');
+        }
+    }
+};
+
+
+
+const handleDropdownClick = (e) => {
+  const selectedDate = e.target.value;
+  setSelectedAppointment(selectedDate.toString());
+  e.stopPropagation(); // Stop the event from propagating to the parent div
+};
   return (
     <div className="doctor-details" onClick={toggleDetails}>
       <h4>{doctor.name}</h4>
@@ -35,8 +102,30 @@ const DoctorDetails = ({ doctor }) => {
             {doctor.educationalBackground}
           </p>
           <p>
-            <strong>Available Appointment:</strong>
-            {doctor.availableAppointment}
+            <strong>Available Appointments:</strong>{" "}
+            {doctor.appointments && doctor.appointments.length > 0 ? (
+              <div>
+                <select onClick={handleDropdownClick}>
+                  
+                  <option value="" disabled>Select an appointment</option>
+                  {doctor.appointments.map((appointment, index) => (
+                    <option key={index} value={appointment.date}>
+                      {/* {new Date(appointment).toLocaleString()} */
+                      appointment.date}
+                    </option>
+                  ))}
+                  
+                </select>
+               
+                <button onClick={simulateCreateAppointment}>
+                  Create Appointment
+                </button>
+                
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+              </div>
+            ) : (
+              "No available appointments"
+            )}
           </p>
           <p>
             <strong>Session Price:</strong>
@@ -49,5 +138,4 @@ const DoctorDetails = ({ doctor }) => {
     </div>
   );
 };
-
 export default DoctorDetails;

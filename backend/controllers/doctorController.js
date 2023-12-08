@@ -549,6 +549,35 @@ const sendOtpAndSetPassword = async (req, res) => {
   }
 };
 ///////////////////////////////////////// END OF HANA'S FOLDER
+
+
+// doctorController.js
+
+// Function to remove an appointment for a specific doctor by ID and appointment date
+const removeAppointment = async (req, res) => {
+  const { id, appointmentDate } = req.params;
+
+  try {
+    // Find the doctor by ID
+    const doctor = await doctor.findById(id);
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Remove the selected appointment from the Appointments array
+    doctor.appointments = doctor.appointments.filter((date) => date.toISOString() !== appointmentDate);
+
+    // Save the updated doctor with the removed appointment
+    await doctor.save();
+
+    res.status(200).json({ message: 'Appointment removed successfully', doctor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 module.exports = {
   getDoctors,
   getDoctor,
@@ -571,4 +600,6 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
+  removeAppointment
+  
 };
