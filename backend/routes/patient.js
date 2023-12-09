@@ -29,7 +29,10 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    createNotificationPatient,
+    deleteNotification,
+    getAllNotificationsPatient,
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -81,6 +84,15 @@ router.post('/updatePatientPassword',updatePatientPassword)
 
 //send otp and set password
 router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
+
+// Create a new notification for a patient
+router.post('/createNotificationPatient', createNotificationPatient);
+
+// Delete a notification for a patient
+router.delete('/deleteNotification/:id', deleteNotification);
+
+// Get all notifications for a patient
+router.post('/getAllNotificationsPatient', getAllNotificationsPatient);
 
 
 // New route to handle updating patient appointments

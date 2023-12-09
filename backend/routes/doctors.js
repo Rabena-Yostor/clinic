@@ -1,6 +1,8 @@
 const express = require('express')
 
 const Doctor = require("../models/doctorModel");
+const Notification = require("../models/ClinicNotificationModel");
+const Patient = require("../models/PatientModel");
 
 const {
     createDoctor,
@@ -24,7 +26,10 @@ const {
   signUp,
   sendOtpAndSetPassword,
   logout, 
-  uploadMiddleware
+  uploadMiddleware,
+  createNotificationDoctor,
+  deleteNotification,
+  getAllNotificationsDoctor,
 
 }= require('../controllers/doctorController')
 
@@ -72,6 +77,11 @@ router.post('/updateDoctorPassword', updateDoctorPassword)
 //send otp and set password
 router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
 
+//notifications
+router.post('/createNotificationDoctor', createNotificationDoctor);
+router.delete('/deleteNotification/:id', deleteNotification);
+router.post('/getAllNotificationsDoctor', getAllNotificationsDoctor);
+
 router.get("/getDoctorAppointments/:username", async (req, res) => {
   const { username } = req.params;
 
@@ -99,6 +109,15 @@ router.post("/addDoctorAppointment", async (req, res) => {
     );
 
     res.status(200).json({ appointments: doctor.appointments });
+
+    //Send notification to Doctor with the new appointment date and and Patient name
+    const message = `You have a ${appointment.status} appointment on ${appointment.date}`;
+    const notifieddoctor = await Doctor.findOne({ username });
+    const notification = new Notification({
+      recipient_id: notifieddoctor._id,
+      message,
+    });
+    await notification.save();
   } catch (error) {
     console.error("Error adding doctor appointment:", error);
     res.status(500).json({ error: "Internal Server Error" });
