@@ -62,6 +62,11 @@ const patientSchema = new Schema({
           },
         },
       ],
+      familyMembers: [{
+        member: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient' },
+        relation: { type: String, enum: ['WIFE', 'HUSBAND', 'CHILDREN'] }
+    }],
+
       medicalHistoryFiles: [
         {
             medicalHistoryFileData: {

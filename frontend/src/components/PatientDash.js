@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link, useNavigate } from 'react-router-dom';
+//import BuyPage from '../pages/BuyPage';
+
 
 
 const PatientDash = () => {
@@ -12,6 +15,7 @@ const PatientDash = () => {
     useState("");
   const [newPatientAppointmentStatus, setNewPatientAppointmentStatus] =
     useState("");
+    const navigate = useNavigate();
 
 
 
@@ -93,6 +97,10 @@ const PatientDash = () => {
     }
   };
 
+  const handlePayment = () => {
+    navigate('/BuyPage');
+  };
+
   return (
     <div>
       <h2>Patient Dashboard</h2>
@@ -103,10 +111,16 @@ const PatientDash = () => {
       </div>
       <div>
         <h3>Patient Appointments</h3>
+        
         <ul>
           {patientAppointments.map((appointment, index) => (
             <li key={index}>
               Date: {appointment.date}, Status: {appointment.status}
+              <link to="/BuyPage">
+     
+      </link>
+      
+      <button onClick={() => handlePayment()}>Pay 400</button>
             </li>
           ))}
         </ul>

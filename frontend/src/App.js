@@ -39,6 +39,12 @@ import PatientHome from './pages/PatientHome';
 import DoctorDash from './components/DoctorDash';
 import PatientDash from './components/PatientDash'
 import PatientDocuments from './pages/PatientDocuments';
+import Addfamily from './pages/AddFamilyMember';
+import BuyPage from './pages/BuyPage';
+import Payment from './pages/Payment';
+import ViewEmploymentContractInfo from './pages/ViewContracts';
+import LinkFamilyMember from './pages/LinkFamilyMember';
+
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
@@ -92,6 +98,14 @@ function App() {
             <Route path="/doctorPeter" element={<DoctorDash/>} />
             <Route path="/patientPeter" element={<PatientDash/>} />
             <Route path = "/patientDocuments" element = {<PatientDocuments />} />
+            <Route path = "/AddFamily" element = {<Addfamily />} />
+            <Route path = "/BuyPage" element = {<BuyPage />} />
+            <Route path = "/payment" element = {<Payment />} />
+            <Route path = "/ViewContract" element = {<ViewEmploymentContractInfo/>} />
+            <Route path = "/linkFamilyMember" element = {<LinkFamilyMember/>} />
+ 
+
+            
          
           </Routes>
         </div>

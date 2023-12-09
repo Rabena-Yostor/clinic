@@ -11,7 +11,13 @@ function DoctorPage() {
     return (
         <div>
             <h1>Welcome Doctor</h1>
+            
+            <div>
+                <Link to="/ViewContract">
+                    <FaUser /> View Contracts
 
+                </Link>
+            </div>
             <div>
                 <Link to="/AddHealthRecord">
                     <FaUser /> Add Health Record

@@ -29,7 +29,8 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    linkFamilyMember
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -38,6 +39,8 @@ router.get('/getAllPatients',getAllPatients)
 router.get('/getPatient/:id', getPatient)
 
 router.post('/createPatient', createPatient)
+
+router.post('/linkFamilyMember', linkFamilyMember)
 
 router.delete('/deletePatient/:id',deletePatient)
 
@@ -63,6 +66,7 @@ router.get('/viewHealthPackage',getHealthPackages)
 router.post('/subscribeHealthPackage',subscribeToHealthPackage)
 
 router.get('/getSubscribedHealthPackages/:username',getSubscribedHealthPackages)
+
 
 router.get('/getSubscriptionStatus/:username',getSubscriptionStatus)
 router.post('/cancelSubscription',cancelSubscription)

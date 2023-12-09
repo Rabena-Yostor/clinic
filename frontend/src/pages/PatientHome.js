@@ -47,6 +47,16 @@ function PatientHome(){
           <FaUser /> Document Management 
         </Link>
       </div>
+      <div>
+        <Link to="/AddFamily">
+          <FaUser />  Add Family Member
+        </Link>
+      </div>
+      <div>
+        <Link to="/linkFamilyMember">
+          <FaUser />  Link Family Member
+        </Link>
+      </div>
             
       <br />
             <hr/>
@@ -54,6 +64,7 @@ function PatientHome(){
       <Link to="/change-password">
         <button>Change Password</button>
       </Link>
+      
       
         </div>
     );

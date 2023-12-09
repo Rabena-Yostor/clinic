@@ -191,6 +191,57 @@ const addFamilyMember = async (req, res) => {
 }
 ////////////////////////////// END SAFINA
 
+// link another patient's account as a family member using email or phone number stating relation to the patient
+const linkFamilyMember = async (req, res) => {
+    const { username, familyMemberContact, relation } = req.body; // Changed from patientId to username
+
+    try {
+        // Validate input
+        if (!username || !familyMemberContact || !relation) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Check if the relation is valid (WIFE, HUSBAND, CHILDREN)
+        if (!['WIFE', 'HUSBAND', 'CHILDREN'].includes(relation.toUpperCase())) {
+            return res.status(400).json({ error: 'Invalid relation type' });
+        }
+
+        // Find the requesting patient by username
+        const requestingPatient = await patient.findOne({ username: username });
+        if (!requestingPatient) {
+            return res.status(404).json({ error: 'Requesting patient not found' });
+        }
+
+        // Find the family member by email or phone number
+        const familyMemberPatient = await patient.findOne({ 
+            $or: [{ email: familyMemberContact }, { mobileNumber: familyMemberContact }]
+        });
+        if (!familyMemberPatient) {
+            return res.status(404).json({ error: 'Family member patient not found' });
+        }
+
+        // Update requesting patient's record to include family member
+        // Similarly, update the family member's record
+        // This assumes both patient records have a field for family members
+        requestingPatient.familyMembers.push({ member: familyMemberPatient._id, relation });
+        familyMemberPatient.familyMembers.push({ member: requestingPatient._id });
+
+        await requestingPatient.save();
+        await familyMemberPatient.save();
+        
+
+        res.status(200).json({ message: 'Family members linked successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+    
+
+
+
+
+
 
 //////////////////////////////// HANA FOLDER 
 const filterAllApps = async (req, res) => {
@@ -758,5 +809,6 @@ module.exports = {
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    linkFamilyMember
 }

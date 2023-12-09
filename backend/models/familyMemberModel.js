@@ -22,8 +22,14 @@ const familyMemberSchema = new Schema({
     },
     patient: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Patient' // Update to 'Patient' with capital 'P' if that's the name of your patient model
+        ref: 'Patient' 
+    },
+    //hazem update
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Patient' 
     }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('familyMemberSchema', familyMemberSchema);
