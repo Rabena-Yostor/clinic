@@ -3,6 +3,7 @@ const express = require('express')
 const Doctor = require("../models/doctorModel");
 const Notification = require("../models/ClinicNotificationModel");
 const Patient = require("../models/PatientModel");
+const nodemailer = require('nodemailer');
 
 const {
     createDoctor,
@@ -79,7 +80,7 @@ router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
 
 //notifications
 router.post('/createNotificationDoctor', createNotificationDoctor);
-router.delete('/deleteNotification/:id', deleteNotification);
+router.delete('/deleteNotification/:notificationId', deleteNotification);
 router.post('/getAllNotificationsDoctor', getAllNotificationsDoctor);
 
 router.get("/getDoctorAppointments/:username", async (req, res) => {
@@ -98,6 +99,7 @@ router.get("/getDoctorAppointments/:username", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 router.post("/addDoctorAppointment", async (req, res) => {
   const { username, appointment } = req.body;
 
@@ -118,6 +120,28 @@ router.post("/addDoctorAppointment", async (req, res) => {
       message,
     });
     await notification.save();
+    // Send OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'peteraclsender@gmail.com',
+        pass: 'tayr rzwl yvip tqjt',
+      },
+    });
+    const mailOptions = {
+      from: 'peteraclsender@gmail.com',
+      to: notifieddoctor.email,
+      subject: 'A new Appointment has been added',
+      text: `You have a ${appointment.status} appointment on ${appointment.date}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sendingemail' });
+      }
+      res.status(200).json({ message: 'Email sent successfully' });
+    });
+
   } catch (error) {
     console.error("Error adding doctor appointment:", error);
     res.status(500).json({ error: "Internal Server Error" });

@@ -89,7 +89,7 @@ router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
 router.post('/createNotificationPatient', createNotificationPatient);
 
 // Delete a notification for a patient
-router.delete('/deleteNotification/:id', deleteNotification);
+router.delete('/deleteNotification/:notificationId', deleteNotification);
 
 // Get all notifications for a patient
 router.post('/getAllNotificationsPatient', getAllNotificationsPatient);

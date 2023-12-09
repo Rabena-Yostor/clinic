@@ -39,6 +39,8 @@ import PatientHome from './pages/PatientHome';
 import DoctorDash from './components/DoctorDash';
 import PatientDash from './components/PatientDash'
 import PatientDocuments from './pages/PatientDocuments';
+import NotificationsPageDoctor from './pages/DoctorNotifications';
+import NotificationsPagePatient from './pages/PatientNotifcations';
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
@@ -92,6 +94,8 @@ function App() {
             <Route path="/doctorPeter" element={<DoctorDash/>} />
             <Route path="/patientPeter" element={<PatientDash/>} />
             <Route path = "/patientDocuments" element = {<PatientDocuments />} />
+            <Route path = "/doctorNotifications" element = {<NotificationsPageDoctor />} />
+            <Route path = "/patientNotifications" element = {<NotificationsPagePatient />} />
          
           </Routes>
         </div>

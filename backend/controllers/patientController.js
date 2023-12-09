@@ -8,7 +8,7 @@ const familyMemberModel = require('../models/familyMemberModel')
 const HealthRecord = require('../models/HealthRecordModel');
 const nodemailer = require('nodemailer');
 const HealthPackage = require('../models/healthPackageModel');
-const Payment = require('../models/paymentModel'); 
+const Payment = require('../models/paymentModel');
 const HealthPackageSubscription = require('../models/healthPackageSubModel');
 const multer = require('multer');
 const path = require('path');
@@ -319,9 +319,9 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
     // TODO: Login the user
     const { username, password } = req.body;
-    console.log( password)
+    console.log(password)
     try {
-        const user = await patient.findOne({ username : username});
+        const user = await patient.findOne({ username: username });
         console.log(user.password)
         if (user) {
             const auth = await bcrypt.compare(password, user.password)
@@ -329,7 +329,7 @@ const login = async (req, res) => {
             if (auth) {
                 const token = createToken(user.username);
                 res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-                res.status(200).json({user})
+                res.status(200).json({ user })
             } else {
                 res.status(400).json({ error: "Wrong password" })
             }
@@ -339,7 +339,7 @@ const login = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
-  }
+}
 //logout
 const logout = async (req, res) => {
     // TODO Logout the user
@@ -354,96 +354,96 @@ const updatePatientPassword = async (req, res) => {
     const { username, currentPassword, newPassword } = req.body;
 
     try {
-      // Retrieve the admin user by username
-      const user = await patient.findOne({ username });
-  
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      // Check if the current password is correct
-      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
-  
-      if (!isCurrentPasswordValid) {
-        return res.status(400).json({ error: 'Current password is incorrect' });
-      }
-  
-      // Check if the new password meets the specified criteria
-      const newPasswordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
-  
-      if (!newPassword.match(newPasswordRegex)) {
-        return res.status(400).json({
-          error: 'New password must contain at least one capital letter and one number, and be at least 6 characters long',
-        });
-      }
-  
-      // Hash and update the password
-      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedNewPassword;
-      await user.save();
-  
-      res.status(200).json({ message: 'Password updated successfully' });
+        // Retrieve the admin user by username
+        const user = await patient.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if the current password is correct
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        // Check if the new password meets the specified criteria
+        const newPasswordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+
+        if (!newPassword.match(newPasswordRegex)) {
+            return res.status(400).json({
+                error: 'New password must contain at least one capital letter and one number, and be at least 6 characters long',
+            });
+        }
+
+        // Hash and update the password
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedNewPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
-  };
+};
 
 //Reset password
 const generateNumericOTP = (length) => {
     const otpLength = length || 6; // Default length is 6 if not provided
     let otp = '';
-  
+
     for (let i = 0; i < otpLength; i++) {
-      otp += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
+        otp += Math.floor(Math.random() * 10); // Generate a random digit (0-9)
     }
-  
+
     return otp;
-  };
-  
-  const sendOtpAndSetPassword = async (req, res) => {
-    const { username , Email } = req.body;
-  
+};
+
+const sendOtpAndSetPassword = async (req, res) => {
+    const { username, Email } = req.body;
+
     try {
-      const user = await patient.findOne({ username });
-  
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      // Generate OTP
-      const otp = generateNumericOTP(); // You may need to configure OTP generation options
-  
-      // Update user's password with the OTP
-      const salt = await bcrypt.genSalt();
-      const hashedPassword = await bcrypt.hash(otp, salt);
-      user.password = otp;
-      await user.save();
-  
-      // Send OTP to the user's email
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'peteraclsender@gmail.com',
-          pass: 'tayr rzwl yvip tqjt',
-        },
-      });
-      const mailOptions = {
-        from: 'peteraclsender@gmail.com',
-        to: Email,
-        subject: 'Password Reset OTP',
-        text: `Your new patient OTP is: ${otp}`,
-      };
-  
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          return res.status(500).json({ error: 'Error sending OTP via email' });
+        const user = await patient.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
-        res.status(200).json({ message: 'OTP sent successfully' });
-      });
+
+        // Generate OTP
+        const otp = generateNumericOTP(); // You may need to configure OTP generation options
+
+        // Update user's password with the OTP
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(otp, salt);
+        user.password = otp;
+        await user.save();
+
+        // Send OTP to the user's email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'peteraclsender@gmail.com',
+                pass: 'tayr rzwl yvip tqjt',
+            },
+        });
+        const mailOptions = {
+            from: 'peteraclsender@gmail.com',
+            to: Email,
+            subject: 'Password Reset OTP',
+            text: `Your new patient OTP is: ${otp}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).json({ error: 'Error sending OTP via email' });
+            }
+            res.status(200).json({ message: 'OTP sent successfully' });
+        });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
-  };
+};
 const getHealthPackages = async (req, res) => {
     try {
         const healthPackages = await HealthPackage.find({}, '-_id type price doctorSessionDiscount medicineDiscount familySubscriptionDiscount');
@@ -459,7 +459,7 @@ const getHealthPackages = async (req, res) => {
 app.use(bodyParser.json());
 
 const subscribeToHealthPackage = async (req, res) => {
-    const { patientId, healthPackageId, familyMembers, paymentMethod , accountNumber } = req.body;
+    const { patientId, healthPackageId, familyMembers, paymentMethod, accountNumber } = req.body;
 
     try {
         // Check if the health package exists
@@ -518,9 +518,9 @@ const subscribeToHealthPackage = async (req, res) => {
             accountNumber: accountNumber,
             status: 'active', // Set subscription status to 'active'
             subscriptionDate: new Date(), // Timestamp when the subscription was created
-          });
-      
-          await HealthPackageSubscriptionInstance.save();
+        });
+
+        await HealthPackageSubscriptionInstance.save();
 
         res.status(200).json({ message: 'Health package subscribed successfully' });
     } catch (error) {
@@ -540,7 +540,7 @@ const getSubscribedHealthPackages = async (req, res) => {
     try {
         // Assuming you have a function to find the patient's ID by username
         const patientInstance = await patient.findOne({ username });
-        
+
         if (!patientInstance) {
             return res.status(404).json({ error: 'Patient not found' });
         }
@@ -550,7 +550,7 @@ const getSubscribedHealthPackages = async (req, res) => {
                 $or: [{ patient: patientInstance._id }, { familyMembers: patientInstance._id }],
                 status: 'active' // Filter only active subscriptions
             }).populate('healthPackage').populate('familyMembers');
-        
+
             res.status(200).json({ subscriptions });
         } catch (error) {
             console.error(error);
@@ -621,7 +621,7 @@ const getSubscriptionStatus = async (req, res) => {
 
 
 
-  
+
 
 
 // cancel a subscription 
@@ -659,29 +659,64 @@ const cancelSubscription = async (req, res) => {
 };
 const updatePatientAppointments = async (req, res) => {
     const { username, appointments } = req.body;
-  
+
     try {
-      // Fetch the patient by username
+        // Fetch the patient by username
+
+        // Update the patient's appointments
+        const patientOne = await patient.findOneAndUpdate(
+            { username },
+            { $push: { appointments: appointments } },
+            { new: true } // Return the updated doctor document
+        );
+        console.log("patientupdated");
+
+
+        // Save the updated patient
+        await patientOne.save();
+
+        //send a notification to the patient with the new appointment date and status
+
+        const message = `You have a new appointment notification open the website to check it`;
+        const notification = new Notification({
+            recipient_id: patientOne._id,
+            message,
+        });
+        await notification.save();
+
+            // Send mail to the user's email
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'peteraclsender@gmail.com',
+          pass: 'tayr rzwl yvip tqjt',
+        },
+      });
+      const mailOptions = {
+        from: 'peteraclsender@gmail.com',
+        to: patientOne.email,
+        subject: 'A new Appointment notification',
+        text: `You have a new appointment notification open the website to check it`,
+      };
   
-      // Update the patient's appointments
-      const patientOne = await patient.findOneAndUpdate(
-        { username },
-        { $push: { appointments: appointments } },
-        { new: true } // Return the updated doctor document
-      );
-      console.log("patientupdated");
-  
-      // Save the updated patient
-      await patientOne.save();
-  
-      // Respond with the updated appointments
-      res.status(200).json({ appointments: patientOne.appointments });
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.status(500).json({ error: 'Error sendingemail' });
+        }
+        res.status(200).json({ message: 'Email sent successfully' });
+      });
+
+
+        // Respond with the updated appointments
+        res.status(200).json({ message : "Appointments saved" , appointments: patientOne.appointments });
     } catch (error) {
-      console.error("Error updating patient appointments:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error updating patient appointments:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-  };
-  const uploadDocument = async (req, res) => {
+};
+
+
+const uploadDocument = async (req, res) => {
     const { username } = req.params;
     try {
         // Find the patient by username
@@ -731,83 +766,83 @@ const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
 //Notifications
 const createNotificationPatient = async (req, res) => {
     try {
-      const { PatientName, message } = req.body;
-  
-      // Validate required fields
-      if (!PatientName || !message ) {
-        return res.status(400).json({ message: 'Recipient ID, message are required' });
-      }
-  
-      // Find the recipient
-      const recipient = await patient.findOne({ username: PatientName });
-  
-      // Create a new notification
-      const notification = new Notification({
-        recipient_id: recipient._id,
-        message,
-      });
-  
-      // Save the notification to the database
-      await notification.save();
-  
-      return res.status(201).json({ message: 'Notification created successfully', notification });
+        const { PatientName, message } = req.body;
+
+        // Validate required fields
+        if (!PatientName || !message) {
+            return res.status(400).json({ message: 'Recipient ID, message are required' });
+        }
+
+        // Find the recipient
+        const recipient = await patient.findOne({ username: PatientName });
+
+        // Create a new notification
+        const notification = new Notification({
+            recipient_id: recipient._id,
+            message,
+        });
+
+        // Save the notification to the database
+        await notification.save();
+
+        return res.status(201).json({ message: 'Notification created successfully', notification });
     } catch (error) {
-      console.error('Error creating notification:', error);
-      return res.status(500).json({ message: 'Error creating notification' });
+        console.error('Error creating notification:', error);
+        return res.status(500).json({ message: 'Error creating notification' });
     }
-  };
-  
-  const deleteNotification = async (req, res) => {
+};
+
+const deleteNotification = async (req, res) => {
     try {
-      const { notificationId } = req.params;
-  
-      // Validate notification ID
-      if (!notificationId) {
-        return res.status(400).json({ message: 'Notification ID is required' });
-      }
-  
-      // Find and delete the notification
-      const deletedNotification = await Notification.findByIdAndDelete(notificationId);
-  
-      if (!deletedNotification) {
-        return res.status(404).json({ message: 'Notification not found' });
-      }
-  
-      return res.status(200).json({ message: 'Notification deleted successfully', deletedNotification });
+        const { notificationId } = req.params;
+
+        // Validate notification ID
+        if (!notificationId) {
+            return res.status(400).json({ message: 'Notification ID is required' });
+        }
+
+        // Find and delete the notification
+        const deletedNotification = await Notification.findByIdAndDelete(notificationId);
+
+        if (!deletedNotification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+
+        return res.status(200).json({ message: 'Notification deleted successfully', deletedNotification });
     } catch (error) {
-      console.error('Error deleting notification:', error);
-      return res.status(500).json({ message: 'Error deleting notification' });
+        console.error('Error deleting notification:', error);
+        return res.status(500).json({ message: 'Error deleting notification' });
     }
-  };
-  
-  //Get all notifications
-  const getAllNotificationsPatient = async (req, res) => {
+};
+
+//Get all notifications
+const getAllNotificationsPatient = async (req, res) => {
     try {
-      const { username } = req.body;
-  
-      // Validate the username
-      if (!username) {
-        return res.status(400).json({ message: 'Username is required in the request body' });
-      }
-  
-      // Find the pharmacist by username
-      const Patient = await patient.findOne({ username: username });
-      console.log(Patient)
-  
-      if (!Patient) {
-        return res.status(404).json({ message: 'Patient not found' });
-      }
-  
-      // Get all notifications for the pharmacist based on their ID
-      const notifications = await Notification.find({ recipient_id: Patient._id });
-  
-      return res.status(200).json({ notifications });
+        const { username } = req.body;
+
+        // Validate the username
+        if (!username) {
+            return res.status(400).json({ message: 'Username is required in the request body' });
+        }
+
+        // Find the pharmacist by username
+        const Patient = await patient.findOne({ username: username });
+        console.log(Patient)
+
+        if (!Patient) {
+            return res.status(404).json({ message: 'Patient not found' });
+        }
+
+        // Get all notifications for the pharmacist based on their ID
+        const notifications = await Notification.find({ recipient_id: Patient._id });
+
+        return res.status(200).json({ notifications });
     } catch (error) {
-      console.error('Error getting notifications:', error);
-      return res.status(500).json({ message: 'Error getting notifications' });
+        console.error('Error getting notifications:', error);
+        return res.status(500).json({ message: 'Error getting notifications' });
     }
-  };
-  
+};
+
 
 
 

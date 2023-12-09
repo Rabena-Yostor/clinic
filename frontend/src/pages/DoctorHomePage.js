@@ -29,18 +29,23 @@ function DoctorPage() {
                     <FaUser /> view wallet amount
                 </Link>
             </div>
-            
+            <div>
+                <Link to="/doctorNotifications">
+                    <FaUser /> Notifications
+                </Link>
+            </div>
+
             <div>
                 <Link to="/doctorPeter">
                     <FaUser /> DoctorAppointments
                 </Link>
             </div>
             <br />
-            <hr/>
-            
-      <Link to="/change-password">
-        <button>Change Password</button>
-      </Link>
+            <hr />
+
+            <Link to="/change-password">
+                <button>Change Password</button>
+            </Link>
 
         </div>
     );
