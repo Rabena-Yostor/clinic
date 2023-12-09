@@ -52,6 +52,11 @@ function PatientHome() {
           <FaUser /> Notifications
         </Link>
       </div>
+      <div>
+        <Link to="/patientConversation">
+          <FaUser /> Conversation
+        </Link>
+      </div>
       <br />
       <hr />
 

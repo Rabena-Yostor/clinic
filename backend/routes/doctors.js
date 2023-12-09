@@ -34,6 +34,8 @@ const {
 
 }= require('../controllers/doctorController')
 
+const { getConversationDoctor ,sendMessageDoctor} = require('../controllers/conversationController');
+
 
 const router = express.Router()
 
@@ -82,6 +84,10 @@ router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
 router.post('/createNotificationDoctor', createNotificationDoctor);
 router.delete('/deleteNotification/:notificationId', deleteNotification);
 router.post('/getAllNotificationsDoctor', getAllNotificationsDoctor);
+
+//conversation
+router.post('/getconversationDoctor', getConversationDoctor);
+router.post('/sendMessageDoctor', sendMessageDoctor);
 
 router.get("/getDoctorAppointments/:username", async (req, res) => {
   const { username } = req.params;

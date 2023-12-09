@@ -40,6 +40,11 @@ function DoctorPage() {
                     <FaUser /> DoctorAppointments
                 </Link>
             </div>
+            <div>
+                <Link to="/doctorConversation">
+                    <FaUser /> Conversation
+                </Link>
+            </div>
             <br />
             <hr />
 

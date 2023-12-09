@@ -34,6 +34,9 @@ const{
     deleteNotification,
     getAllNotificationsPatient,
 } = require('../controllers/patientController');
+
+const {getConversationPatient , sendMessagePatient} = require('../controllers/conversationController');
+
 const router = express.Router()
 
 router.get('/getAllPatients',getAllPatients)
@@ -93,6 +96,10 @@ router.delete('/deleteNotification/:notificationId', deleteNotification);
 
 // Get all notifications for a patient
 router.post('/getAllNotificationsPatient', getAllNotificationsPatient);
+
+//Conversation
+router.post('/getConversationPatient', getConversationPatient);
+router.post('/sendMessagePatient', sendMessagePatient);
 
 
 // New route to handle updating patient appointments
