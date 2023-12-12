@@ -1,176 +1,213 @@
-const express = require('express');
-const patient = require('../models/PatientModel')
-const authenticatePatient = require('../Middleware/authenticatePatient'); 
-const { requireAuth } = require('../Middleware/authMiddleware');
-const{
-    createPatient,
-    getAllPatients,
-    getPatient,
-    deletePatient,
-    updatePatient,
-    filterAppointment,
-    registerPatient,
-    loginPatient,
-    getFamilyMembers,
-    addFamilyMember,
-    filterAllApps,
-    getHealthRecord,
-    getWalletAmount,
-    signUp,
-    login,
-    logout,
-    updatePatientPassword,
-    sendOtpAndSetPassword,
-    getHealthPackages,
-    subscribeToHealthPackage,
-    getSubscribedHealthPackages,
-    getSubscriptionStatus,
-    cancelSubscription,
-    updatePatientAppointments,
-    uploadDocument,
-    uploadMiddlewareSingle,
-    removeDocument
-} = require('../controllers/patientController');
-const router = express.Router()
+const express = require("express");
 
-router.get('/getAllPatients',getAllPatients)
+const Doctor = require("../models/doctorModel");
 
-router.get('/getPatient/:id', getPatient)
+const {
+  createDoctor,
+  getDoctor,
+  getDoctors,
+  updateDoctor,
+  deleteDoctor,
+  submitRequest,
+  updateDoctorAffiliation,
+  updateDoctorEmail,
+  updateDoctorHourlyRate,
+  addDoctor,
+  filterAllApps,
+  getPatientsForDoctor,
+  addHealthRecord,
+  viewHealthRecords,
+  viewDoctorAccount,
+  login,
+  updateDoctorPassword,
+  getWalletAmount,
+  signUp,
+  sendOtpAndSetPassword,
+  logout,
+  uploadMiddleware,
+} = require("../controllers/doctorController");
 
-router.post('/createPatient', createPatient)
+const router = express.Router();
 
-router.delete('/deletePatient/:id',deletePatient)
+// get all doctors
+router.get("/getAllDoctors", getDoctors);
+// get a single Doctor
+router.get("/getDoctor/:id", getDoctor);
+// post a new Doctor
+router.post("/createDoctor", createDoctor);
+// delete a Doctor
+router.delete("/deleteDoctor/:id", deleteDoctor);
+// update a Doctor
+router.patch("/updateDoctor/:id", updateDoctor);
 
-router.patch('/updatePatient/:id', updatePatient)
+//MALAK
+router.post("/submitRequest", uploadMiddleware, submitRequest);
+//KHALED
+router.put("/updateDoctorEmail", updateDoctorEmail);
+router.put("/updateDoctorHourlyRate", updateDoctorHourlyRate);
+router.put("/updateDoctorAffiliation", updateDoctorAffiliation);
 
-router.get('/filterAppointment/:id',filterAppointment)
+router.post("/addDoctor", addDoctor);
 
-router.post('/registerPatient',registerPatient)
+router.get("/filterAllApps/doctor", filterAllApps);
+router.get("/getPatientsForDoctor", getPatientsForDoctor);
 
-router.post('/loginPatient',loginPatient)
+router.post("/addHealthRecord/:username", addHealthRecord);
+router.get("/viewHealthRecords/:username", viewHealthRecords);
 
-router.get('/getFamilyMembers/:username',getFamilyMembers)
-
-router.post('/addFamilyMember',addFamilyMember)
-
-router.get('/filterAppointmentPatient',filterAllApps)
-
-router.get('/viewHealthRecords/:username', getHealthRecord);
-router.get('/wallet-amount/:username', getWalletAmount);
-
-router.get('/viewHealthPackage',getHealthPackages) 
-
-router.post('/subscribeHealthPackage',subscribeToHealthPackage)
-
-router.get('/getSubscribedHealthPackages/:username',getSubscribedHealthPackages)
-
-router.get('/getSubscriptionStatus/:username',getSubscriptionStatus)
-router.post('/cancelSubscription',cancelSubscription)
-
-//sign up
-router.post('/signup',signUp)
+router.get("/wallet-amount/:username", getWalletAmount);
+router.post("/signup", signUp);
 
 //login
-router.post('/login',login)
+router.post("/login", login);
 
 //logout
-router.get('/logout',logout)
+router.get("/logout", logout);
 
 //update password
-router.post('/updatePatientPassword',updatePatientPassword)
+router.post("/updateDoctorPassword", updateDoctorPassword);
 
 //send otp and set password
-router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
+router.post("/sendOtpAndSetPassword", sendOtpAndSetPassword);
 
+router.get("/getDoctorAppointments/:username", async (req, res) => {
+  const { username } = req.params;
 
-// New route to handle updating patient appointments
-router.post("/updatePatientAppointments", updatePatientAppointments);
+  try {
+    const doctor = await Doctor.findOne({ username });
 
-router.get("/getPatientAppointments/:username", async (req, res) => {
-    const { username } = req.params;
-  
-    try {
-      const doctor = await patient.findOne({ username });
-  
-      if (!doctor) {
-        return res.status(404).json({ error: "Patient not found" });
-      }
-  
-      res.status(200).json({ appointments: doctor.appointments });
-    } catch (error) {
-      console.error("Error fetching patient appointments:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+    if (!doctor) {
+      return res.status(404).json({ error: "Doctor not found" });
     }
-  });
-  router.post("/filterAppointments", async (req, res) => {
-    try {
-      console.log("Request received:", req.body);
-  
-      const { username, date, status } = req.body;
-  
-      // Check if the username is correctly received
-      console.log("Username from request:", username);
-  
-      // Construct the query to find the doctor
-      const query = { username };
-  
-      // Log the query
-      console.log("Patient query:", query);
-  
-      // Find the doctor in the database
-      const patientOne = await patient.findOne(query);
-  
-      // Log the doctor found (or not found)
-      console.log("Doctor found:", patientOne);
-  
-      if (!patientOne) {
-        console.log("Doctor not found with the provided username.");
-        return res
-          .status(404)
-          .json({ error: "Doctor not found with the provided username." });
-      }
-  
-      // Filter the appointments based on date and/or status
-      let filteredAppointments = patientOne.appointments;
-  
-      if (date) {
-        filteredAppointments = filteredAppointments.filter(
-          (appointment) => appointment.date.toISOString().split("T")[0] === date
-        );
-      }
-  
-      if (status) {
-        filteredAppointments = filteredAppointments.filter(
-          (appointment) => appointment.status === status
-        );
-      }
-  
-      res.json({ appointments: filteredAppointments });
-    } catch (error) {
-      console.error("Error filtering doctor appointments:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+
+    res.status(200).json({ appointments: doctor.appointments });
+  } catch (error) {
+    console.error("Error fetching doctor appointments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/addDoctorAppointment", async (req, res) => {
+  const { username, appointment } = req.body;
+
+  try {
+    const doctor = await Doctor.findOneAndUpdate(
+      { username },
+      { $push: { appointments: appointment } },
+      { new: true } // Return the updated doctor document
+    );
+
+    res.status(200).json({ appointments: doctor.appointments });
+  } catch (error) {
+    console.error("Error adding doctor appointment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post("/filterAppointments", async (req, res) => {
+  try {
+    console.log("Request received:", req.body);
+
+    const { username, date, status } = req.body;
+
+    // Check if the username is correctly received
+    console.log("Username from request:", username);
+
+    // Construct the query to find the doctor
+    const query = { username };
+
+    // Log the query
+    console.log("Doctor query:", query);
+
+    // Find the doctor in the database
+    const doctor = await Doctor.findOne(query);
+
+    // Log the doctor found (or not found)
+    console.log("Doctor found:", doctor);
+
+    if (!doctor) {
+      console.log("Doctor not found with the provided username.");
+      return res
+        .status(404)
+        .json({ error: "Doctor not found with the provided username." });
     }
-  });
-  router.post('/uploadDocument/:username', uploadMiddlewareSingle, uploadDocument);
 
-router.delete('/removeDocument/:username/:documentId', removeDocument);
+    // Filter the appointments based on date and/or status
+    let filteredAppointments = doctor.appointments;
 
-router.get('/medicalHistoryFiles/:username', async (req, res) => {
-    try {
-
-        const {username} = req.params // Replace with your authentication logic
-        console.log(username)
-        const loggedinPatient = await patient.findOne({ username });
-
-        if (!loggedinPatient) {
-            return res.status(404).json({ error: 'Patient not found' });
-        }
-        const medicalHistoryFiles = loggedinPatient.medicalHistoryFiles || [];
-        res.status(200).json(medicalHistoryFiles);
-    } catch (error) {
-        console.error('Error fetching medical history files:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+    if (date) {
+      filteredAppointments = filteredAppointments.filter(
+        (appointment) => appointment.date.toISOString().split("T")[0] === date
+      );
     }
+
+    if (status) {
+      filteredAppointments = filteredAppointments.filter(
+        (appointment) => appointment.status === status
+      );
+    }
+
+    res.json({ appointments: filteredAppointments });
+  } catch (error) {
+    console.error("Error filtering doctor appointments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-module.exports = router
+// Reschedule appointment by ID
+router.patch("/rescheduleAppointment", async (req, res) => {
+  const { appointmentId, newDate } = req.body;
+  if (!appointmentId || !newDate) {
+    return res.status(404).json({ message: "hihihi" });
+  }
+  try {
+    const updatedAppointment = await Doctor.updateOne(
+      { "appointments._id": appointmentId },
+      {
+        $set: {
+          "appointments.$.date": newDate,
+          "appointments.$.status": "rescheduled",
+        },
+      }
+    );
+
+    if (updatedAppointment.nModified === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Fetch the updated doctor data
+    const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+    res.json(doctor);
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+// Cancel appointment by ID
+router.patch("/cancelAppointment", async (req, res) => {
+  const { appointmentId } = req.body;
+  if (!appointmentId) {
+    return res.status(404).json({ message: "hihihi" });
+  }
+  try {
+    const updatedAppointment = await Doctor.updateOne(
+      { "appointments._id": appointmentId },
+      {
+        $set: {
+          "appointments.$.status": "cancelled",
+        },
+      }
+    );
+
+    if (updatedAppointment.nModified === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Fetch the updated doctor data
+    const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+    res.json(doctor);
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+module.exports = router;
