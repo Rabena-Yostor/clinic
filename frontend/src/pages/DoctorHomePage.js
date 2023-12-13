@@ -35,6 +35,11 @@ function DoctorPage() {
                     <FaUser /> DoctorAppointments
                 </Link>
             </div>
+            <div>
+                <Link to="/doctorFollowUpRequests">
+                    <FaUser /> Follow-Up Requests
+                </Link>
+            </div>
             <br />
             <hr/>
             

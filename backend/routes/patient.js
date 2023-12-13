@@ -29,7 +29,8 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    submitFollowUpRequest
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -85,6 +86,8 @@ router.post('/sendOtpAndSetPassword',sendOtpAndSetPassword)
 
 // New route to handle updating patient appointments
 router.post("/updatePatientAppointments", updatePatientAppointments);
+
+router.post("/followUpRequest/:username", submitFollowUpRequest);
 
 router.get("/getPatientAppointments/:username", async (req, res) => {
     const { username } = req.params;
@@ -150,8 +153,10 @@ router.get("/getPatientAppointments/:username", async (req, res) => {
       console.error("Error filtering doctor appointments:", error);
       res.status(500).json({ error: "Internal Server Error" });
     }
-  });
-  router.post('/uploadDocument/:username', uploadMiddlewareSingle, uploadDocument);
+});
+
+
+router.post('/uploadDocument/:username', uploadMiddlewareSingle, uploadDocument);
 
 router.delete('/removeDocument/:username/:documentId', removeDocument);
 

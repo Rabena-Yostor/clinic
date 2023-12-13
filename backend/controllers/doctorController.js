@@ -217,6 +217,18 @@ const updateDoctorAffiliation = async (req, res) => {
       res.status(404).json({ message: error.message });
   }
 }
+
+const DoctorFollowUpRequests = async (req, res) => {
+    const {username}=req.params
+    try {
+      const doctor = await Doctor.findOne({ username: username });
+      doctor.affiliation = affiliation;
+      doctor.save();
+      res.status(200).json(doctor);
+  } catch (error) {
+      res.status(404).json({ message: error.message });
+  }
+}
 /////////////////////////////////////////// END OF KHALED
 
 ///////////////////////////////////////// HANA'S FOLDER
@@ -571,4 +583,5 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
+  DoctorFollowUpRequests
 };

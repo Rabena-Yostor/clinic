@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
+const followUpRequest = require('../models/followUpRequest')
 const HealthRecord = require('../models/HealthRecordModel');
 const nodemailer = require('nodemailer');
 const HealthPackage = require('../models/healthPackageModel');
@@ -272,8 +273,6 @@ const getHealthRecord = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
-
 
 const getWalletAmount = async (req, res) => {
     try {
@@ -726,6 +725,23 @@ const removeDocument = async (req, res) => {
 };
 const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
 
+const submitFollowUpRequest = async (req, res) => {
+    const username = req.params.username;
+    const { date} = req.body;
+    try{
+        //create a new followUpRequest
+        const newFollowUpRequest = new followUpRequest({
+            username,
+            date
+        });
+        await newFollowUpRequest.save();
+        return res.status(200).json({ message: 'Follow-up request submitted successfully' });
+    }catch(error){
+        console.error('Error submitting follow-up request:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 
 
 
@@ -758,5 +774,6 @@ module.exports = {
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    submitFollowUpRequest
 }
