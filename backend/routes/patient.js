@@ -33,7 +33,7 @@ const{
     createAppointment
 } = require('../controllers/patientController');
 const router = express.Router()
-router.post('/createAppointment',authenticatePatient ,createAppointment);
+router.post('/createAppointment' ,createAppointment);
 
 router.get('/getAllPatients',getAllPatients)
 

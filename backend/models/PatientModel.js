@@ -58,7 +58,7 @@ const patientSchema = new Schema({
           date: { type: Date },
           status: {
             type: String,
-            enum: ["upcoming", "completed", "cancelled", "rescheduled"],
+            enum: ["upcoming", "completed", "cancelled", "rescheduled",""],
           },
         },
       ],

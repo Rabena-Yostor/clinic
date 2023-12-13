@@ -31,12 +31,10 @@ const DoctorDetails = ({ doctor }) => {
       console.log(username)
       console.log("ETESTER")
       console.log("check here", selectedAppointment.toString())
-      const token = localStorage.getItem('yourJWTToken');
       console.log("SafinaTest")
 
         const response = await axios.post('http://localhost:4000/api/patient/createAppointment', {
           username, appointmentDate: selectedAppointment.toString() },
-          { headers: { Authorization: token } }
           );
         console.log("CTESTER")
         if (response.status === 201 || response.status === 404) {
@@ -48,7 +46,6 @@ const DoctorDetails = ({ doctor }) => {
             doctor.appointments = updatedAppointments;
             console.log("ATESTER")
             // Make a request to the backend to remove the appointment from the doctor's array
-            await axios.delete(`http://localhost:4000/api/doctor/removeAppointment/${doctor._id}/${selectedAppointment}`);
 
             console.log("BTESTER")
             // Reset error state
