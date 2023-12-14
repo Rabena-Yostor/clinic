@@ -9,6 +9,7 @@ const nodemailer = require('nodemailer');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const FollowUp = require('../models/followUpRequest');
 
 
 
@@ -219,15 +220,54 @@ const updateDoctorAffiliation = async (req, res) => {
 }
 
 const DoctorFollowUpRequests = async (req, res) => {
-    const {username}=req.params
+    const {doctorUsername}=req.params
     try {
-      const doctor = await Doctor.findOne({ username: username });
-      doctor.affiliation = affiliation;
-      doctor.save();
-      res.status(200).json(doctor);
+      const followUps = await FollowUp.find({ doctorUsername: doctorUsername });
+      if (!followUps) {
+        return res.status(404).json({ error: "No follow-up requests" });
+      }
+      res.status(200).json(followUps);
   } catch (error) {
       res.status(404).json({ message: error.message });
   }
+}
+
+const acceptFollowUpRequest = async (req, res) => {
+  const { requestId, username } = req.params;
+  try {
+      const followUpRequest = await FollowUp.findById(requestId);
+      if (!followUpRequest) {
+          return res.status(404).json({ error: 'Follow-up request not found' });
+      }
+      const patient = await Patient.findOne({ username: username });
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+      const appointment = {
+        date: followUpRequest.date, // Convert the date to a JavaScript Date object
+        status: 'upcoming', // Default status
+      };
+      patient.appointments.push(appointment);
+      await patient.save();
+      await followUpRequest.deleteOne();
+      res.status(200).json({ message: 'Follow-up request accepted successfully' });
+  } catch (error) {
+      console.error('Error accepting follow-up request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+const rejectFollowUpRequest = async (req, res) => {
+  const { requestId} = req.params;
+  try {
+    const followUpRequest = await FollowUp.findById(requestId);
+    res.status(200).json({ message: 'Follow-up request rejected successfully' });
+  await followUpRequest.deleteOne();
+  } catch (error) {
+    console.error('Error rejecting follow-up request:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+  
 }
 /////////////////////////////////////////// END OF KHALED
 
@@ -583,5 +623,7 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
-  DoctorFollowUpRequests
+  DoctorFollowUpRequests,
+  acceptFollowUpRequest,
+  rejectFollowUpRequest
 };

@@ -9,6 +9,10 @@ const followUpRequestSchema = new Schema({
     date:{
         type: Date,
         
+    },
+    doctorUsername:{
+        type: String,
+        required: true
     }
 })
 module.exports  = mongoose.model('followUpRequest', followUpRequestSchema)

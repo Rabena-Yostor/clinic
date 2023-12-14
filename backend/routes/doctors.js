@@ -25,7 +25,9 @@ const {
   sendOtpAndSetPassword,
   logout, 
   uploadMiddleware,
-  DoctorFollowUpRequests
+  DoctorFollowUpRequests,
+  acceptFollowUpRequest,
+  rejectFollowUpRequest
 
 }= require('../controllers/doctorController');
 
@@ -59,6 +61,10 @@ router.get('/getPatientsForDoctor', getPatientsForDoctor)
 router.post('/addHealthRecord/:username', addHealthRecord)
 router.get('/viewHealthRecords/:username', viewHealthRecords)
 
+router.post('/acceptFollowUpRequest/:requestId/:username', acceptFollowUpRequest)
+router.delete('/rejectFollowUpRequest/:requestId', rejectFollowUpRequest)
+
+
 router.get('/wallet-amount/:username', getWalletAmount);
 router.post('/signup', signUp)
 
@@ -74,7 +80,7 @@ router.post('/updateDoctorPassword', updateDoctorPassword)
 //send otp and set password
 router.post('/sendOtpAndSetPassword', sendOtpAndSetPassword)
 
-router.get('/doctorFollowUpRequests/:username', DoctorFollowUpRequests)
+router.get("/doctorFollowUpRequests/:doctorUsername", DoctorFollowUpRequests)
 
 router.get("/getDoctorAppointments/:username", async (req, res) => {
   const { username } = req.params;
