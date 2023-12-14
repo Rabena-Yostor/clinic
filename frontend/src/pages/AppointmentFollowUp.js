@@ -10,17 +10,20 @@ const AppointmentFollowUp = () => {
         navigate('/patientPeter');
       };
     const patientUsername = localStorage.getItem('username');
+    const doctorUsername = localStorage.getItem('doctorUsername');
     const [newPatientAppointmentDate, setNewPatientAppointmentDate] =
     useState("");
 
     const addPatientAppointment = async () => {
         try {
             const patientUsername = localStorage.getItem('username');
+            const doctorUsername = localStorage.getItem('doctorUsername');
             const response = await axios.post(
             `/api/patient/followUpRequest/${patientUsername}`,
             {
               username: patientUsername,
               date: newPatientAppointmentDate,
+              doctorUsername: doctorUsername,
             }
           );
           redirect();
@@ -42,7 +45,7 @@ return (
           value={newPatientAppointmentDate}
         />
         <button type="button" onClick={addPatientAppointment}>
-          Add Patient Appointment
+          Request Follow-Up Appointment
         </button>
       </div>
     </div>

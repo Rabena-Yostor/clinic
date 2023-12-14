@@ -8,7 +8,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('doctor'); // Default to pharmacist
+    const [userType, setUserType] = useState('doctor'); // Default to doctor
 
 
     const handleLogin = async (e) => {

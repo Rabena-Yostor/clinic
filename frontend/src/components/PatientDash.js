@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-
-
+//ATTENTION!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//contact khaled for more info
+//TIA
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//make sure to remove the add appointment section!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//its already removed in this branch but dont add it from the other branches while merging
 const PatientDash = () => {
   const navigate = useNavigate();
-  const redirect = () => {
+  const redirect = (doctorUsername) => {
+    localStorage.setItem('doctorUsername', doctorUsername);
     // Redirect to the AppointmentFollowUp page
     navigate('/AppointmentFollowUp');
   };
@@ -14,12 +29,6 @@ const PatientDash = () => {
   const patientUsername = localStorage.getItem('username');
   // State variables for patient appointment
   const [patientAppointments, setPatientAppointments] = useState([]);
-  const [newPatientAppointmentDate, setNewPatientAppointmentDate] =
-    useState("");
-  const [newPatientAppointmentStatus, setNewPatientAppointmentStatus] =
-    useState("");
-
-
 
   // New state variables for viewing patient appointments
   const [viewPatientAppointments, setViewPatientAppointments] = useState([]);
@@ -51,7 +60,6 @@ const PatientDash = () => {
     getPatientAppointments();
   }, []);
 
-  
   const getPatientAppointments = async () => {
     const patientUsername = localStorage.getItem('username');
     try {
@@ -64,28 +72,6 @@ const PatientDash = () => {
     }
   };
 
-  const addPatientAppointment = async () => {
-    try {
-        const patientUsername = localStorage.getItem('username');
-      const response = await axios.post(
-        "/api/patient/updatePatientAppointments",
-        {
-          username: patientUsername,
-          appointments: [
-            {
-              date: newPatientAppointmentDate,
-              status: newPatientAppointmentStatus,
-            },
-          ],
-        }
-      );
-      setPatientAppointments(response.data.appointments);
-      setNewPatientAppointmentDate("");
-      setNewPatientAppointmentStatus("");
-    } catch (error) {
-      console.error("Error adding patient appointment:", error);
-    }
-  };
   const viewPatientAppointmentsHandler = async () => {
     const viewPatientUsername = localStorage.getItem('username');
     try {
@@ -97,7 +83,6 @@ const PatientDash = () => {
       console.error("Error fetching patient appointments:", error);
     }
   };
-
   return (
     <div>
       <h2>Patient Dashboard</h2>
@@ -111,10 +96,10 @@ const PatientDash = () => {
         <ul>
           {patientAppointments.map((appointment, index) => (
             <li key={index}>
-              Date: {appointment.date}, Status: {appointment.status} {appointment.status === "completed" ? (
+              Date: {appointment.date}, Status: {appointment.status}, Doctor: {appointment.doctorUsername} {appointment.status === "completed" ? (
                             <>
-                                <button type="button" onClick={redirect}>
-                                  Schedule a follow-up
+                                <button type="button" onClick={() => redirect(appointment.doctorUsername)}>
+                                Schedule a follow-up
                                 </button>
                             </>
                         ) : (
@@ -123,25 +108,7 @@ const PatientDash = () => {
             </li>
           ))}
         </ul>
-        <label>Date:</label>
-        <input
-          type="datetime-local"
-          onChange={(e) => setNewPatientAppointmentDate(e.target.value)}
-          value={newPatientAppointmentDate}
-        />
-        <label>Status:</label>
-        <select
-          onChange={(e) => setNewPatientAppointmentStatus(e.target.value)}
-          value={newPatientAppointmentStatus}
-        >
-          <option value="upcoming">Upcoming</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-          <option value="rescheduled">Rescheduled</option>
-        </select>
-        <button type="button" onClick={addPatientAppointment}>
-          Add Patient Appointment
-        </button>
+        
       </div>
       <div>
         <h3>View Patient Appointments</h3>

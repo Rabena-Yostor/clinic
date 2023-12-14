@@ -728,11 +728,13 @@ const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
 const submitFollowUpRequest = async (req, res) => {
     const username = req.params.username;
     const { date} = req.body;
+    const doctorUsername = req.body.doctorUsername;
     try{
         //create a new followUpRequest
         const newFollowUpRequest = new followUpRequest({
             username,
-            date
+            date,
+            doctorUsername
         });
         await newFollowUpRequest.save();
         return res.status(200).json({ message: 'Follow-up request submitted successfully' });
