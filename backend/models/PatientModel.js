@@ -60,6 +60,7 @@ const patientSchema = new Schema({
             type: String,
             enum: ["upcoming", "completed", "cancelled", "rescheduled",""],
           },
+          doctorUsername: { type: String },
         },
       ],
       medicalHistoryFiles: [

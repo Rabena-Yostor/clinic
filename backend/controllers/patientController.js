@@ -728,12 +728,9 @@ const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
 
 
 const createAppointment = async (req, res) => {
-    console.log('TESTER: ', req.body)
     const { username } = req.body;
-    console.log('Received username:', username);
-    console.log('TESTER: ', req.body)
-    let appointmentDate = req.body.appointmentDate;
-    console.log('Received Appointment Date:', appointmentDate);
+    const appointmentDate = req.body.appointmentDate;
+    const doctorUsername = req.body.doctorUsername;
 
     if (!username) {
         return res.status(400).json({ error: 'Invalid username' });
@@ -742,25 +739,22 @@ const createAppointment = async (req, res) => {
     try {
         // Check if the user exists based on the provided username
         const user = await patient.findOne({ username : username});
-        console.log(user);
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        console.log('User:', user);
 
         // Check if the appointment is already taken by the patient or family member
         const isAppointmentAvailable = !(user.appointments && user.appointments.filter(appt => appt && appt.toString() === appointmentDate.toString()).length > 0);
 
         if (!isAppointmentAvailable) {
-            console.log('Selected appointment date is not available');
             return res.status(400).json({ error: 'Selected appointment date is not available' });
         }
 
         // Add appointment information to the patient or family member object
         user.appointments = user.appointments || [];
-        user.appointments.push({date : appointmentDate, status: 'upcoming'});
+        user.appointments.push({date : appointmentDate, status: 'upcoming', doctorUsername: doctorUsername});
         //user.Appointment_Status = 'upcoming'; // Assuming the default status is 'upcoming'
 
         // Save the updated patient or family member object with appointment details

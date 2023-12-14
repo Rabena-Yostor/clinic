@@ -23,20 +23,13 @@ const DoctorDetails = ({ doctor }) => {
         setError('Selected appointment date is required');
         return;
     }
-    console.log('Selected Appointment Date:', selectedAppointment);
 
     try {
-      console.log("DTESTER")
       const username = localStorage.getItem('username')
-      console.log(username)
-      console.log("ETESTER")
-      console.log("check here", selectedAppointment.toString())
-      console.log("SafinaTest")
 
         const response = await axios.post('http://localhost:4000/api/patient/createAppointment', {
-          username, appointmentDate: selectedAppointment.toString() },
+          username, appointmentDate: selectedAppointment.toString(), doctorUsername: doctor.username },
           );
-        console.log("CTESTER")
         if (response.status === 201 || response.status === 404) {
             // Simulate adding appointment to the local state
             setLocalAppointments([...localAppointments, selectedAppointment]);
@@ -44,10 +37,8 @@ const DoctorDetails = ({ doctor }) => {
             // Remove the selected appointment from the doctor's available appointments
             const updatedAppointments = doctor.appointments.filter(appointment => appointment !== selectedAppointment);
             doctor.appointments = updatedAppointments;
-            console.log("ATESTER")
             // Make a request to the backend to remove the appointment from the doctor's array
 
-            console.log("BTESTER")
             // Reset error state
             setError('');
         } else {
