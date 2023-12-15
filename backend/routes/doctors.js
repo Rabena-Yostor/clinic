@@ -203,4 +203,63 @@ router.post("/filterAppointments", async (req, res) => {
   }
 });
 
+//Peter Youssef
+// Reschedule appointment by ID
+router.patch("/rescheduleAppointment", async (req, res) => {
+  const { appointmentId, newDate } = req.body;
+  if (!appointmentId || !newDate) {
+    return res.status(404).json({ message: "hihihi" });
+  }
+  try {
+    const updatedAppointment = await Doctor.updateOne(
+      { "appointments._id": appointmentId },
+      {
+        $set: {
+          "appointments.$.date": newDate,
+          "appointments.$.status": "rescheduled",
+        },
+      }
+    );
+
+    if (updatedAppointment.nModified === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Fetch the updated doctor data
+    const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+    res.json(doctor);
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+// Cancel appointment by ID
+router.patch("/cancelAppointment", async (req, res) => {
+  const { appointmentId } = req.body;
+  if (!appointmentId) {
+    return res.status(404).json({ message: "hihihi" });
+  }
+  try {
+    const updatedAppointment = await Doctor.updateOne(
+      { "appointments._id": appointmentId },
+      {
+        $set: {
+          "appointments.$.status": "cancelled",
+        },
+      }
+    );
+
+    if (updatedAppointment.nModified === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Fetch the updated doctor data
+    const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+    res.json(doctor);
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 module.exports = router 
