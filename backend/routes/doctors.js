@@ -4,7 +4,6 @@ const Doctor = require("../models/doctorModel");
 const Notification = require("../models/ClinicNotificationModel");
 const Patient = require("../models/PatientModel");
 const nodemailer = require('nodemailer');
-
 const {
     createDoctor,
     getDoctor,
@@ -227,6 +226,37 @@ router.patch("/rescheduleAppointment", async (req, res) => {
 
     // Fetch the updated doctor data
     const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+
+    //Send notification to Doctor with the new appointment date and and Patient name
+    const message = `Your appointment has been rescheduled to ${newDate}`;
+    const notification = new Notification({
+      recipient_id: doctor._id,
+      message,
+    });
+    await notification.save();
+
+    // Send OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'peteraclsender@gmail.com',
+        pass: 'tayr rzwl yvip tqjt',
+      },
+    });
+    const mailOptions = {
+      from: 'peteraclsender@gmail.com',
+      to: doctor.email,
+      subject: 'An Appointment has been rescheduled',
+      text: `Your appointment has been rescheduled to ${newDate}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sendingemail' });
+      }
+      res.status(200).json({ message: 'Email sent successfully' });
+    });
+
     res.json(doctor);
   } catch (error) {
     console.error("Error rescheduling appointment:", error);
@@ -240,6 +270,11 @@ router.patch("/cancelAppointment", async (req, res) => {
     return res.status(404).json({ message: "hihihi" });
   }
   try {
+    //get the appointment date
+    const appointment = await Doctor.findOne({ "appointments._id": appointmentId });
+    const date = appointment.appointments[0].date;
+    console.log(date);
+
     const updatedAppointment = await Doctor.updateOne(
       { "appointments._id": appointmentId },
       {
@@ -255,6 +290,35 @@ router.patch("/cancelAppointment", async (req, res) => {
 
     // Fetch the updated doctor data
     const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+
+    //Send notification to Doctor with the new appointment date and and Patient name
+    const message = `Your appointment on ${date} has been cancelled`;
+    const notification = new Notification({
+      recipient_id: doctor._id,
+      message,
+    });
+    await notification.save();
+    // Send OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'peteraclsender@gmail.com',
+        pass: 'tayr rzwl yvip tqjt',
+      },
+    });
+    const mailOptions = {
+      from: 'peteraclsender@gmail.com',
+      to: doctor.email,
+      subject: 'An Appointment has been cancelled',
+      text: `Your appointment on ${date} has been cancelled`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sendingemail' });
+      }
+      res.status(200).json({ message: 'Email sent successfully' });
+    });
     res.json(doctor);
   } catch (error) {
     console.error("Error rescheduling appointment:", error);
