@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const DoctorDash = () => {
-  const DoctorUsername = localStorage.getItem('username');
+  const DoctorUsername = localStorage.getItem("username");
+  // State variables for rescheduling appointments
+  const [appointmentsForReschedule, setAppointmentsForReschedule] = useState(
+    []
+  );
+  const [selectedAppointment, setSelectedAppointment] = useState("");
+  const [newAppointmentDate, setNewAppointmentDate] = useState("");
+
   // State variables for doctor appointments
   //const [doctorUsername, setDoctorUsername] = useState("");
   const [doctorAppointments, setDoctorAppointments] = useState([]);
@@ -11,7 +18,7 @@ const DoctorDash = () => {
     useState("");
 
   // State variables for patient appointments
-  
+
   const [followUpDoctor, setFollowUpDoctor] = useState("");
   const [followUpPatient, setFollowUpPatient] = useState("");
   const [followUpDate, setFollowUpDate] = useState("");
@@ -21,7 +28,6 @@ const DoctorDash = () => {
   //const [viewDoctorUsername, setViewDoctorUsername] = useState("");
   const [viewDoctorAppointments, setViewDoctorAppointments] = useState([]);
 
-  
   // State variables for filtering doctor appointments
   const [filterDate, setFilterDate] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
@@ -35,7 +41,7 @@ const DoctorDash = () => {
 
   // Function to filter doctor appointments
   const filterDoctorAppointments = async () => {
-    const viewDoctorUsername = localStorage.getItem('username');
+    const viewDoctorUsername = localStorage.getItem("username");
 
     try {
       const response = await axios.post("/api/doctors/filterAppointments", {
@@ -54,7 +60,7 @@ const DoctorDash = () => {
   }, []);
 
   const getDoctorAppointments = async () => {
-    const doctorUsername = localStorage.getItem('username');
+    const doctorUsername = localStorage.getItem("username");
 
     try {
       const response = await axios.get(
@@ -67,7 +73,7 @@ const DoctorDash = () => {
   };
 
   const addDoctorAppointment = async () => {
-    const doctorUsername = localStorage.getItem('username');
+    const doctorUsername = localStorage.getItem("username");
 
     try {
       const response = await axios.post("/api/doctors/addDoctorAppointment", {
@@ -87,14 +93,14 @@ const DoctorDash = () => {
   };
 
   const scheduleFollowUp = () => {
-    const followUpDoctor = localStorage.getItem('username');
+    const followUpDoctor = localStorage.getItem("username");
 
     const message = `${followUpDoctor} just scheduled a follow-up with ${followUpPatient} on ${followUpDate}`;
     setFollowUpMessage(message);
   };
 
   const viewDoctorAppointmentsHandler = async () => {
-    const viewDoctorUsername = localStorage.getItem('username');
+    const viewDoctorUsername = localStorage.getItem("username");
 
     try {
       const response = await axios.get(
@@ -106,20 +112,119 @@ const DoctorDash = () => {
     }
   };
 
+  // Fetch appointments for rescheduling when the component mounts
+  useEffect(() => {
+    getAppointmentsForReschedule();
+  }, []);
+
+  // Function to fetch appointments for rescheduling
+  const getAppointmentsForReschedule = async () => {
+    const doctorUsername = localStorage.getItem("username");
+
+    try {
+      const response = await axios.get(
+        `/api/doctors/getDoctorAppointments/${doctorUsername}`
+      );
+      setAppointmentsForReschedule(response.data.appointments);
+    } catch (error) {
+      console.error("Error fetching appointments for reschedule:", error);
+    }
+  };
+  // Function to handle rescheduling of appointments
+  const rescheduleAppointment = async () => {
+    if (!selectedAppointment || !newAppointmentDate) {
+      alert("Please select an appointment and enter a new date.");
+      return;
+    }
+
+    try {
+      const response = await axios.patch(`/api/doctors/rescheduleAppointment`, {
+        newDate: newAppointmentDate,
+        appointmentId: selectedAppointment._id,
+      });
+
+      // Update the local state with the updated appointment
+      const updatedAppointments = doctorAppointments.map((appointment) =>
+        appointment._id === selectedAppointment._id
+          ? response.data
+          : appointment
+      );
+      setDoctorAppointments(updatedAppointments);
+
+      // Clear the selected appointment and new date fields
+      setSelectedAppointment("");
+      setNewAppointmentDate("");
+
+      alert("Appointment rescheduled successfully!");
+    } catch (error) {
+      console.error("Error rescheduling appointment:", error);
+      alert("Error rescheduling appointment. Please try again.");
+    }
+  };
+
+  // Fetch appointments for cancelling when the component mounts
+  useEffect(() => {
+    getAppointmentsForCancel();
+  }, []);
+
+  // Function to fetch appointments for cancelling
+  const getAppointmentsForCancel = async () => {
+    const doctorUsername = localStorage.getItem("username");
+
+    try {
+      const response = await axios.get(
+        `/api/doctors/getDoctorAppointments/${doctorUsername}`
+      );
+      setAppointmentsForReschedule(response.data.appointments);
+    } catch (error) {
+      console.error("Error fetching appointments for cancelling:", error);
+    }
+  };
+  // Function to handle cancelling of appointments
+  const cancelAppointment = async () => {
+    if (!selectedAppointment) {
+      alert("Please select an appointment and enter a new date.");
+      return;
+    }
+
+    try {
+      const response = await axios.patch(`/api/doctors/cancelAppointment`, {
+        appointmentId: selectedAppointment._id,
+      });
+
+      // Update the local state with the updated appointment
+      const updatedAppointments = doctorAppointments.map((appointment) =>
+        appointment._id === selectedAppointment._id
+          ? response.data
+          : appointment
+      );
+      setDoctorAppointments(updatedAppointments);
+
+      // Clear the selected appointment and new date fields
+      setSelectedAppointment("");
+      setNewAppointmentDate("");
+
+      alert("Appointment Cancelled successfully!");
+    } catch (error) {
+      console.error("Error Cancelling appointment:", error);
+      alert("Error Cancelling appointment. Please try again.");
+    }
+  };
   return (
     <div>
       <h2>Doctor Dashboard</h2>
       <h3>Doctor Username: {DoctorUsername}</h3>
-        
+
       <div>
         <h3>Doctor Appointments</h3>
 
         <ul>
-          {doctorAppointments && doctorAppointments.map((appointment, index) => (
-            <li key={index}>
-              Date: {appointment.date}, Status: {appointment.status}
-            </li>
-          ))}
+          {doctorAppointments &&
+            doctorAppointments.map((appointment, index) => (
+              <li key={index}>
+                Date: {appointment.date}, Status: {appointment.status}
+              </li>
+            ))}
         </ul>
         <label>Date:</label>
         <input
@@ -141,10 +246,10 @@ const DoctorDash = () => {
           Add Doctor Appointment
         </button>
       </div>
-      
+
       <div>
         <h3>Schedule Follow-Up</h3>
-       
+
         <label>Patient Name:</label>
         <input
           type="text"
@@ -164,7 +269,7 @@ const DoctorDash = () => {
       </div>
       <div>
         <h3>View Doctor Appointments</h3>
-        
+
         <button type="button" onClick={viewDoctorAppointmentsHandler}>
           View Doctor Appointments
         </button>
@@ -178,7 +283,7 @@ const DoctorDash = () => {
       </div>
       <div>
         <h3>Filter Doctor Appointments</h3>
-        
+
         <label>Date:</label>
         <input
           type="date"
@@ -208,7 +313,53 @@ const DoctorDash = () => {
         </ul>
       </div>
       {/* New section for filtering patient appointments */}
-      
+      <div>
+        <h3>Reschedule Appointment</h3>
+
+        <label>Select Appointment:</label>
+        <select
+          onChange={(e) => setSelectedAppointment(JSON.parse(e.target.value))}
+          value={JSON.stringify(selectedAppointment)}
+        >
+          <option value="">Select Appointment</option>
+          {appointmentsForReschedule.map((appointment, index) => (
+            <option key={index} value={JSON.stringify(appointment)}>
+              {`Date: ${appointment.date}, Status: ${appointment.status}`}
+            </option>
+          ))}
+        </select>
+
+        <label>New Date:</label>
+        <input
+          type="datetime-local"
+          onChange={(e) => setNewAppointmentDate(e.target.value)}
+          value={newAppointmentDate}
+        />
+
+        <button type="button" onClick={rescheduleAppointment}>
+          Reschedule Appointment
+        </button>
+      </div>
+      <div>
+        <h3>Cancel Appointment</h3>
+
+        <label>Select Appointment:</label>
+        <select
+          onChange={(e) => setSelectedAppointment(JSON.parse(e.target.value))}
+          value={JSON.stringify(selectedAppointment)}
+        >
+          <option value="">Select Appointment</option>
+          {appointmentsForReschedule.map((appointment, index) => (
+            <option key={index} value={JSON.stringify(appointment)}>
+              {`Date: ${appointment.date}, Status: ${appointment.status}`}
+            </option>
+          ))}
+        </select>
+
+        <button type="button" onClick={cancelAppointment}>
+          Cancel Appointment
+        </button>
+      </div>
     </div>
   );
 };

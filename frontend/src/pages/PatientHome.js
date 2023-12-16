@@ -64,6 +64,16 @@ function PatientHome(){
           <FaUser /> view all doctors
         </Link>
       </div>
+<div>
+        <Link to="/patientNotifications">
+          <FaUser /> Notifications
+        </Link>
+      </div>
+      <div>
+        <Link to="/patientConversation">
+          <FaUser /> Conversation
+        </Link>
+      </div>
       <br />
             <hr/>
             

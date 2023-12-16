@@ -46,6 +46,10 @@ import Payment from './pages/Payment';
 import Completion from './components/Completion';
 import LinkFamilyMember from './pages/LinkFamilyMember';
 import DoctorForm from "./components/DoctorForm";
+import NotificationsPageDoctor from './pages/DoctorNotifications';
+import NotificationsPagePatient from './pages/PatientNotifcations';
+import ConversationPagePatient from './pages/PatientConversation';
+import ConversationPageDoctor from './pages/DoctorConversation';
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
@@ -107,6 +111,10 @@ function App() {
             <Route path = "/payment/:id" element = {<Payment />} />
             <Route path = "/linkFamilyMember" element = {<LinkFamilyMember/>} />
             <Route path = "/doctorForm" element = {<DoctorForm />} />
+            <Route path = "/doctorNotifications" element = {<NotificationsPageDoctor />} />
+            <Route path = "/patientNotifications" element = {<NotificationsPagePatient />} />
+            <Route path = "/patientConversation" element = {<ConversationPagePatient />} />
+            <Route path = "/doctorConversation" element = {<ConversationPageDoctor />} />
           </Routes>
         </div>
       </BrowserRouter>
