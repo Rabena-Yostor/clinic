@@ -184,25 +184,25 @@ button:hover {
 
 .container::before {
   content: "";
-  background-image: url('https://www.hindustantimes.com/ht-img/img/2023/07/02/550x309/-p-Who-is-an-Indian-doctor----p-_1688326471538.jpg'); /* Update with the path to your image */
+  background-image: url('https://www.hindustantimes.com/ht-img/img/2023/07/02/550x309/-p-Who-is-an-Indian-doctor----p-_1688326471538.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  position: absolute;
+  position: fixed; /* Fixed position to cover the entire browser window */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: -1; /* Ensures it's below the content */
-  opacity: 0.5; /* Adjust opacity as needed */
+  z-index: -1;
+  opacity: 0.5;
 }
 
 /* Add styles for your content to ensure they are visible */
 .content {
   position: relative;
-  z-index: 2; /* Ensures content is above the background */
-  background: rgba(200, 200, 200, 0.8); /* Semi-transparent background for content */
-  padding: 20px; /* Or as needed */
-  border-radius: 8px; /* Optional rounded corners */
-  /* Add more styles as needed */
+  z-index: 2;
+  background: rgba(200, 200, 200, 0.8);
+  padding: 20px;
+  border-radius: 2px;
+  /* Add more styles as needed */
 }
