@@ -184,3 +184,33 @@ button {
 button:hover {
   background-color: #4cae4c; /* A slightly darker green */
 }
+.container {
+  position: relative;
+  z-index: 1;
+  text-align: center; /* Keeps your text alignment in the center */
+}
+
+.container::before {
+  content: "";
+  background-image: url('https://www.hindustantimes.com/ht-img/img/2023/07/02/550x309/-p-Who-is-an-Indian-doctor----p-_1688326471538.jpg'); /* Update with the path to your image */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1; /* Ensures it's below the content */
+  opacity: 0.5; /* Adjust opacity as needed */
+}
+
+/* Add styles for your content to ensure they are visible */
+.content {
+  position: relative;
+  z-index: 2; /* Ensures content is above the background */
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for content */
+  padding: 20px; /* Or as needed */
+  border-radius: 8px; /* Optional rounded corners */
+  /* Add more styles as needed */
+}

@@ -81,19 +81,23 @@ const Login = () => {
                 <br />
                 <button type="submit">Login</button>
                 <p></p>
-                
+                <br />
             </form>
             <button onClick={handleResetPassword}>Reset Password</button>
             <p></p>
+            <br />
             <div>
                 <Link to ="/signUp">
                     <button>Sign up</button>
                     
                     </Link>
                     
-
+                    <br />
+                    <br />
+                    <br />
             </div>
 <p>If you want to Submit a request and become a doctor</p>
+<br />
             <div>
                 <Link to="/SubmitRequest">
                     <button> Submit Request</button>

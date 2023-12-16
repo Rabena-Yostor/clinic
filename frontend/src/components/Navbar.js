@@ -22,7 +22,7 @@ const Navbar = () => {
 
   return (
     <header>
-      <div className="container">
+      <div className="content">
         <Link to="/">
           <h1>Rabena Yostor Clinic</h1>
         </Link>

@@ -49,9 +49,10 @@ import DoctorForm from "./components/DoctorForm";
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
-
+  
   return (
-    <div className="App">
+    <div className="container">
+    <div className="content">
       <BrowserRouter>
         <Navbar />
         <div className="pages">
@@ -110,6 +111,7 @@ function App() {
         </div>
       </BrowserRouter>
     </div>
+  </div>
   );
 }
 
