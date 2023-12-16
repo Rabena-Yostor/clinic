@@ -41,7 +41,9 @@ const{
     createNotificationPatient,
     deleteNotification,
     getAllNotificationsPatient,
-    submitFollowUpRequest
+    submitFollowUpRequest,
+    endcall,
+    startcall
 } = require('../controllers/patientController');
 
 const { getConversationPatient, sendMessagePatient } = require('../controllers/conversationController');
@@ -331,6 +333,7 @@ router.patch("/cancelAppointment", async (req, res) => {
   }
 });
 router.post("/followUpRequest/:username", submitFollowUpRequest);
-
+router.post ('/startcall',startcall)
+router.post ('/endcall',endcall)
 
 module.exports = router

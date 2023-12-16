@@ -72,6 +72,11 @@ function DoctorPage() {
                     <FaUser /> Follow-Up Requests
                 </Link>
             </div>
+            <div>
+                <Link to="/VideoCallComponent">
+                    <FaUser /> Start a video call
+                </Link>
+            </div>
             <br />
             <hr/>
 

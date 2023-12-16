@@ -32,7 +32,9 @@ const {
   getAllNotificationsDoctor,
   DoctorFollowUpRequests,
   acceptFollowUpRequest,
-  rejectFollowUpRequest
+  rejectFollowUpRequest,
+  startcall,
+  endcall
 
 }= require('../controllers/doctorController')
 
@@ -326,5 +328,8 @@ router.patch("/cancelAppointment", async (req, res) => {
 router.get("/doctorFollowUpRequests/:doctorUsername", DoctorFollowUpRequests)
 router.post('/acceptFollowUpRequest/:requestId/:username', acceptFollowUpRequest)
 router.delete('/rejectFollowUpRequest/:requestId', rejectFollowUpRequest)
+
+router.post ('/startcall',startcall)
+router.post ('/endcall',endcall)
 
 module.exports = router 
