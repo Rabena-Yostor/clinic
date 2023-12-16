@@ -2,13 +2,14 @@ import { PaymentElement } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useParams } from 'react-router-dom';
+
 export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
 
   const [message, setMessage] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const {id} = useParams();
+  const { id } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,23 +33,23 @@ export default function CheckoutForm() {
     if (error.type === "card_error" || error.type === "validation_error") {
       setMessage(error.message);
     } else {
-      setMessage("An unexpected error occured.");
+      setMessage("An unexpected error occurred.");
     }
 
     setIsProcessing(false);
   };
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      <PaymentElement id="payment-element" />
-      <button disabled={isProcessing || !stripe || !elements} id="submit">
+    <form id="payment-form" onSubmit={handleSubmit} style={{ marginBottom: '500px' }}>
+      <PaymentElement id="payment-element" style={{ marginBottom: '10px' }} />
+      <button disabled={isProcessing || !stripe || !elements} id="submit" style={{ marginBottom: '20px' }}>
         <span id="button-text">
           {isProcessing ? "Processing ... " : "Pay now"}
         </span>
       </button>
     
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {message && <div id="payment-message" style={{ marginTop: '10px' }}>{message}</div>}
     </form>
   );
 }

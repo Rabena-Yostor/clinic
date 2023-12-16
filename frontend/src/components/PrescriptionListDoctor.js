@@ -103,36 +103,35 @@ function PrescriptionList() {
     <div>
       <h1>Prescriptions List For My Patients</h1>
       <ul>
-        {prescriptions.map((prescription) => (
-          <li key={prescription._id}>
-            <ul>
-              <p>Patient Name: {prescription.patientUsername}</p>
-              {prescription.medicines.map((medicine) => (
-                <li key={medicine.name}>
-                  {medicine.name} - Dosage: {medicine.dosage} - Price: EGP{medicine.price} - Quantity: {medicine.quantity}
-                  <button
-  onClick={() => handleEditMedicine(prescription._id, medicine)}
-  style={{ width: '120px', marginRight: '5px', marginLeft: '5px' }}
->
-  Edit Medicine
-</button>
-<button
-  onClick={() => handleDeleteMedicine(prescription._id, medicine.name)}
-  style={{ width: '120px', marginRight: '5px', marginLeft: '5px' }}
->
-  Delete Medicine
-</button>
+      {prescriptions.map((prescription) => (
+  <li key={prescription._id}>
+    <ul>
+      <p style = {{marginTop: '10px'}}>Patient Name: {prescription.patientUsername}</p>
+      {prescription.medicines.map((medicine, index) => (
+        <li key={medicine.name} style={{ marginBottom: '10px' }}>
+          {medicine.name} - Dosage: {medicine.dosage} - Price: EGP{medicine.price} - Quantity: {medicine.quantity}
+          <button
+            onClick={() => handleEditMedicine(prescription._id, medicine)}
+            style={{ width: '120px', marginRight: '5px', marginLeft: '5px' }}
+          >
+            Edit Medicine
+          </button>
+          <button
+            onClick={() => handleDeleteMedicine(prescription._id, medicine.name)}
+            style={{ width: '130px', marginRight: '5px', marginLeft: '5px' }}
+          >
+            Delete Medicine
+          </button>
+        </li>
+      ))}
+    </ul>
+    <p style = {{marginTop: '10px'}}>Date: {prescription.date}</p>
+    <p style = {{marginTop: '10px', marginBottom:'10px'}}>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
+    <button onClick={() => handleDownloadPDF(prescription)}>Download as PDF</button>
+    <p>_________________________________</p>
+  </li>
+))}
 
-                </li>
-              ))}
-            </ul>
-            <p>Date: {prescription.date}</p>
-            <p>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
-            <button onClick={() => handleDownloadPDF(prescription)}>Download as PDF</button>
-
-            <p>_________________________________</p>
-          </li>
-        ))}
       </ul>
 
      {/* Modal for editing medicine */}

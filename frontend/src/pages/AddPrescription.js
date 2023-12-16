@@ -105,8 +105,8 @@ const AddPrescription = () => {
         Check All Medicines
       </button>
             </div>
-
-            <ul>
+            <h4 style = {{marginTop: '20px', marginBottom: '20px'}}> Added Medicines:</h4>
+            <ul style = {{marginTop: '20px', marginBottom: '20px'}}>
                 {medicines.map((medicine, index) => (
                     <li key={index}>{medicine.name} </li>
                 ))}
@@ -118,7 +118,7 @@ const AddPrescription = () => {
 
       {/* Render available medicines */}
       {availableMedicines.length > 0 && (
-  <div>
+  <div style={{ marginTop: '20px', marginBottom: '20px' }}>
     <h4>Available Medicines in the Pharmacy</h4>
     <ul>
       {availableMedicines.map((medicine, index) => (
