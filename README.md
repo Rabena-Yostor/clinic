@@ -43,19 +43,19 @@ STRIPE_SECRET_KEY="sk_test_51O4R2WJ6reglJIMrC5OBVfvk5frEdn3RLdV51Z9HrEFMyY9jJPIa
 
 
 # How to Use:
---LOGINà select user type (patient/admin/doctor) , type your username/password then login. There is option to reset your password and otp will be sent to your mail. If you want to register as a new doctor, you will submit a request and the admin will approve/reject the request. You can also submit a request after filling username and password , and once the admin approves it you can login.
+--LOGIN   type your username/password then login. There is option to reset your password and otp will be sent to your mail. If you want to register as a new doctor, you will submit a request and the admin will approve/reject the request. You can also submit a request after filling username and password , and once the admin approves it you can login.
 
---LOGOUTà there is a log out button, press it
+--LOGOUT there is a log out button, press it and you will get redirected to the login screen
 
---Doctorà if you logged in as a doctor you can: 
+--Doctor if you logged in as a doctor you can: 
 
 - Add health Record: typing the details for the patient then press “Add Health Record”
 - View Health Record: type patient username and press “Fetch Health Record”
-- View Wallet Amount:
+- View Wallet Amount: makes you see the amount in your wallet.
 - View Doctor Appointment: (you can type a date/time then press “Add Doctor Appointment” to add appointment, Schedule a follow up, view/filter appointments by typing date/time and press the corresponding button
 
 
---Patientà you can:
+--Patient you can:
 
 - Subscribe to health package (type details then press subscribe)
 - View subscribed health packages/status/ cancel subscription 
@@ -184,7 +184,7 @@ Without the help of these individuals, this project would not have been possible
 
 **Consistent Naming**: Your variable names like **user**, **otp**, **salt**, and **hashedPassword** are clear and descriptive.
 
-`      `**Comments**: having comments for everything in the code (creating methods or handling errors)
+**Comments**: having comments for everything in the code (creating methods or handling errors)
 
 
 -Standard Code style that is easy for anyone to understand .
@@ -254,7 +254,7 @@ Without the help of these individuals, this project would not have been possible
 Feel free to explore our application and make the most out of these features!
 #
 #
-# API Refrences: (All method names are the same as their Functionality)
+# API References: (All method names are the same as their Functionality)
 Endpoint: /api/admin/”Method name”
 
 *This is for admin routes:*
@@ -382,31 +382,31 @@ router.delete('/removeDocument/:username/:documentId', removeDocument);
 
 router.get('/medicalHistoryFiles/:username', async (req, res) => {
 
-`    `try {
+try {
 
-`        `const {username} = req.params // Replace with your authentication logic
+const {username} = req.params // Replace with your authentication logic
 
-`        `console.log(username)
+console.log(username)
 
-`        `const loggedinPatient = await patient.findOne({ username });
+const loggedinPatient = await patient.findOne({ username });
 
-`        `if (!loggedinPatient) {
+if (!loggedinPatient) {
 
-`            `return res.status(404).json({ error: 'Patient not found' });
+return res.status(404).json({ error: 'Patient not found' });
 
-`        `}
+}
 
-`        `const medicalHistoryFiles = loggedinPatient.medicalHistoryFiles || [];
+const medicalHistoryFiles = loggedinPatient.medicalHistoryFiles || [];
 
-`        `res.status(200).json(medicalHistoryFiles);
+res.status(200).json(medicalHistoryFiles);
 
-`    `} catch (error) {
+} catch (error) {
 
-`        `console.error('Error fetching medical history files:', error);
+console.error('Error fetching medical history files:', error);
 
-`        `res.status(500).json({ error: 'Internal Server Error' });
+res.status(500).json({ error: 'Internal Server Error' });
 
-`    `}})
+}})
 
 // Create a new notification for a patient
 
@@ -438,49 +438,49 @@ router.patch("/rescheduleAppointment", async (req, res) => {
 
 router.put('/filledYes/:prescriptionId', filledYes);
 
-`  `const { appointmentId, newDate } = req.body;
+const { appointmentId, newDate } = req.body;
 
-`  `if (!appointmentId || !newDate) {
+if (!appointmentId || !newDate) {
 
-`    `return res.status(404).json({ message: "hihihi" });
+return res.status(404).json({ message: "hihihi" });
 
-`  `}
+}
 
-`  `try {
+try {
 
-`    `const updatedAppointment = await patient.updateOne(
+const updatedAppointment = await patient.updateOne(
 
-`      `{ "appointments.\_id": appointmentId },
+{ "appointments.\_id": appointmentId },
 
-`      `{
+{
 
-`        `$set: {
+$set: {
 
-`          `"appointments.$.date": newDate,
+"appointments.$.date": newDate,
 
-`          `"appointments.$.status": "rescheduled",
+"appointments.$.status": "rescheduled",
 
-`        `},
+},
 
-`      `}
+}
 
-`    `);
+);
 
-`    `updatedAppointment.nModified;
+updatedAppointment.nModified;
 
-`    `if (updatedAppointment.nModified === 0) {
+if (updatedAppointment.nModified === 0) {
 
-`      `return res.status(404).json({ message: "Appointment not found" });
+return res.status(404).json({ message: "Appointment not found" });
 
-`    `}
+}
 
-`    `// Fetch the updated doctor data
+// Fetch the updated doctor data
 
-`    `const PatientR = await patient.findOne({
+const PatientR = await patient.findOne({
 
-`      `"appointments.\_id": appointmentId,
+"appointments.\_id": appointmentId,
 
-`    `});
+});
 
 *This is for doctor routes:*
 #
@@ -651,127 +651,127 @@ router.get('/check-medicines', checkMedicines);
 
 const sendOtpAndSetPassword = async (req, res) => {
 
-`    `const { username , Email } = req.body;
+const { username , Email } = req.body;
 
 
 
-`    `try {
+try {
 
-`      `const user = await patient.findOne({ username });
-
-
-
-`      `if (!user) {
-
-`        `return res.status(404).json({ error: 'User not found' });
-
-`      `}
+const user = await patient.findOne({ username });
 
 
 
-`      `// Generate OTP
+if (!user) {
 
-`      `const otp = generateNumericOTP(); // You may need to configure OTP generation options
+return res.status(404).json({ error: 'User not found' });
 
-
-
-`      `// Update user's password with the OTP
-
-`      `const salt = await bcrypt.genSalt();
-
-`      `const hashedPassword = await bcrypt.hash(otp, salt);
-
-`      `user.password = otp;
-
-`      `await user.save();
+}
 
 
 
-`      `// Send OTP to the user's email
+// Generate OTP
 
-`      `const transporter = nodemailer.createTransport({
-
-`        `service: 'gmail',
-
-`        `auth: {
-
-`          `user: 'peteraclsender@gmail.com',
-
-`          `pass: 'tayr rzwl yvip tqjt',
-
-`        `},
-
-`      `});
-
-`      `const mailOptions = {
-
-`        `from: 'peteraclsender@gmail.com',
-
-`        `to: Email,
-
-`        `subject: 'Password Reset OTP',
-
-`        `text: `Your new patient OTP is: ${otp}`,
-
-`      `};
+const otp = generateNumericOTP(); // You may need to configure OTP generation options
 
 
 
-`      `transporter.sendMail(mailOptions, (error, info) => {
+// Update user's password with the OTP
 
-`        `if (error) {
+const salt = await bcrypt.genSalt();
 
-`          `return res.status(500).json({ error: 'Error sending OTP via email' });
+const hashedPassword = await bcrypt.hash(otp, salt);
 
-`        `}
+user.password = otp;
 
-`        `res.status(200).json({ message: 'OTP sent successfully' });
+await user.save();
 
-`      `});
 
-`    `} catch (error) {
 
-`      `res.status(500).json({ error: error.message });
+// Send OTP to the user's email
 
-`    `}
+const transporter = nodemailer.createTransport({
 
-`  `};
+service: 'gmail',
+
+auth: {
+
+user: 'peteraclsender@gmail.com',
+
+pass: 'tayr rzwl yvip tqjt',
+
+},
+
+});
+
+const mailOptions = {
+
+from: 'peteraclsender@gmail.com',
+
+to: Email,
+
+subject: 'Password Reset OTP',
+
+text: `Your new patient OTP is: ${otp}`,
+
+};
+
+
+
+transporter.sendMail(mailOptions, (error, info) => {
+
+if (error) {
+
+return res.status(500).json({ error: 'Error sending OTP via email' });
+
+}
+
+res.status(200).json({ message: 'OTP sent successfully' });
+
+});
+
+} catch (error) {
+
+res.status(500).json({ error: error.message });
+
+}
+
+};
 
 // View health records for a specific patient
 
 const viewHealthRecords = async (req, res) => {
 
-`  `const { username } = req.params;
+const { username } = req.params;
 
-`  `try {
+try {
 
-`    `// Assuming you have a User model with a 'username' field
+// Assuming you have a User model with a 'username' field
 
-`    `const user = await Patient.findOne({ username });
+const user = await Patient.findOne({ username });
 
-`    `if (!user) {
+if (!user) {
 
-`      `return res.status(404).json({ message: 'Patient not found' });
+return res.status(404).json({ message: 'Patient not found' });
 
-`    `}
+}
 
-`    `const healthRecords = await HealthRecord.find({ patientId: user.\_id });
+const healthRecords = await HealthRecord.find({ patientId: user.\_id });
 
-`    `if (healthRecords.length === 0) {
+if (healthRecords.length === 0) {
 
-`      `return res.status(404).json({ message: 'No health records found for the specified patient' });
+return res.status(404).json({ message: 'No health records found for the specified patient' });
 
-`    `}
+}
 
-`    `res.status(200).json(healthRecords);
+res.status(200).json(healthRecords);
 
-`  `} catch (error) {
+} catch (error) {
 
-`    `console.error('Error fetching health records:', error);
+console.error('Error fetching health records:', error);
 
-`    `res.status(500).json({ error: 'Internal Server Error' });
+res.status(500).json({ error: 'Internal Server Error' });
 
-`  `}
+}
 
 };
 
@@ -779,59 +779,59 @@ const viewHealthRecords = async (req, res) => {
 
 const approveRequests = async (req, res) => {
 
-`  `const { doctorId } = req.body;
+const { doctorId } = req.body;
 
-`  `try {
+try {
 
-`      `const pendingDoctor = await PendingDoctorModel.findById(doctorId);
+const pendingDoctor = await PendingDoctorModel.findById(doctorId);
 
-`      `if (!pendingDoctor) {
+if (!pendingDoctor) {
 
-`          `return res.status(404).json({ error: 'Doctor request not found' });
+return res.status(404).json({ error: 'Doctor request not found' });
 
-`      `}
+}
 
 
 
-`      `const hashedPassword = await bcrypt.hash(pendingDoctor.password, 10);
+const hashedPassword = await bcrypt.hash(pendingDoctor.password, 10);
 
-`      `// Create a new doctor in the doctors collection
+// Create a new doctor in the doctors collection
 
-`      `const newDoctor = new Doctor({
+const newDoctor = new Doctor({
 
-`        `username: pendingDoctor.username,
+username: pendingDoctor.username,
 
-`        `name: pendingDoctor.name,
+name: pendingDoctor.name,
 
-`        `email: pendingDoctor.email,
+email: pendingDoctor.email,
 
-`        `password: hashedPassword, 
+password: hashedPassword, 
 
-`        `dateOfBirth: pendingDoctor.dateOfBirth,
+dateOfBirth: pendingDoctor.dateOfBirth,
 
-`        `hourlyRate: pendingDoctor.hourlyRate,
+hourlyRate: pendingDoctor.hourlyRate,
 
-`        `affiliation: pendingDoctor.affiliation,
+affiliation: pendingDoctor.affiliation,
 
-`        `educationalBackground: pendingDoctor.educationalBackground,
+educationalBackground: pendingDoctor.educationalBackground,
 
-`      `});
+});
 
-`      `await newDoctor.save();
+await newDoctor.save();
 
-`      `// Remove the doctor request from the pending requests collection
+// Remove the doctor request from the pending requests collection
 
-`      `await PendingDoctorModel.findByIdAndDelete(doctorId);
+await PendingDoctorModel.findByIdAndDelete(doctorId);
 
-`      `res.status(201).json({ message: 'Doctor approved successfully and added to doctors database' });
+res.status(201).json({ message: 'Doctor approved successfully and added to doctors database' });
 
-`  `} catch (error) {
+} catch (error) {
 
-`      `console.error(error);
+console.error(error);
 
-`      `res.status(500).json({ error: 'Internal Server Error' });
+res.status(500).json({ error: 'Internal Server Error' });
 
-`  `}
+}
 
 };
 
@@ -843,157 +843,157 @@ const Schema = mongoose.Schema
 
 const patientSchema = new Schema({
 
-`    `username:{
+username:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `name:{
+name:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `email:{
+email:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `password:{
+password:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `dateOfBirth:{
+dateOfBirth:{
 
-`        `type: Date,
+type: Date,
 
-`        `required:true
+required:true
 
-`    `},
+},
 
-`    `gender:{
+gender:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `mobileNumber:{
+mobileNumber:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `EmergencyContactName:{
+EmergencyContactName:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `EmergencyContactNo:{
+EmergencyContactNo:{
 
-`        `type: String,
+type: String,
 
-`        `required: true
+required: true
 
-`    `},
+},
 
-`    `Appointment:{
+Appointment:{
 
-`        `type: Date,
+type: Date,
 
 
 
-`    `},
+},
 
-`    `Appointment\_Status:{
+Appointment\_Status:{
 
-`        `type:String,
+type:String,
 
-`        `enum: ['upcoming', 'completed', 'cancelled','rescheduled'],
+enum: ['upcoming', 'completed', 'cancelled','rescheduled'],
 
 
 
-`    `},
+},
 
-`    `WalletAmount:{
+WalletAmount:{
 
-`        `type:Number,
+type:Number,
 
-`        `default: 0,
+default: 0,
 
-`    `},
+},
 
-`    `appointments: [
+appointments: [
 
-`        `{
+{
 
-`          `date: { type: Date },
+date: { type: Date },
 
-`          `status: {
+status: {
 
-`            `type: String,
+type: String,
 
-`            `enum: ["upcoming", "completed", "cancelled", "rescheduled",""],
+enum: ["upcoming", "completed", "cancelled", "rescheduled",""],
 
-`          `},
+},
 
-`        `},
+},
 
-`      `],
+],
 
-`      `medicalHistoryFiles: [
+medicalHistoryFiles: [
 
-`        `{
+{
 
-`            `medicalHistoryFileData: {
+medicalHistoryFileData: {
 
-`                `type: Buffer,
+type: Buffer,
 
-`            `},
+},
 
-`        `},
+},
 
-`    `],
+],
 
 },{timestamps: true})
 
 patientSchema.methods.comparePassword = async function(candidatePassword) {
 
-`    `return bcrypt.compare(candidatePassword, this.password);
+return bcrypt.compare(candidatePassword, this.password);
 
-`  `};
+};
 
-`  `patientSchema.pre('save', async function(next) {
+patientSchema.pre('save', async function(next) {
 
-`    `if (this.isModified('password')) {
+if (this.isModified('password')) {
 
-`      `const saltRounds = 10;
+const saltRounds = 10;
 
-`      `this.password = await bcrypt.hash(this.password, saltRounds);
+this.password = await bcrypt.hash(this.password, saltRounds);
 
-`    `}
+}
 
-`    `next();
+next();
 
-`  `});
+});
 
 module.exports  = mongoose.model('Patient', patientSchema)
 
@@ -1003,117 +1003,117 @@ import { FaUserCheck } from 'react-icons/fa';
 
 const ApproveDoctorRequest = () => {
 
-`  `const [doctorId, setDoctorId] = useState('');
+const [doctorId, setDoctorId] = useState('');
 
-`  `const [message, setMessage] = useState('');
+const [message, setMessage] = useState('');
 
-`  `const handleDoctorIdChange = (e) => {
+const handleDoctorIdChange = (e) => {
 
-`    `setDoctorId(e.target.value);
+setDoctorId(e.target.value);
 
-`  `};
+};
 
-`  `const handleApproveRequest = async (e) => {
+const handleApproveRequest = async (e) => {
 
-`    `e.preventDefault();
+e.preventDefault();
 
-`    `try {
+try {
 
-`      `const response = await fetch('http://localhost:4000/api/admin/approveRequests', {
+const response = await fetch('http://localhost:4000/api/admin/approveRequests', {
 
-`        `method: 'POST',
+method: 'POST',
 
-`        `headers: {
+headers: {
 
-`          `'Content-Type': 'application/json',
+'Content-Type': 'application/json',
 
-`        `},
+},
 
-`        `body: JSON.stringify({ doctorId }),
+body: JSON.stringify({ doctorId }),
 
-`      `});
+});
 
-`      `const data = await response.json();
+const data = await response.json();
 
-`      `if (response.ok) {
+if (response.ok) {
 
-`        `setMessage(data.message);
+setMessage(data.message);
 
-`      `} else {
+} else {
 
-`        `setMessage(data.error);
+setMessage(data.error);
 
-`      `}
+}
 
-`    `} catch (error) {
+} catch (error) {
 
-`      `console.error('Error during approval:', error);
+console.error('Error during approval:', error);
 
-`      `setMessage('Internal Server Error');
+setMessage('Internal Server Error');
 
-`    `}
+}
 
-`  `};
+};
 
-`  `return (
+return (
 
-`    `<>
+<>
 
-`      `<section className="Heading">
+<section className="Heading">
 
-`        `<h1>
+<h1>
 
-`          `<FaUserCheck /> Approve Doctor Request
+<FaUserCheck /> Approve Doctor Request
 
-`        `</h1>
+</h1>
 
-`        `<p>Enter doctor ID to approve the request.</p>
+<p>Enter doctor ID to approve the request.</p>
 
-`      `</section>
+</section>
 
-`      `<section className="form">
+<section className="form">
 
-`        `<form onSubmit={handleApproveRequest}>
+<form onSubmit={handleApproveRequest}>
 
-`          `<div className="form-group">
+<div className="form-group">
 
-`            `<label htmlFor="doctorId">Doctor ID:</label>
+<label htmlFor="doctorId">Doctor ID:</label>
 
-`            `<input
+<input
 
-`              `type="text"
+type="text"
 
-`              `className="form-control"
+className="form-control"
 
-`              `id="doctorId"
+id="doctorId"
 
-`              `name="doctorId"
+name="doctorId"
 
-`              `value={doctorId}
+value={doctorId}
 
-`              `placeholder="Enter Doctor ID"
+placeholder="Enter Doctor ID"
 
-`              `onChange={handleDoctorIdChange}
+onChange={handleDoctorIdChange}
 
-`            `/>
+/>
 
-`          `</div>
+</div>
 
-`          `<button type="submit" className="btn btn-primary">
+<button type="submit" className="btn btn-primary">
 
-`            `Approve Request
+Approve Request
 
-`          `</button>
+</button>
 
-`        `</form>
+</form>
 
-`        `{message && <p className={message.includes('successfully') ? 'success-message' : 'error-message'}>{message}</p>}
+{message && <p className={message.includes('successfully') ? 'success-message' : 'error-message'}>{message}</p>}
 
-`      `</section>
+</section>
 
-`    `</>
+</>
 
-`  `);
+);
 
 };
 
@@ -1135,211 +1135,211 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
 
-`    `const navigate = useNavigate();
+const navigate = useNavigate();
 
-`    `const [username, setUsername] = useState('');
+const [username, setUsername] = useState('');
 
-`    `const [password, setPassword] = useState('');
+const [password, setPassword] = useState('');
 
-`    `const [userType, setUserType] = useState('doctor'); // Default to pharmacist
+const [userType, setUserType] = useState('doctor'); // Default to pharmacist
 
-`    `const handleLogin = async (e) => {
+const handleLogin = async (e) => {
 
-`        `e.preventDefault();
+e.preventDefault();
 
-`        `try {
+try {
 
-`            `if (userType === 'doctor') {
+if (userType === 'doctor') {
 
-`                `var response = await fetch('/api/doctors/login', {
+var response = await fetch('/api/doctors/login', {
 
-`                    `method: 'POST',
+method: 'POST',
 
-`                    `headers: {
+headers: {
 
-`                        `'Content-Type': 'application/json',
+'Content-Type': 'application/json',
 
-`                    `},
+},
 
-`                    `body: JSON.stringify({username : username, password: password }),
+body: JSON.stringify({username : username, password: password }),
 
-`                `});
+});
 
-`            `} else if (userType === 'admin') {
+} else if (userType === 'admin') {
 
-`                `var response = await fetch('/api/admin/login', {
+var response = await fetch('/api/admin/login', {
 
-`                    `method: 'POST',
+method: 'POST',
 
-`                    `headers: {
+headers: {
 
-`                        `'Content-Type': 'application/json',
+'Content-Type': 'application/json',
 
-`                    `},
+},
 
-`                    `body: JSON.stringify({ username, password }),
+body: JSON.stringify({ username, password }),
 
-`                `});
+});
 
-`            `}else{
+}else{
 
-`                `var response = await fetch('/api/patient/login', {
+var response = await fetch('/api/patient/login', {
 
-`                    `method: 'POST',
+method: 'POST',
 
-`                    `headers: {
+headers: {
 
-`                        `'Content-Type': 'application/json',
+'Content-Type': 'application/json',
 
-`                    `},
+},
 
-`                    `body: JSON.stringify({ username, password }),
+body: JSON.stringify({ username, password }),
 
-`                `});
-
-
-
-`            `}
-
-`            `const data = await response.json();
-
-`                `console.log("data is ",data)
-
-`            `if (response.status === 200) {
+});
 
 
 
-`                  `localStorage.setItem('userType', userType);
+}
 
-`                  `localStorage.setItem('username', username);
+const data = await response.json();
 
-`                  `localStorage.setItem('password', password);
+console.log("data is ",data)
 
-`                  `if (userType === 'doctor') {
+if (response.status === 200) {
 
-`                    `navigate('/DoctorHomePage'); // Adjust the path based on your routes
 
-`                `} else if (userType === 'admin') {
 
-`                    `navigate('/AdminHome'); // Adjust the path based on your routes
+localStorage.setItem('userType', userType);
 
-`                `} else {
+localStorage.setItem('username', username);
 
-`                    `const username = data.user.username;
+localStorage.setItem('password', password);
 
-`            `// Store the user ID in local storage
+if (userType === 'doctor') {
+
+navigate('/DoctorHomePage'); // Adjust the path based on your routes
+
+} else if (userType === 'admin') {
+
+navigate('/AdminHome'); // Adjust the path based on your routes
+
+} else {
+
+const username = data.user.username;
+
+// Store the user ID in local storage
 
 localStorage.setItem('username', username);
 
 console.log('Stored username in local storage:', username);
 
-`                    `navigate('PatientHome'); // Adjust the path based on your routes
+navigate('PatientHome'); // Adjust the path based on your routes
 
-`                `}
-
-
-
-`            `} else {
-
-`                `console.error(data.error);
-
-`            `}
-
-`        `} catch (error) {
-
-`            `console.error(error.message);
-
-`        `}
-
-`    `};
-
-`    `const handleResetPassword = () => {
-
-`        `// Navigate to the reset-password path
-
-`        `navigate('/reset-password');
-
-`      `};
-
-`    `return (
-
-`        `<div>
-
-`            `<h2>Login</h2>
-
-`            `<form onSubmit={handleLogin}>
-
-`                `<label>
-
-`                    `User Type:
-
-`                    `<select value={userType} onChange={(e) => setUserType(e.target.value)}>
-
-`                        `<option value="doctor">Doctor</option>
-
-`                        `<option value="admin">Admin</option>
-
-`                        `<option value="Patient">Patient</option> 
-
-`                    `</select>
-
-`                `</label>
-
-`                `<br />
-
-`                `<label>
-
-`                    `Username:
-
-`                    `<input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-
-`                `</label>
-
-`                `<br />
-
-`                `<label>
-
-`                    `Password:
-
-`                    `<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-
-`                `</label>
-
-`                `<br />
-
-`                `<button type="submit">Login</button>
+}
 
 
 
-`            `</form>
+} else {
 
-`            `<button onClick={handleResetPassword}>Reset Password</button>
+console.error(data.error);
 
-`            `<div>
+}
 
-`                `<Link to ="/signUp">
+} catch (error) {
 
-`                    `<button>Sign up</button>
+console.error(error.message);
 
-`                    `</Link>
+}
 
-`            `</div>
+};
+
+const handleResetPassword = () => {
+
+// Navigate to the reset-password path
+
+navigate('/reset-password');
+
+};
+
+return (
+
+<div>
+
+<h2>Login</h2>
+
+<form onSubmit={handleLogin}>
+
+<label>
+
+User Type:
+
+<select value={userType} onChange={(e) => setUserType(e.target.value)}>
+
+<option value="doctor">Doctor</option>
+
+<option value="admin">Admin</option>
+
+<option value="Patient">Patient</option> 
+
+</select>
+
+</label>
+
+<br />
+
+<label>
+
+Username:
+
+<input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+
+</label>
+
+<br />
+
+<label>
+
+Password:
+
+<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+
+</label>
+
+<br />
+
+<button type="submit">Login</button>
+
+
+
+</form>
+
+<button onClick={handleResetPassword}>Reset Password</button>
+
+<div>
+
+<Link to ="/signUp">
+
+<button>Sign up</button>
+
+</Link>
+
+</div>
 
 <p>If you want to Submit a request and become a doctor</p>
 
-`            `<div>
+<div>
 
-`                `<Link to="/SubmitRequest">
+<Link to="/SubmitRequest">
 
-`                    `<button> SubmitRequest</button>
+<button> SubmitRequest</button>
 
-`                `</Link>
+</Link>
 
-`            `</div>
+</div>
 
-`        `</div>
+</div>
 
-`    `);
+);
 
 };
 
