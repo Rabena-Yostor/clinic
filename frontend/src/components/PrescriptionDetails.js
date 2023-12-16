@@ -10,7 +10,7 @@ const PrescriptionDetails = ({ prescription }) => {
     const fetchUserPrescriptions = async () => {
       try {
         // Replace 'username' with the actual username of the user
-        const username = 'johndoe'; // You can get the username from your context or a user session
+        const username = localStorage.getItem('username'); // You can get the username from your context or a user session
         const response = await fetch(`http://localhost:4000/api/prescription/get-prescriptions/${username}`);
         if (response.ok) {
           const data = await response.json();

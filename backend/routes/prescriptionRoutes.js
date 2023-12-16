@@ -13,12 +13,18 @@ const {
     filterPrescriptionsForPatient,
     viewPrescription,
     filterPrescriptionn,
+    findMedicine,
+    deleteMedicineFromPrescription,
+    addMedicineToPrescription,
+    updateMedicineDosage,
+    getPrescriptionsDoctor,
+    checkMedicines,
 } = require ('../controllers/prescriptionController')
 
 const router = express.Router()
 
 //GET ALL perscriptions
-router.get('/prescriptions', getPrescriptions)
+router.get('/prescriptions/:username', getPrescriptions)
 
 
 //GET Single workout
@@ -39,7 +45,7 @@ router.get('/filter',filterPrescriptions)
 
 
 //FILTERR
-router.get('/filterr',filterPrescriptionn)
+router.get('/filterr/:username',filterPrescriptionn)
 
 
 
@@ -62,4 +68,11 @@ router.get('/prescription-filter/:username', filterPrescriptionsForPatient);
 // VIEW PERSCRIPTION
 router.get('/view-prescription/:id', viewPrescription);
 
+//find Medicine (testing accessing other collections)
+router.get('/find-medicine', findMedicine);
+router.put('/delete-medicine-from-prescription/:prescriptionId/:medicineName', deleteMedicineFromPrescription);
+router.put('/add-medicine-to-prescription/:prescriptionId', addMedicineToPrescription);
+router.put('/update-medicine-dosage/:prescriptionId/:medicineName/:newDosage', updateMedicineDosage);
+router.get('/get-prescriptions-doctor/:username', getPrescriptionsDoctor);
+router.get('/check-medicines', checkMedicines);
 module.exports = router

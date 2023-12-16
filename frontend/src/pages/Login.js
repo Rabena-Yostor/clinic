@@ -92,20 +92,23 @@ const Login = () => {
                 </label>
                 <br />
                 <button type="submit">Login</button>
+                <p></p>
                 
             </form>
             <button onClick={handleResetPassword}>Reset Password</button>
-
+            <p></p>
             <div>
                 <Link to ="/signUp">
                     <button>Sign up</button>
+                    
                     </Link>
+                    
 
             </div>
 <p>If you want to Submit a request and become a doctor</p>
             <div>
                 <Link to="/SubmitRequest">
-                    <button> SubmitRequest</button>
+                    <button> Submit Request</button>
                 </Link>
 
             </div>

@@ -121,6 +121,7 @@ const PatientDash = () => {
           onChange={(e) => setNewPatientAppointmentStatus(e.target.value)}
           value={newPatientAppointmentStatus}
         >
+          <option value="">Select Status</option>
           <option value="upcoming">Upcoming</option>
           <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>

@@ -26,7 +26,7 @@ function DoctorPage() {
             </div>
             <div>
                 <Link to="/wallet-doc">
-                    <FaUser /> view wallet amount
+                    <FaUser /> View wallet amount
                 </Link>
             </div>
             
@@ -35,12 +35,32 @@ function DoctorPage() {
                     <FaUser /> DoctorAppointments
                 </Link>
             </div>
+            <div>
+                <Link to="/AddPrescription">
+                    <FaUser /> Add Prescription to patient
+                </Link>
+            </div>
+            <div>
+                <Link to="/">
+                    <FaUser /> Edit Prescription of patient
+                </Link>
+            </div>
+            <div>
+        <Link to="/doctorPrescription">
+          <FaUser />My Patients' Prescriptions 
+        </Link>
+      </div>
             <br />
             <hr/>
+
+            
             
       <Link to="/change-password">
         <button>Change Password</button>
       </Link>
+
+
+        
 
         </div>
     );

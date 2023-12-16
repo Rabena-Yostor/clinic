@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom"; 
+import { Link } from 'react-router-dom';
 
 function PrescriptionList() {
   const [prescriptions, setPrescriptions] = useState([]);
-
-  // Create a state to keep track of selected prescriptions
   const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
 
   useEffect(() => {
@@ -14,7 +12,8 @@ function PrescriptionList() {
 
   const fetchPrescriptions = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/prescription/prescriptions');
+      const username = localStorage.getItem('username');
+      const response = await fetch(`http://localhost:4000/api/prescription/prescriptions/${username}`);
       if (response.ok) {
         const data = await response.json();
         setPrescriptions(data);
@@ -27,10 +26,8 @@ function PrescriptionList() {
   };
 
   const handlePrescriptionClick = (prescriptionId) => {
-    // Check if the prescription is already in the selectedPrescriptions array
     const isSelected = selectedPrescriptions.includes(prescriptionId);
 
-    // Toggle the selection by adding or removing the prescription ID
     if (isSelected) {
       setSelectedPrescriptions(selectedPrescriptions.filter((id) => id !== prescriptionId));
     } else {
@@ -40,23 +37,31 @@ function PrescriptionList() {
 
   return (
     <div>
-      <h1>Prescription List</h1>
+      <h1>Prescriptions List</h1>
       <ul>
-      <Link to="/filter-prescriptions">
-        <button>Prescription Filter</button>
-      </Link>
+        <Link to="/filter-prescriptions">
+          <button>Prescription Filter</button>
+        </Link>
         {prescriptions.map((prescription) => (
           <li
             key={prescription._id}
             className={selectedPrescriptions.includes(prescription._id) ? 'selected' : ''}
             onClick={() => handlePrescriptionClick(prescription._id)}
           >
-            <p>Name: {prescription.name}</p>
-            <p>Price: {prescription.price}</p>
-            <p>Grams: {prescription.grams}</p>
+            
+            <ul>
+              {prescription.medicines.map((medicine) => (
+                <li key={medicine.name}>
+                  {medicine.name} - Dosage: {medicine.dosage} - Price: EGP{medicine.price} - Quantity: {medicine.quantity}
+                </li>
+              ))}
+            </ul>
+            
+
             <p>Date: {prescription.date}</p>
             <p>Doctor: {prescription.doctor}</p>
             <p>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
+            <p>_________________________________</p>
           </li>
         ))}
       </ul>

@@ -119,3 +119,10 @@ div.error {
   /* You can add other styling properties as needed */
 }
 
+button {
+  background-color: #1aac83;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}

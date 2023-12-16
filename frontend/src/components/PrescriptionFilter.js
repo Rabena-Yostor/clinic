@@ -7,6 +7,7 @@ const PrescriptionFilter = () => {
 
   const [filteredPrescriptions, setFilteredPrescriptions] = useState([]);
 
+  const username = localStorage.getItem('username'); // You can get the username from your context or a user session
   const handleFilterPrescriptions = async () => {
     try {
       const queryParams = [];
@@ -21,7 +22,7 @@ const PrescriptionFilter = () => {
       }
 
       const queryString = queryParams.join('&');
-      const response = await fetch(`http://localhost:4000/api/prescription/filterr?${queryString}`);
+      const response = await fetch(`http://localhost:4000/api/prescription/filterr/${username}?${queryString}`);
       if (response.ok) {
         const data = await response.json();
         setFilteredPrescriptions(data);
