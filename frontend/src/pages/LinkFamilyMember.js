@@ -3,7 +3,7 @@ import{useEffect,useState} from 'react'
 //components
 //import WorkoutDetails from '../components/WorkoutDetails'
 
-import LinkForm from './components/LinkForm'
+import LinkForm from '../components/LinkForm'
 
 const Linkfamily = () => {
     const [family, setFamily] = useState(null)
