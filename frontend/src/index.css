@@ -80,15 +80,7 @@ input {
   border-radius: 4px;
   box-sizing: border-box;
 }
-form button {
-  background: var(--primary);
-  border: 0;
-  color: #fff;
-  padding: 10px;
-  font-family: "Poppins";
-  border-radius: 4px;
-  cursor: pointer;
-}
+
 div.error {
   padding: 10px;
   background: #ffefef;
@@ -209,7 +201,7 @@ button:hover {
 .content {
   position: relative;
   z-index: 2; /* Ensures content is above the background */
-  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for content */
+  background: rgba(200, 200, 200, 0.8); /* Semi-transparent background for content */
   padding: 20px; /* Or as needed */
   border-radius: 8px; /* Optional rounded corners */
   /* Add more styles as needed */
