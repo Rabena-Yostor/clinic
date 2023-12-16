@@ -886,7 +886,7 @@ const createAppointment = async (req, res) => {
         res.status(201).json({ message: 'Appointment created successfully', user });
     } catch (error) {
         console.error('Error creating appointment:', error);
-        res.status(500).json({ error: Internal Server Error: ${error.message} });
+        res.status(500).json({ error:`Internal Server Error: ${error.message}` });
     }
 };
 

@@ -46,7 +46,7 @@ const DoctorDetails = ({ doctor }) => {
         }
     } catch (error) {
         console.error('Error creating appointment:', error);
-        setError(Failed to create appointment: ${error.message});
+        setError(`Failed to create appointment: ${error.message}`);
 
         // Check the status code and provide a more specific error message
         if (error.response && error.response.status === 400) {

@@ -33,10 +33,12 @@ const{
     getWallet,
     payWithWallet,
     filledYes,
-    linkFamilyMember
+    linkFamilyMember,
+    createAppointment
 } = require('../controllers/patientController');
 const router = express.Router()
 
+router.post('/createAppointment', createAppointment);
 router.get('/getAllPatients',getAllPatients)
 
 router.get('/getPatient/:id', getPatient)
