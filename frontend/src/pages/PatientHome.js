@@ -53,6 +53,12 @@ function PatientHome(){
           <FaUser />My Prescriptions 
         </Link>
       </div>
+
+      <div>
+        <Link to="/safina">
+          <FaUser />Add Family Member 
+        </Link>
+      </div>
             
       <br />
             <hr/>
