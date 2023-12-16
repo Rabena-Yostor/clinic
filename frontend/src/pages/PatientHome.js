@@ -54,6 +54,11 @@ function PatientHome(){
         </Link>
       </div>
             
+      <div>
+        <Link to="/linkFamilyMember">
+          <FaUser />  Link Family Member
+        </Link>
+      </div>
       <br />
             <hr/>
             

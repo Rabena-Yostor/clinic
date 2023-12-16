@@ -44,6 +44,8 @@ import PrescriptionListDoctor from './components/PrescriptionListDoctor';
 import PrescriptionDetails from './components/PrescriptionDetails';
 import Payment from './pages/Payment';
 import Completion from './components/Completion';
+import LinkFamilyMember from './pages/LinkFamilyMember';
+
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
 
@@ -101,6 +103,7 @@ function App() {
             <Route path="/view-prescription/:id" element={<PrescriptionDetails />} />
             <Route path = "/completion/:id" element = {<Completion />} />
             <Route path = "/payment/:id" element = {<Payment />} />
+            <Route path = "/linkFamilyMember" element = {<LinkFamilyMember/>} />
           </Routes>
         </div>
       </BrowserRouter>

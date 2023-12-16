@@ -33,6 +33,7 @@ const{
     getWallet,
     payWithWallet,
     filledYes,
+    linkFamilyMember
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -179,4 +180,6 @@ router.get('/medicalHistoryFiles/:username', async (req, res) => {
 router.get('/getWallet/:username', getWallet);
 router.put('/pay-with-wallet/:prescriptionId/:username', payWithWallet);
 router.put('/filledYes/:prescriptionId', filledYes);
+router.post('/linkFamilyMember', linkFamilyMember);
+
 module.exports = router
