@@ -1,7 +1,9 @@
 const express = require('express')
 
 const Doctor = require("../models/doctorModel");
-
+const Notification = require("../models/ClinicNotificationModel");
+const Patient = require("../models/PatientModel");
+const nodemailer = require('nodemailer');
 const {
     createDoctor,
     getDoctor,
@@ -24,10 +26,14 @@ const {
   signUp,
   sendOtpAndSetPassword,
   logout, 
-  uploadMiddleware
+  uploadMiddleware,
+  createNotificationDoctor,
+  deleteNotification,
+  getAllNotificationsDoctor,
 
 }= require('../controllers/doctorController')
 
+const { getConversationDoctor ,sendMessageDoctor} = require('../controllers/conversationController');
 
 const router = express.Router()
 
@@ -151,6 +157,136 @@ router.post("/filterAppointments", async (req, res) => {
   } catch (error) {
     console.error("Error filtering doctor appointments:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+router.post('/createNotificationDoctor', createNotificationDoctor);
+router.delete('/deleteNotification/:notificationId', deleteNotification);
+router.post('/getAllNotificationsDoctor', getAllNotificationsDoctor);
+
+//conversation
+router.post('/getconversationDoctor', getConversationDoctor);
+router.post('/sendMessageDoctor', sendMessageDoctor);
+//Peter Youssef
+// Reschedule appointment by ID
+router.patch("/rescheduleAppointment", async (req, res) => {
+  const { appointmentId, newDate } = req.body;
+  if (!appointmentId || !newDate) {
+    return res.status(404).json({ message: "hihihi" });
+  }
+  try {
+    const updatedAppointment = await Doctor.updateOne(
+      { "appointments._id": appointmentId },
+      {
+        $set: {
+          "appointments.$.date": newDate,
+          "appointments.$.status": "rescheduled",
+        },
+      }
+    );
+
+    if (updatedAppointment.nModified === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Fetch the updated doctor data
+    const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+
+    //Send notification to Doctor with the new appointment date and and Patient name
+    const message = `Your appointment has been rescheduled to ${newDate}`;
+    const notification = new Notification({
+      recipient_id: doctor._id,
+      message,
+    });
+    await notification.save();
+
+    // Send OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'peteraclsender@gmail.com',
+        pass: 'tayr rzwl yvip tqjt',
+      },
+    });
+    const mailOptions = {
+      from: 'peteraclsender@gmail.com',
+      to: doctor.email,
+      subject: 'An Appointment has been rescheduled',
+      text: `Your appointment has been rescheduled to ${newDate}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sendingemail' });
+      }
+      res.status(200).json({ message: 'Email sent successfully' });
+    });
+
+    res.json(doctor);
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+// Cancel appointment by ID
+router.patch("/cancelAppointment", async (req, res) => {
+  const { appointmentId } = req.body;
+  if (!appointmentId) {
+    return res.status(404).json({ message: "hihihi" });
+  }
+  try {
+    //get the appointment date
+    const appointment = await Doctor.findOne({ "appointments._id": appointmentId });
+    const date = appointment.appointments[0].date;
+    console.log(date);
+
+    const updatedAppointment = await Doctor.updateOne(
+      { "appointments._id": appointmentId },
+      {
+        $set: {
+          "appointments.$.status": "cancelled",
+        },
+      }
+    );
+
+    if (updatedAppointment.nModified === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Fetch the updated doctor data
+    const doctor = await Doctor.findOne({ "appointments._id": appointmentId });
+
+    //Send notification to Doctor with the new appointment date and and Patient name
+    const message = `Your appointment on ${date} has been cancelled`;
+    const notification = new Notification({
+      recipient_id: doctor._id,
+      message,
+    });
+    await notification.save();
+    // Send OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'peteraclsender@gmail.com',
+        pass: 'tayr rzwl yvip tqjt',
+      },
+    });
+    const mailOptions = {
+      from: 'peteraclsender@gmail.com',
+      to: doctor.email,
+      subject: 'An Appointment has been cancelled',
+      text: `Your appointment on ${date} has been cancelled`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sendingemail' });
+      }
+      res.status(200).json({ message: 'Email sent successfully' });
+    });
+    res.json(doctor);
+  } catch (error) {
+    console.error("Error rescheduling appointment:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
