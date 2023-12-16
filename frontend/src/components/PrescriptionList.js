@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import PrescriptionDetails from '../components/PrescriptionDetails';
 
 function PrescriptionList() {
   const [prescriptions, setPrescriptions] = useState([]);
   const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch the prescriptions data when the component mounts
@@ -35,6 +37,11 @@ function PrescriptionList() {
     }
   };
 
+  const handleViewDetails = (prescriptionId) => {
+    // Navigate to the PrescriptionDetails component with the selected prescriptionId
+    navigate(`/view-prescription/${prescriptionId}`);
+  };
+
   return (
     <div>
       <h1>Prescriptions List</h1>
@@ -52,7 +59,7 @@ function PrescriptionList() {
             <ul>
               {prescription.medicines.map((medicine) => (
                 <li key={medicine.name}>
-                  {medicine.name} - Dosage: {medicine.dosage} - Price: EGP{medicine.price} - Quantity: {medicine.quantity}
+                  {medicine.name}  - Quantity: {medicine.quantity}
                 </li>
               ))}
             </ul>
@@ -61,6 +68,7 @@ function PrescriptionList() {
             <p>Date: {prescription.date}</p>
             <p>Doctor: {prescription.doctor}</p>
             <p>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
+            <button onClick={() => handleViewDetails(prescription._id)}>View Details</button>
             <p>_________________________________</p>
           </li>
         ))}

@@ -1,48 +1,205 @@
+// PrescriptionDetails.js
 import React, { useState, useEffect } from 'react';
-import { usePrescriptionsContext } from '../hooks/usePrescriptionsContext';
+import { useParams } from 'react-router-dom';
+import jsPDF from 'jspdf';
 
-const PrescriptionDetails = ({ prescription }) => {
-  const { dispatch } = usePrescriptionsContext();
-  const [userPrescriptions, setUserPrescriptions] = useState([]);
+
+
+const PrescriptionDetails = ({ prescriptionId }) => {
+  const { id } = useParams();
+  const [prescriptionDetails, setPrescriptionDetails] = useState(null);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showFailModal, setShowFailModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    // Fetch the user's prescriptions when the component mounts
-    const fetchUserPrescriptions = async () => {
+    // Fetch prescription details based on prescriptionId
+    const fetchPrescriptionDetails = async () => {
       try {
-        // Replace 'username' with the actual username of the user
-        const username = localStorage.getItem('username'); // You can get the username from your context or a user session
-        const response = await fetch(`http://localhost:4000/api/prescription/get-prescriptions/${username}`);
+        const response = await fetch(`http://localhost:4000/api/prescription/view-prescription/${id}`);
         if (response.ok) {
           const data = await response.json();
-          setUserPrescriptions(data.prescriptions);
+          setPrescriptionDetails(data);
+          calculateTotalPrice(data.medicines);
+
         } else {
-          console.error('Failed to fetch user prescriptions');
+          console.error('Failed to fetch prescription details.');
         }
       } catch (error) {
-        console.error('Error fetching user prescriptions:', error);
+        console.error('Error fetching prescription details:', error);
       }
     };
 
-    fetchUserPrescriptions();
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+    fetchPrescriptionDetails();
+    fetchWalletBalance();
+  }, [prescriptionId]);
+
+  const fetchWalletBalance = async () => {
+    try {
+      // Replace 'username' with the actual username or get it dynamically
+      const username = localStorage.getItem('username');
+      const response = await fetch(`http://localhost:4000/api/patient/getWallet/${username}`);
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Entire Response:', data);  // Log the entire response
+      setWalletBalance(data.wallet);
+
+    } catch (error) {
+      console.error('Error fetching wallet balance:', error);
+    }
+  };
 
 
+  const calculateTotalPrice = (medicines) => {
+    const totalPrice = medicines.reduce((total, medicine) => {
+      return total + medicine.price;
+    }, 0);
+
+    setTotalPrice(totalPrice);
+  };
+
+  const handlePayWithWallet = async () => {
+    try {
+      const username = localStorage.getItem('username');
+      const response = await fetch(`http://localhost:4000/api/patient/pay-with-wallet/${id}/${username}`, {
+        method: 'PUT',
+      });
+
+      if (response.ok) {
+        // Payment successful, update local state
+        setWalletBalance(walletBalance - totalPrice);
+        setPrescriptionDetails({ ...prescriptionDetails, filled: true });
+        setShowSuccessModal(true); // Show success modal
+      } else {
+        setShowFailModal(true); // Show fail modal
+
+        console.error('Failed to pay with wallet.');
+      }
+    } catch (error) {
+      
+      console.error('Error processing payment:', error);
+    }
+  };
+
+  const closeModal = () => {
+    setShowSuccessModal(false);
+  };
+
+  const handlePayWithCard = async () => {
+    try{
+        window.location.href = `/payment/${id}`;
+    }
+    catch(error){
+        console.error('Error paying with card:', error);
+        setErrorMessage('Something went wrong. Please try again.'); // Display a generic error message
+        setSuccessMessage(''); // Clear any existing success message
+    }
+}
+
+const handleDownloadPDF = () => {
+  const doc = new jsPDF();
+  
+  // Add prescription details to the PDF
+  doc.text(`Prescription Details - ID: ${id}`, 20, 10);
+  doc.text(`Date: ${prescriptionDetails.date}`, 20, 20);
+  doc.text(`Doctor: ${prescriptionDetails.doctor}`, 20, 30);
+
+  // Add medicines details
+  prescriptionDetails.medicines.forEach((medicine, index) => {
+    const y = 40 + index * 10;
+    doc.text(`${medicine.name} - Quantity: ${medicine.quantity} - Dosage: ${medicine.dosage} - Price: ${medicine.price}`, 20, y);
+  });
+
+   // Save the PDF using FileSaver
+  const fileName = `Prescription_${id}.pdf`;
+  doc.save(fileName);
+};
 
   return (
     <div>
-      {/* Display user's prescriptions */}
-      <h2>User's Prescriptions</h2>
-      <ul>
-        {userPrescriptions.map((userPrescription) => (
-          <li key={userPrescription._id}>
-            {userPrescription.name} - {userPrescription.date}
-          </li>
-        ))}
-      </ul>
+      <h2>Prescription Details</h2>
+      <p style={{ position: 'absolute', top: 100, right: 400 }}>Wallet Balance: {walletBalance} EGP</p>
+      {prescriptionDetails ? (
+        <div>
+          <ul>
+            {prescriptionDetails.medicines.map((medicine) => (
+              <li key={medicine.name}>
+                {medicine.name} - Quantity: {medicine.quantity} - Dosage: {medicine.dosage} - Price: {medicine.price}
+              </li>
+            ))}
+          </ul>
+          <p>Date: {prescriptionDetails.date}</p>
+          <p>Doctor: {prescriptionDetails.doctor}</p>
+          <p>Filled: {prescriptionDetails.filled ? 'Yes' : 'No'}</p>
+          <p>Your Username: {prescriptionDetails.patientUsername}</p>
+          <p>Total Price: {totalPrice} EGP</p>
 
-      {/* Add your click event handling logic here */}
+          {!prescriptionDetails.filled && (
+            <button onClick={handlePayWithWallet}>Pay with Wallet</button>
+          )}
+          {!prescriptionDetails.filled && (
+            <button onClick={handlePayWithCard} style={{ marginLeft: '60px' }}>Pay with Card</button>
+          )}
+          <button onClick={handleDownloadPDF} style={{ marginLeft: '60px' }}>Download as PDF</button>
+
+        </div>
+        
+        
+      ) : (
+        <p>Loading prescription details...</p>
+      )}
+           {showSuccessModal && (
+          <div style={modalStyle}>
+            <div style={modalContentStyle}>
+              <span style={closeStyle} onClick={closeModal}>&times;</span>
+              <p>Payment successful! Prescription is now filled.</p>
+            </div>
+          </div>
+        )}
+          {showFailModal && (
+          <div style={modalStyle}>
+            <div style={modalContentStyle}>
+              <span style={closeStyle} onClick={closeModal}>&times;</span>
+              <p>Payment failed! Please try again later.</p>
+            </div>
+          </div>
+        )}
     </div>
   );
 };
 
 export default PrescriptionDetails;
+const modalStyle = {
+  display: 'block',
+  position: 'fixed',
+  zIndex: 1,
+  left: 0,
+  top: 0,
+  width: '100%',
+  height: '100%',
+  overflow: 'auto',
+  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+};
+
+const modalContentStyle = {
+  backgroundColor: '#fefefe',
+  margin: '15% auto',
+  padding: '20px',
+  border: '1px solid #888',
+  width: '60%',
+};
+
+const closeStyle = {
+  color: '#aaa',
+  float: 'right',
+  fontSize: '28px',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+};

@@ -222,15 +222,16 @@ const filterPrescriptionsForPatient = async (req, res) => {
 // View prescription
 const viewPrescription = async (req, res) => {
     try {
-        const { prescriptionId } = req.params;
         
-        const prescription = await Prescription.findById(prescriptionId);
+        const { prescriptionId } = req.params;
+        console.log(prescriptionId);
+        const prescriptions = await Prescription.findById(prescriptionId);
 
-        if (!prescription) {
+        if (!prescriptions) {
             return res.status(404).json({ error: 'No such prescription' });
         }
 
-        res.status(200).json(prescription);
+        res.status(200).json(prescriptions);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }

@@ -41,6 +41,9 @@ import PatientDash from './components/PatientDash'
 import PatientDocuments from './pages/PatientDocuments';
 import AddPrescription from './pages/AddPrescription';
 import PrescriptionListDoctor from './components/PrescriptionListDoctor';
+import PrescriptionDetails from './components/PrescriptionDetails';
+import Payment from './pages/Payment';
+import Completion from './components/Completion';
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
 
@@ -95,6 +98,9 @@ function App() {
             <Route path = "/patientDocuments" element = {<PatientDocuments />} />
             <Route path = "/AddPrescription" element = {<AddPrescription />} />
             <Route path="/doctorPrescription" element={<PrescriptionListDoctor />} />
+            <Route path="/view-prescription/:id" element={<PrescriptionDetails />} />
+            <Route path = "/completion/:id" element = {<Completion />} />
+            <Route path = "/payment/:id" element = {<Payment />} />
           </Routes>
         </div>
       </BrowserRouter>

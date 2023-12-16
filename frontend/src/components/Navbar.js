@@ -10,7 +10,7 @@ const Navbar = () => {
       console.log(response.data);
       alert('Logout successful!');
       // Redirect to the home page or another route after successful logout
-      // navigate('/');
+       navigate('/');
     } catch (error) {
       console.error('Logout failed', error);
     }

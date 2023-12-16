@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import { saveAs } from 'file-saver';
+
 
 function PrescriptionList() {
   const [prescriptions, setPrescriptions] = useState([]);
@@ -27,24 +30,29 @@ function PrescriptionList() {
   };
 
   const handleEditClick = (prescriptionId) => {
+    
+  };
+
+  const handleEditMedicine = (prescriptionId, medicine) => {
+    // Open modal or navigate to a new component for editing medicine
     const selectedPrescription = prescriptions.find((prescription) => prescription._id === prescriptionId);
     setSelectedPrescription(selectedPrescription);
-  };
-
-  const handleEditMedicine = (medicine) => {
-    // Open modal or navigate to a new component for editing medicine
     setSelectedMedicine(medicine);
   };
-
-  const handleDeleteMedicine = async (medicineName) => {
+  const handleDeleteMedicine = async (prescriptionId, medicineName) => {
     try {
-        console.log(medicineName);
-        console.log(selectedPrescription._id);
+      // Display a confirmation prompt
+      const isConfirmed = window.confirm(`Are you sure you want to delete ${medicineName}?`);
+  
+      if (!isConfirmed) {
+        return; // User canceled the delete operation
+      }
+  
       // Perform the delete operation on the backend
-      await fetch(`http://localhost:4000/api/prescription/delete-medicine-from-prescription/${selectedPrescription._id}/${medicineName}`, {
+      await fetch(`http://localhost:4000/api/prescription/delete-medicine-from-prescription/${prescriptionId}/${medicineName}`, {
         method: 'PUT',
       });
-
+  
       // After deleting on the backend, fetch updated prescriptions
       fetchPrescriptions();
     } catch (error) {
@@ -71,6 +79,26 @@ function PrescriptionList() {
     setSelectedMedicine(null);
   };
 
+  const handleDownloadPDF = (prescription) => {
+    const doc = new jsPDF();
+  
+    // Add prescription details to the PDF
+    doc.text(`Prescription Details - Patient: ${prescription.patientUsername}`, 20, 10);
+    doc.text(`Date: ${prescription.date}`, 20, 20);
+    doc.text(`Filled: ${prescription.filled ? 'Yes' : 'No'}`, 20, 30);
+  
+    // Add medicines details
+    prescription.medicines.forEach((medicine, index) => {
+      const y = 40 + index * 10;
+      doc.text(`${medicine.name} - Dosage: ${medicine.dosage} - Price: EGP${medicine.price} - Quantity: ${medicine.quantity}`, 20, y);
+    });
+  
+  // Save the PDF using FileSaver
+  const fileName = `Prescription_${prescription._id}.pdf`;
+  doc.save(fileName);
+  };
+  
+
   return (
     <div>
       <h1>Prescriptions List For My Patients</h1>
@@ -82,33 +110,55 @@ function PrescriptionList() {
               {prescription.medicines.map((medicine) => (
                 <li key={medicine.name}>
                   {medicine.name} - Dosage: {medicine.dosage} - Price: EGP{medicine.price} - Quantity: {medicine.quantity}
-                  <button onClick={() => handleEditMedicine(medicine)}>Edit Medicine</button>
-                  <button onClick={() => handleDeleteMedicine(medicine.name)}>Delete Medicine</button>
+                  <button
+  onClick={() => handleEditMedicine(prescription._id, medicine)}
+  style={{ width: '120px', marginRight: '5px', marginLeft: '5px' }}
+>
+  Edit Medicine
+</button>
+<button
+  onClick={() => handleDeleteMedicine(prescription._id, medicine.name)}
+  style={{ width: '120px', marginRight: '5px', marginLeft: '5px' }}
+>
+  Delete Medicine
+</button>
+
                 </li>
               ))}
             </ul>
             <p>Date: {prescription.date}</p>
             <p>Filled: {prescription.filled ? 'Yes' : 'No'}</p>
-            <button onClick={() => handleEditClick(prescription._id)}>Edit Prescription</button>
+            <button onClick={() => handleDownloadPDF(prescription)}>Download as PDF</button>
+
             <p>_________________________________</p>
           </li>
         ))}
       </ul>
 
-      {/* Modal for editing medicine */}
-      {selectedMedicine && (
-        <div>
-          <h2>Edit Medicine</h2>
-          <p>{selectedMedicine.name} - Dosage: {selectedMedicine.dosage}</p>
-          <input
-            type="text"
-            value={selectedMedicine.dosage}
-            onChange={(e) => setSelectedMedicine({ ...selectedMedicine, dosage: e.target.value })}
-          />
-          <button onClick={() => handleUpdateMedicine(selectedMedicine)}>Update Dosage</button>
-          <button onClick={handleCloseModal}>Close</button>
-        </div>
-      )}
+     {/* Modal for editing medicine */}
+     {selectedMedicine && (
+      <div
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '80%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'white',
+          padding: '20px',
+          zIndex: '1000',
+        }}
+      >
+        <h2>Edit Medicine</h2>
+        <p>{selectedMedicine.name} - Dosage: {selectedMedicine.dosage}</p>
+        <input
+          type="text"
+          value={selectedMedicine.dosage}
+          onChange={(e) => setSelectedMedicine({ ...selectedMedicine, dosage: e.target.value })}
+        />
+        <button onClick={() => handleUpdateMedicine(selectedMedicine)}>Update Dosage</button>
+        <button onClick={handleCloseModal}>Close</button>
+      </div>
+    )}
     </div>
   );
 }

@@ -13,56 +13,51 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
-        try {
-
-            if (userType === 'doctor') {
-                var response = await fetch('/api/doctors/login', {
+    
+        const userEndpoints = [
+            { type: 'doctor', endpoint: '/api/doctors/login' },
+            { type: 'admin', endpoint: '/api/admin/login' },
+            { type: 'patient', endpoint: '/api/patient/login' }
+        ];
+        const credentials = JSON.stringify({ username, password });
+    
+        for (const { type, endpoint } of userEndpoints) {
+            try {
+                const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({username : username, password: password }),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: credentials
                 });
-            } else if (userType === 'admin') {
-                var response = await fetch('/api/admin/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password }),
-                });
-            }else{
-                var response = await fetch('/api/patient/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password }),
-                });
-            }
-            const data = await response.json();
-
-            if (response.status === 200) {
-                
-                  localStorage.setItem('userType', userType);
-                  localStorage.setItem('username', username);
-                  localStorage.setItem('password', password);
-                  if (userType === 'doctor') {
-                    navigate('/DoctorHomePage'); // Adjust the path based on your routes
-                } else if (userType === 'admin') {
-                    navigate('/AdminHome'); // Adjust the path based on your routes
-                } else {
-                    navigate('PatientHome'); // Adjust the path based on your routes
+    
+                if (response.status === 200) {
+                    const data = await response.json();
+                    localStorage.setItem('userType', type);
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('password', password);
+    
+                    switch (type) {
+                        case 'doctor':
+                            navigate('/DoctorHomePage');
+                            return;
+                        case 'admin':
+                            navigate('/AdminHome');
+                            return;
+                        case 'patient':
+                            navigate('/PatientHome');
+                            return;
+                        default:
+                            break;
+                    }
                 }
-               
-            } else {
-                console.error(data.error);
+            } catch (error) {
+                console.error('Error during login:', error.message);
             }
-        } catch (error) {
-            console.error(error.message);
         }
+    
+        console.error('Invalid username or password');
     };
+    
+    
     const handleResetPassword = () => {
         // Navigate to the reset-password path
         navigate('/reset-password');
@@ -72,14 +67,7 @@ const Login = () => {
         <div>
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
-                <label>
-                    User Type:
-                    <select value={userType} onChange={(e) => setUserType(e.target.value)}>
-                        <option value="doctor">Doctor</option>
-                        <option value="admin">Admin</option>
-                        <option value="Patient">Patient</option> 
-                    </select>
-                </label>
+               
                 <br />
                 <label>
                     Username:
@@ -116,4 +104,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Login;

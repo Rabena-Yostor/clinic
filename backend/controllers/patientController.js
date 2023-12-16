@@ -17,6 +17,7 @@ const express = require('express');
 const app = express();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+const Prescription = require('../models/prescriptionsModel');
 // get all patients
 const getAllPatients = async (req, res) => {
     const patients = await patient.find({})
@@ -728,6 +729,82 @@ const uploadMiddlewareSingle = multer().single('medicalHistoryFile');
 
 
 
+const getWallet = async (req, res) => {
+    try {
+      const { username } = req.params;
+      console.log(username)
+        
+      const patientt = await patient.findOne({ username });
+        console.log(patientt)
+      if (!patientt) {
+        return res.status(404).json({ message: 'Patient not found' });
+      }
+  
+      return res.status(200).json({ wallet: patientt.WalletAmount });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error getting wallet' });
+    }
+  };
+
+const payWithWallet = async (req, res) => {
+    try {
+        const { prescriptionId, username } = req.params;
+        const prescription = await Prescription.findById(prescriptionId);
+        if (!prescription) {
+          return res.status(404).json({ error: 'Prescription not found' });
+        }
+        
+        if(prescription.filled){
+            return res.status(400).json({ error: 'Prescription already filled' });
+            }
+        // Fetch the patient details
+        const patientt = await patient.findOne({ username });
+        if (!patientt) {
+          return res.status(404).json({ error: 'Patient not found' });
+        }
+        
+        // Calculate the total price of the prescription
+        const totalPrice = prescription.medicines.reduce((total, medicine) => total + medicine.price, 0);
+    
+        // Check if the patient has sufficient funds
+        console.log(patientt.WalletAmount)
+        if (patientt.WalletAmount < totalPrice) {
+          return res.status(400).json({ error: 'Insufficient funds in the wallet' });
+        }
+    
+        // Deduct the prescription cost from the patient's wallet
+        patientt.WalletAmount -= totalPrice;
+        await patientt.save();
+        console.log(patientt.WalletAmount)
+        // Update the prescription status to 'Filled'
+        prescription.filled = true;
+        await prescription.save();
+    
+        return res.status(200).json({ message: 'Payment successful' });
+    }
+    catch (error) {
+        console.error('Error processing payment:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+};
+
+const filledYes = async (req, res) => {
+    const { prescriptionId } = req.params;
+    try {
+      const prescription = await Prescription.findById(prescriptionId);
+      if (!prescription) {
+        return res.status(404).json({ error: 'Prescription not found' });
+      }
+  
+      prescription.filled = true;
+      await prescription.save();
+  
+      return res.status(200).json({ message: 'Prescription updated successfully' });
+    } catch (error) {
+      console.error('Error updating prescription:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
 
 
 
@@ -758,5 +835,8 @@ module.exports = {
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    getWallet,
+    payWithWallet,
+    filledYes,
 }

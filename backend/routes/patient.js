@@ -29,7 +29,10 @@ const{
     updatePatientAppointments,
     uploadDocument,
     uploadMiddlewareSingle,
-    removeDocument
+    removeDocument,
+    getWallet,
+    payWithWallet,
+    filledYes,
 } = require('../controllers/patientController');
 const router = express.Router()
 
@@ -173,4 +176,7 @@ router.get('/medicalHistoryFiles/:username', async (req, res) => {
     }
 });
 
+router.get('/getWallet/:username', getWallet);
+router.put('/pay-with-wallet/:prescriptionId/:username', payWithWallet);
+router.put('/filledYes/:prescriptionId', filledYes);
 module.exports = router

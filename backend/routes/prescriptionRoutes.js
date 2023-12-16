@@ -66,7 +66,7 @@ router.get('/get-prescription/:username', getPrescription);
 router.get('/prescription-filter/:username', filterPrescriptionsForPatient);
 
 // VIEW PERSCRIPTION
-router.get('/view-prescription/:id', viewPrescription);
+router.get('/view-prescription/:prescriptionId', viewPrescription);
 
 //find Medicine (testing accessing other collections)
 router.get('/find-medicine', findMedicine);
