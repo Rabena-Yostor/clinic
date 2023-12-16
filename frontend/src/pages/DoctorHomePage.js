@@ -50,6 +50,12 @@ function DoctorPage() {
           <FaUser />My Patients' Prescriptions 
         </Link>
       </div>
+      <div>
+                <Link to="/doctorForm">
+                    <FaUser /> add DoctorForm
+                </Link>
+
+           </div>
             <br />
             <hr/>
 

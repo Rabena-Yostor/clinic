@@ -58,14 +58,11 @@ const patientSchema = new Schema({
           date: { type: Date },
           status: {
             type: String,
-            enum: ["upcoming", "completed", "cancelled", "rescheduled"],
+            enum: ["upcoming", "completed", "cancelled", "rescheduled",""],
           },
+          doctorUsername: { type: String },
         },
       ],
-      familyMembers: [{
-        member: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient' },
-        relation: { type: String, enum: ['WIFE', 'HUSBAND', 'CHILDREN'] }
-    }],
       medicalHistoryFiles: [
         {
             medicalHistoryFileData: {
@@ -86,4 +83,4 @@ patientSchema.methods.comparePassword = async function(candidatePassword) {
     next();
   });
 
-module.exports  = mongoose.model('Patient', patientSchema)
+module.exports  = mongoose.model('Patient', patientSchema)

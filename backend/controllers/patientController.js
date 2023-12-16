@@ -849,6 +849,46 @@ const filledYes = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+const createAppointment = async (req, res) => {
+    const { username } = req.body;
+    const appointmentDate = req.body.appointmentDate;
+    const doctorUsername = req.body.doctorUsername;
+
+    if (!username) {
+        return res.status(400).json({ error: 'Invalid username' });
+    }
+
+    try {
+        // Check if the user exists based on the provided username
+        const user = await patient.findOne({ username : username});
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+
+        // Check if the appointment is already taken by the patient or family member
+        const isAppointmentAvailable = !(user.appointments && user.appointments.filter(appt => appt && appt.toString() === appointmentDate.toString()).length > 0);
+
+        if (!isAppointmentAvailable) {
+            return res.status(400).json({ error: 'Selected appointment date is not available' });
+        }
+
+        // Add appointment information to the patient or family member object
+        user.appointments = user.appointments || [];
+        user.appointments.push({date : appointmentDate, status: 'upcoming', doctorUsername: doctorUsername});
+        //user.Appointment_Status = 'upcoming'; // Assuming the default status is 'upcoming'
+
+        // Save the updated patient or family member object with appointment details
+        await user.save();
+
+        console.log('Appointment created successfully');
+        res.status(201).json({ message: 'Appointment created successfully', user });
+    } catch (error) {
+        console.error('Error creating appointment:', error);
+        res.status(500).json({ error: Internal Server Error: ${error.message} });
+    }
+};
 
 
 module.exports = {
@@ -882,5 +922,6 @@ module.exports = {
     getWallet,
     payWithWallet,
     filledYes,
-    linkFamilyMember
+    linkFamilyMember,
+    createAppointment
 }

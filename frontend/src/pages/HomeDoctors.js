@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import DoctorDetails from "../components/DoctorDetails";
-import DoctorForm from "../components/DoctorForm";
-import HealthRecordForm from '../components/HealthRecordForm';
 
 
 const HomeDoctors = () => {
@@ -90,92 +88,50 @@ const HomeDoctors = () => {
     );
   }, [doctors, nameSearchTerm, specialitySearchTerm, datetimeSearchTerm]);
 
-  const addHealthRecord = async (username, healthRecordData) => {
-    try {
-      const { bloodPressure, heartRate, allergies, medications } = healthRecordData;
-      const response = await fetch(`http://localhost:4000/api/doctors/addHealthRecord/${username}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // You can pass additional data in the body if needed
-        body: JSON.stringify({
-          username,
-          newHealthRecordData:{
-            bloodPressure,
-            heartRate,
-            allergies,
-            medications,
-          }
-        }),
-      });
-      console.log('Response:', response);
-      const data = await response.json();
-      if (response.ok) {
-        if (data.message === 'Health record added successfully') {
-          console.log('New health record added:', data.message);
-          alert('New health record added')
-        } else if (data.message === 'Health record updated successfully') {
-          console.log('Existing health record updated:', data.message);
-          alert('Existing health record updated')
-                }
-      } else {
-        if (response.status === 404 && data.error === 'Patient not found') {
-          console.error('Error adding health record: Patient not found');
-          alert('Patient not found. Please check the username and try again.')
-           } else {
-          console.error('Error adding health record:', data.error);
-          alert('Error adding health record. Please try again.'); 
+  
 
-        }
-      }
-    } catch (error) {
-      console.error('Error adding health record:', error);
-    }
-  };
+ // In your main component, structure your page with a header and main content area
+return (
+  <div className="home">
+    <header className="header">
+      <h1 className="main-title">Rabena Yostor Clinic</h1>
+    </header>
+    <section className="search-area">
+      <input
+        type="text"
+        className="search-input"
+        placeholder="Search by name"
+        value={nameSearchTerm}
+        onChange={(e) => setNameSearchTerm(e.target.value)}
+      />
+      <input
+        type="text"
+        className="search-input"
+        placeholder="Search by speciality"
+        value={specialitySearchTerm}
+        onChange={(e) => setSpecialitySearchTerm(e.target.value)}
+      />
+      <input
+        type="datetime-local"
+        className="search-input"
+        placeholder="Search by available appointment"
+        value={datetimeSearchTerm}
+        onChange={(e) => setDatetimeSearchTerm(e.target.value)}
+      />
+    </section>
+    <section className="doctors-list">
+      {filteredDoctors &&
+        filteredDoctors.map((doctor) => (
+          <DoctorDetails
+            doctor={doctor}
+            key={doctor._id}
+            // onClick removed from here
+          />
+        ))}
+    </section>
+  </div>
+);
 
-  return (
-    <div className="home">
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by name"
-          value={nameSearchTerm}
-          onChange={(e) => setNameSearchTerm(e.target.value)}
-        />
-      </div>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by speciality"
-          value={specialitySearchTerm}
-          onChange={(e) => setSpecialitySearchTerm(e.target.value)}
-        />
-      </div>
-      <div className="search-bar">
-        <input
-          type="datetime-local"
-          placeholder="Search by available appointment"
-          value={datetimeSearchTerm}
-          onChange={(e) => setDatetimeSearchTerm(e.target.value)}
-        />
-      </div>
-      <div className="doctors">
-        {filteredDoctors &&
-          filteredDoctors.map((doctor) => (
-            <DoctorDetails
-              doctor={doctor}
-              key={doctor._id}
-              onClick={() => handleDoctorClick(doctor)}
-            />
-          ))}
-      </div>
-      <DoctorForm />
-      <HealthRecordForm onAddHealthRecord={addHealthRecord} />
-      
-     
-    </div>
-  );
 };
 
-export default HomeDoctors;
+export default HomeDoctors;
