@@ -19,6 +19,8 @@ const{
     signUp,
     login,
     logout,
+    endcall,
+    startcall,
     updatePatientPassword,
     sendOtpAndSetPassword,
     getHealthPackages,
@@ -49,9 +51,14 @@ router.post('/registerPatient',registerPatient)
 
 router.post('/loginPatient',loginPatient)
 
+router.post ('/startcall',startcall)
+router.post ('/endcall',endcall)
+
 router.get('/getFamilyMembers/:username',getFamilyMembers)
 
 router.post('/addFamilyMember',addFamilyMember)
+
+
 
 router.get('/filterAppointmentPatient',filterAllApps)
 

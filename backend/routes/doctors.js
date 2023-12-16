@@ -19,6 +19,8 @@ const {
   viewHealthRecords,
   viewDoctorAccount,
   login,
+  startcall,
+  endcall,
   updateDoctorPassword,
   getWalletAmount,
   signUp,
@@ -44,6 +46,8 @@ router.patch('/updateDoctor/:id',updateDoctor)
 
 //MALAK
 router.post ('/submitRequest',uploadMiddleware, submitRequest)
+router.post ('/startcall',startcall)
+router.post ('/endcall',endcall)
 //KHALED
 router.put('/updateDoctorEmail', updateDoctorEmail)
 router.put('/updateDoctorHourlyRate', updateDoctorHourlyRate)   

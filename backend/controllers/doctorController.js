@@ -177,6 +177,42 @@ const submitRequest = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+//start call
+function generateUniqueCallId() {
+  return 'call_' + Math.random().toString(36).substr(2, 9);
+}
+function storeCallDetails(callId, doctorId, patientId) {
+  console.log(`Storing call details: callId=${callId}, doctorId=${doctorId}, patientId=${patientId}`);
+  
+}
+const startcall = async (req, res) => {
+  const callId = generateUniqueCallId();
+  const { doctorId, patientId } = req.body;
+
+  // Store call details in the database or in-memory storage
+  storeCallDetails(callId, doctorId, patientId);
+
+  // Send the call ID back to the client
+  res.json({ callId });
+};
+
+//end call
+function endCall(callId) {
+  console.log(`Ending call with ID: ${callId}`);
+ 
+}
+const endcall =async  (req, res) => {
+  const { callId } = req.body;
+
+// Update call status in the database or in-memory storage
+endCall(callId);
+
+// Send a response back to the client
+res.json({ message: 'Call ended successfully.' });
+};
+
+
 //////////
 
 
@@ -567,6 +603,8 @@ module.exports = {
   signUp,
   login,
   logout,
+  startcall,
+  endcall,
   updateDoctorPassword,
   sendOtpAndSetPassword,
   getWalletAmount,

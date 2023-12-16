@@ -25,6 +25,11 @@ function DoctorPage() {
                 </Link>
             </div>
             <div>
+                <Link to="/VideoCallComponent">
+                    <FaUser /> Start a video call
+                </Link>
+            </div>
+            <div>
                 <Link to="/wallet-doc">
                     <FaUser /> view wallet amount
                 </Link>

@@ -158,6 +158,42 @@ const registerPatient = async (req, res) => {
 const loginPatient = (req, res) => {
     res.json({ message: 'User logged in' })
 }
+
+//start a call 
+function generateUniqueCallId() {
+    // Implement logic to generate a unique identifier (e.g., using UUID)
+    // Replace this with your actual logic for generating unique call IDs
+    return 'call_' + Math.random().toString(36).substr(2, 9);
+  }
+  function storeCallDetails(callId, doctorId, patientId) {
+    console.log(`Storing call details: callId=${callId}, doctorId=${doctorId}, patientId=${patientId}`);
+    // ... Your database storage logic here
+  }
+const startcall = async (req, res) => {
+    const callId = generateUniqueCallId();
+    const { doctorId, patientId } = req.body;
+  
+    // Store call details in the database or in-memory storage
+    storeCallDetails(callId, doctorId, patientId);
+  
+    // Send the call ID back to the client
+    res.json({ callId });
+  };
+
+//end call
+function endCall(callId) {
+    console.log(`Ending call with ID: ${callId}`);
+    // ... Your logic to end the call here
+  }
+const endcall =async  (req, res) => {
+    const { callId } = req.body;
+
+// Update call status in the database or in-memory storage
+endCall(callId);
+
+// Send a response back to the client
+res.json({ message: 'Call ended successfully.' });
+};
 /////////////////////////////END OF MALAK WAEL FOLDER
 
 
@@ -748,6 +784,8 @@ module.exports = {
     signUp,
     login,
     logout,
+    startcall,
+    endcall,
     updatePatientPassword,
     sendOtpAndSetPassword,
     getHealthPackages,

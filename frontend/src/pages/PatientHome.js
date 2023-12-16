@@ -28,6 +28,11 @@ function PatientHome(){
         </Link>
       </div>
       <div>
+          <Link to="/VideoCallComponent">
+               <FaUser /> Start a video call
+                </Link>
+            </div>
+      <div>
         <Link to="/wallet-info">
           <FaUser /> View Wallet Amount 
         </Link>
