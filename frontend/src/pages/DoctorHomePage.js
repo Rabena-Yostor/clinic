@@ -60,13 +60,18 @@ function DoctorPage() {
         <Link to="/doctorPrescription">
           <FaUser />My Patients' Prescriptions 
         </Link>
-      </div>
-      <div>
+          </div>
+             <div>
                 <Link to="/doctorForm">
                     <FaUser /> add DoctorForm
                 </Link>
 
            </div>
+            <div>
+                <Link to="/doctorFollowUpRequests">
+                    <FaUser /> Follow-Up Requests
+                </Link>
+            </div>
             <br />
             <hr/>
 

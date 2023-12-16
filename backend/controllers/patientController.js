@@ -969,6 +969,25 @@ const getAllNotificationsPatient = async (req, res) => {
     }
 };
 
+const submitFollowUpRequest = async (req, res) => {
+    const username = req.params.username;
+    const { date} = req.body;
+    const doctorUsername = req.body.doctorUsername;
+    try{
+        //create a new followUpRequest
+        const newFollowUpRequest = new followUpRequest({
+            username,
+            date,
+            doctorUsername
+        });
+        await newFollowUpRequest.save();
+        return res.status(200).json({ message: 'Follow-up request submitted successfully' });
+    }catch(error){
+        console.error('Error submitting follow-up request:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 
 module.exports = {
     createPatient,
@@ -1005,5 +1024,6 @@ module.exports = {
     createAppointment,
     createNotificationPatient,
     deleteNotification,
-    getAllNotificationsPatient
+    getAllNotificationsPatient,
+    submitFollowUpRequest
 }

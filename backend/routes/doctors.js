@@ -30,6 +30,9 @@ const {
   createNotificationDoctor,
   deleteNotification,
   getAllNotificationsDoctor,
+  DoctorFollowUpRequests,
+  acceptFollowUpRequest,
+  rejectFollowUpRequest
 
 }= require('../controllers/doctorController')
 
@@ -320,5 +323,8 @@ router.patch("/cancelAppointment", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+router.get("/doctorFollowUpRequests/:doctorUsername", DoctorFollowUpRequests)
+router.post('/acceptFollowUpRequest/:requestId/:username', acceptFollowUpRequest)
+router.delete('/rejectFollowUpRequest/:requestId', rejectFollowUpRequest)
 
 module.exports = router 

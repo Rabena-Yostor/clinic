@@ -74,6 +74,11 @@ function PatientHome(){
           <FaUser /> Conversation
         </Link>
       </div>
+      <div>
+        <Link to="/AppointmentFollowUp">
+          <FaUser /> Request Follow-Up Appointment
+        </Link>
+      </div>
       <br />
             <hr/>
             
