@@ -10,40 +10,40 @@ const AddHealthRecordForm = ({ onAddHealthRecord }) => {
 
   const handleAddHealthRecord = async () => {
     try {
-      // Call the API to add the health record
+      const healthRecordData = {
+        bloodPressure,
+        heartRate,
+        allergies,
+        medications,
+      };
+  
       const response = await fetch(`/api/doctors/addHealthRecord/${username}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          bloodPressure,
-          heartRate,
-          allergies,
-          medications,
-        }),
+        body: JSON.stringify({ newHealthRecordData: healthRecordData }),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('Health record added successfully:', data);
-        // Handle success, e.g., show a success message or update state
-        onAddHealthRecord();
+        if (typeof onAddHealthRecord === 'function') {
+          onAddHealthRecord();
+        } // Call this only after successful fetch
       } else {
         const data = await response.json();
         if (response.status === 404 && data.error === 'Patient not found') {
           console.error('Error adding health record: Patient not found');
-          // Handle patient not found error
         } else {
           console.error('Error adding/updating health record:', data.error);
-          // Handle other errors, e.g., show an error message or update state
         }
       }
     } catch (error) {
       console.error('Error adding health record:', error.message);
-      // Handle error, e.g., show an error message or update state
     }
   };
+  
 
   return (
     <div className="add-health-record-form">
