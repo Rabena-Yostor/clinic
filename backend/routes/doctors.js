@@ -105,6 +105,37 @@ router.post("/addDoctorAppointment", async (req, res) => {
     );
 
     res.status(200).json({ appointments: doctor.appointments });
+
+    //Send notification to Doctor with the new appointment date and and Patient name
+    const message = `You have a ${appointment.status} appointment on ${appointment.date}`;
+    const notifieddoctor = await Doctor.findOne({ username });
+    const notification = new Notification({
+      recipient_id: notifieddoctor._id,
+      message,
+    });
+    await notification.save();
+    // Send OTP to the user's email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'peteraclsender@gmail.com',
+        pass: 'tayr rzwl yvip tqjt',
+      },
+    });
+    const mailOptions = {
+      from: 'peteraclsender@gmail.com',
+      to: notifieddoctor.email,
+      subject: 'A new Appointment has been added',
+      text: `You have a ${appointment.status} appointment on ${appointment.date}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error sendingemail' });
+      }
+      res.status(200).json({ message: 'Email sent successfully' });
+    });
+    
   } catch (error) {
     console.error("Error adding doctor appointment:", error);
     res.status(500).json({ error: "Internal Server Error" });
