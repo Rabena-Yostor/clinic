@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
 
 const PatientDash = () => {
+  const navigate = useNavigate();
+  const redirect = (doctorUsername) => {
+    localStorage.setItem('doctorUsername', doctorUsername);
+    // Redirect to the AppointmentFollowUp page
+    navigate('/AppointmentFollowUp');
+  };
   // State variables for rescheduling appointments
   const [appointmentsForReschedule, setAppointmentsForReschedule] = useState(
     []
@@ -204,7 +212,15 @@ const PatientDash = () => {
         <ul>
           {patientAppointments.map((appointment, index) => (
             <li key={index}>
-              Date: {appointment.date}, Status: {appointment.status}
+              Date: {appointment.date}, Status: {appointment.status}, Doctor: {appointment.doctorUsername} {appointment.status === "completed" ? (
+                            <>
+                                <button type="button" onClick={() => redirect(appointment.doctorUsername)}>
+                                Schedule a follow-up
+                                </button>
+                            </>
+                        ) : (
+                            <></>
+                        )}
             </li>
           ))}
         </ul>
