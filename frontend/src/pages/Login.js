@@ -104,6 +104,11 @@ const Login = () => {
                 </Link>
 
             </div>
+            <div>
+                <Link to="/RegisterAsPatient">
+                    <button> Register as Patient</button>
+                </Link>
+            </div>
         </div>
     );
 };
