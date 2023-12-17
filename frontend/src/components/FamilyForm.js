@@ -10,6 +10,7 @@ const FamilyForm = () => {
 
 
     const [error, setError] = useState(null)
+    const [familyMembers, setFamilyMembers] = useState([]);
 
 
 
@@ -38,7 +39,21 @@ const FamilyForm = () => {
            console.log('fam Created')
        }
     }
+    const handleViewFamilyMembers = async () => {
+        try {
+            const patientUsername = localStorage.getItem('patientUsername');
 
+            if (!patientUsername) {
+              console.error('Patient username not found in localStorage');
+              return;
+            }
+          const response = await fetch(`/api/patient/getFamilyMembers/${patientUsername}`);
+          const data = await response.json();
+          setFamilyMembers(data);
+        } catch (error) {
+          console.error('Error fetching family members:', error);
+        }
+      };
 
 
     return (
@@ -83,10 +98,23 @@ const FamilyForm = () => {
 
             <button >Add familyMember </button>
             {error && <div className="error">{error}</div>}
+
+            <button onClick={handleViewFamilyMembers}>View Registered Family Members</button>
+
+            {familyMembers.length > 0 && (
+        <div>
+          <h3>Registered Family Members</h3>
+          <ul>
+            {familyMembers.map((member) => (
+              <li key={member._id}>{member.Name}</li>
+            ))}
+          </ul>
+        </div>
+      )}
             </form>
 
             
     )
 }
 
-export default FamilyForm 
+export default FamilyForm
