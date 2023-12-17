@@ -22,7 +22,7 @@ const PatientForm = () => {
        
         const patient = {username, name, email, password, dateOfBirth, gender, mobileNumber, EmergencyContactName, EmergencyContactNo, Appointment, Appointment_Status}
         
-        const response = await fetch('/api/workouts', {
+        const response = await fetch('/api/patient/signup', {
           method: 'POST',
           body: JSON.stringify(patient),
           headers: {
