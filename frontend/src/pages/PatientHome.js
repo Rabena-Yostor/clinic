@@ -20,9 +20,8 @@ function PatientHome() {
           { to: "/patientConversation", text: "Conversation" },
           { to: "/patientDocuments", text: "Documents" },
           { to: "/addPrescription", text: "Add Prescription" },
-          { to: "/patientPrescription", text: "View Prescription" },
-          { to: "/payment", text: "Payment" },
-          { to: "/completion", text: "Completion" },
+          { to: "/hamouda", text: "View Prescription" },
+        
           { to: "/linkFamilyMember", text: "Link Family Member" },
         ].map((link, index) => (
           <Link key={index} className="link-button" to={link.to}>

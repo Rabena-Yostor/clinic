@@ -124,7 +124,7 @@ const handleDownloadPDF = () => {
 return (
   <div style={{ margin: '20px' }}>
     <h2 style={{ marginBottom: '20px' }}>Prescription Details</h2>
-    <p style={{ marginBottom: '10px', position: 'absolute', top: 150, right: 400, color: 'black' }}>
+    <p style={{ marginBottom: '10px', position: 'absolute', top: 200, right: 50, color: 'black' }}>
       Wallet Balance: {walletBalance} EGP
     </p>
 
