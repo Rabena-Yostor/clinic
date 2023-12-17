@@ -13,7 +13,13 @@ const SubscribeToHealthPackage = () => {
 
     useEffect(() => {
         fetchHealthPackages();
+        setPatientIdFromCredentials();
     }, []);
+    const setPatientIdFromCredentials = () => {
+        // Replace this with your method of retrieving the patient ID
+        const patientIdFromSession = 'Retrieved ID'; // Example: sessionStorage.getItem('patientId');
+        setFormData({...formData, patientId: patientIdFromSession});
+    };
 
     const fetchHealthPackages = async () => {
         try {
@@ -96,17 +102,7 @@ const SubscribeToHealthPackage = () => {
                         ))}
                     </select>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="patientId">Patient ID:</label>
-                    <input
-                        type="text"
-                        id="patientId"
-                        name="patientId"
-                        value={formData.patientId}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
+              
                 <div className="form-group">
                     <label htmlFor="familyMembers">Family Members:</label>
                     <input
@@ -141,7 +137,7 @@ const SubscribeToHealthPackage = () => {
                     />
                 </div>
                 <button type="submit">Subscribe</button>
-                            </form>
+              </form>
             {/* existing message display... */}
         </div>
     );
