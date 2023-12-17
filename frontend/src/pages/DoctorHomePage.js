@@ -9,92 +9,34 @@ function DoctorPage() {
         console.log('Health record added. Update state or perform other actions.');
     };
     return (
-        <div>
-            <h1>Welcome Doctor</h1>
-
-            <div>
-                <Link to="/AddHealthRecord">
-                    <FaUser /> Add Health Record
-
-                </Link>
-            </div>
-            <div>
-                <Link to="/view-health-records">
-                    <FaUser /> View Health Record
-
-                </Link>
-            </div>
-            <div>
-                <Link to="/wallet-doc">
-                    <FaUser /> View wallet amount
-                </Link>
-            </div>
-            
-            <div>
-                <Link to="/doctorPeter">
-                    <FaUser /> DoctorAppointments
-                </Link>
-            </div>
-            <div>
-                <Link to="/doctorNotifications">
-                    <FaUser /> Notifications
-                </Link>
-            </div>
-
-            <div>
-                <Link to="/doctorConversation">
-                    <FaUser /> Conversation
-                </Link>
-            </div>
-            <div>
-                <Link to="/AddPrescription">
-                    <FaUser /> Add Prescription to patient
-                </Link>
-            </div>
-            <div>
-                <Link to="/">
-                    <FaUser /> Edit Prescription of patient
-                </Link>
-            </div>
-            <div>
-        <Link to="/doctorPrescription">
-          <FaUser />My Patients' Prescriptions 
-        </Link>
-          </div>
-             <div>
-                <Link to="/doctorForm">
-                    <FaUser /> add DoctorForm
-                </Link>
-
-           </div>
-            <div>
-                <Link to="/doctorFollowUpRequests">
-                    <FaUser /> Follow-Up Requests
-                </Link>
-            </div>
-            <div>
-                <Link to="/VideoCallComponent">
-                    <FaUser /> Start a video call
-                </Link>
-            </div>
-            <div>
-                <Link to="/patients">
-                    <FaUser /> View Patients
-                </Link>
-            </div>
-            <br />
-            <hr/>
-
-            
-            
-      <Link to="/change-password">
-        <button>Change Password</button>
-      </Link>
-
-
-        
-
+        <div className="container">
+        <h1 className="main-title">Welcome Patient</h1>
+        <div className="links-container">
+         {[
+            {to:"/addHealthRecord", text:"Add Health Record"},
+            {to:"/viewHealthRecord", text:"View Health Record"},
+            {to:"/wallet-doc", text:"View Wallet Amount"},
+            {to:"/doctorPeter", text:"Doctor Appointments"},
+            {to:"/doctorNotifications", text:"Notifications"},
+            {to:"/doctorConversation", text:"Conversation"},
+            {to:"/addPrescription", text:"Add Prescription"},
+            {to:"/doctorPrescription", text:"View Prescription"},
+            {to:"/doctorForm", text:"Add DoctorForm"},
+            {to:"/DoctorUpdateEdit", text:"Doctor Update Edit"},
+            {to:"/", text:"Edit Prescription"},
+            {to:"/doctorFollowUpRequests", text:"Follow-Up Requests"},
+            {to:"/VideoCallComponent", text:"Start a video call"},
+            {to:"/patients", text:"View Patients"},
+        ].map((link, index) => (
+            <Link key={index} className="link-button" to={link.to}>
+              {link.text}
+            </Link>
+          ))}
         </div>
+        <Link to="/change-password" className="link-button link-button-primary">
+          Change Password
+        </Link>
+      </div>
     );
 }
 

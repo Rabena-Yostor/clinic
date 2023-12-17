@@ -1,98 +1,40 @@
 import React from "react";
-import {FaUser} from 'react-icons/fa'
 import { Link } from "react-router-dom";
 
-function PatientHome(){
-
-    return ( 
-        <div>
-            <h1>Welcome Patient</h1>
-            <div>
-        <Link to="/SubscribeToHealthPackage">
-          <FaUser /> Subscribe to Health Package
-        </Link>
+function PatientHome() {
+  return (
+    <div className="container">
+      <h1 className="main-title">Welcome Patient</h1>
+      <div className="links-container">
+        {[
+          { to: "/SubscribeToHealthPackage", text: "Subscribe to Health Package" },
+          { to: "/SubscribedHealthPackages", text: "The Subscribed Health Package" },
+          { to: "/ViewHealthPackages", text: "View Health Packages" },
+          { to: "/SubscriptionStatus", text: "Subscription Status" },
+          { to: "/CancelSubscription", text: "Cancel Subscription" },
+          { to: "/AddHealthRecord", text: "Add Health Record" },
+          { to: "/view-health-records", text: "View Health Record" },
+          { to: "/wallet-page", text: "View Wallet Amount" },
+          { to: "/patientPeter", text: "Patient Appointments" },
+          { to: "/patientNotifications", text: "Notifications" },
+          { to: "/patientConversation", text: "Conversation" },
+          { to: "/patientDocuments", text: "Documents" },
+          { to: "/addPrescription", text: "Add Prescription" },
+          { to: "/patientPrescription", text: "View Prescription" },
+          { to: "/payment", text: "Payment" },
+          { to: "/completion", text: "Completion" },
+          { to: "/linkFamilyMember", text: "Link Family Member" },
+        ].map((link, index) => (
+          <Link key={index} className="link-button" to={link.to}>
+            {link.text}
+          </Link>
+        ))}
       </div>
-      <div>
-        <Link to="/SubscribedHealthPackages">
-          <FaUser /> The Subscribed Health Package
-        </Link>
-      </div>
-      <div>
-        <Link to="/SubscriptionStatus">
-          <FaUser /> Subscription Status
-        </Link>
-      </div>
-      <div>
-        <Link to="/cancelSubscription">
-          <FaUser /> Cancel Subscription 
-        </Link>
-      </div>
-      <div>
-        <Link to="/wallet-info">
-          <FaUser /> View Wallet Amount 
-        </Link>
-      </div>
-      <div>
-        <Link to="/view-patient-records">
-          <FaUser /> View Health record
-        </Link>
-      </div>
-      <div>
-        <Link to="/patientPeter">
-          <FaUser /> View Appointment
-        </Link>
-      </div>
-      <div>
-        <Link to="/patientDocuments">
-          <FaUser /> Document Management 
-        </Link>
-      </div>
-
-      <div>
-        <Link to="/hamouda">
-          <FaUser />My Prescriptions 
-        </Link>
-      </div>
-            
-      <div>
-        <Link to="/linkFamilyMember">
-          <FaUser />  Link Family Member
-        </Link>
-      </div>
-<div>
-        <Link to="/doctors">
-          <FaUser /> view all doctors
-        </Link>
-      </div>
-<div>
-        <Link to="/patientNotifications">
-          <FaUser /> Notifications
-        </Link>
-      </div>
-      <div>
-          <Link to="/VideoCallComponent">
-               <FaUser /> Start a video call
-                </Link>
-      </div>
-      <div>
-        <Link to="/patientConversation">
-          <FaUser /> Conversation
-        </Link>
-      </div>
-      <div>
-        <Link to="/AppointmentFollowUp">
-          <FaUser /> Request Follow-Up Appointment
-        </Link>
-      </div>
-      <br />
-            <hr/>
-            
-      <Link to="/change-password">
-        <button>Change Password</button>
+      <Link to="/change-password" className="link-button link-button-primary">
+        Change Password
       </Link>
-      
-        </div>
-    );
-
+    </div>
+  );
 }
+
 export default PatientHome;

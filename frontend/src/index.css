@@ -206,3 +206,106 @@ button:hover {
   border-radius: 2px;
   /* Add more styles as needed */
 }
+/* Add this to your existing CSS */
+
+/* Style for the buttons */
+.link-button {
+  display: block;
+  background: var(--primary);
+  color: white;
+  text-align: center;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.link-button:hover {
+  background: darken(var(--primary), 10%);
+}
+
+/* Special style for the primary button */
+.link-button-primary {
+  background: var(--error);
+  font-weight: bold;
+}
+
+.link-button-primary:hover {
+  background: darken(var(--error), 10%);
+}
+
+/* Container for your links */
+.links-container {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.main-title {
+  color: var(--primary);
+  margin-bottom: 30px;
+}
+/* Ensures the header is consistent with the content area */
+header {
+  background: #fff; /* Matches the content area background */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow like the cards */
+  padding: 10px 20px; /* Adjust padding to match content spacing */
+}
+
+/* If you have a logo or title in the header, ensure it matches the content style */
+header .logo {
+  font-family: 'Poppins', sans-serif; /* Assuming 'Poppins' is the font you are using */
+  font-size: 1.5em; /* Adjust font-size to match your design */
+  color: #333; /* Adjust color to match your design */
+}
+
+/* Style for navigation links in the header to match the content area */
+header nav a {
+  color: #333;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: inline-block; /* or 'block' if you want them to be on separate lines */
+}
+
+/* Adjust this based on the specific layout of your header */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: auto;
+}
+
+/* Style for the buttons in the content area to match the header */
+.content button, .content a {
+  /* Assuming your buttons and links in content area are styled like this */
+  background-color: #1aac83; /* Primary color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 15px;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.content button:hover, .content a:hover {
+  background-color: darken(#1aac83, 10%);
+}
+
+/* Optional: Adjust the container for the content to ensure spacing is consistent */
+.content {
+  padding: 20px; /* Match this to the header padding if needed */
+}
+

@@ -4,86 +4,34 @@ import { Link } from "react-router-dom";
 
 
 function AdminPage() {
-    return ( <div>
-        <h1>Welcome Admin</h1>
-       
-            <div className= "container">
+  return (
+    <div className="container">
+    <h1 className="main-title">Welcome Admin</h1>
+    <div className="links-container">
+     {[
+        {to:"/Register", text:"Register"},
+        {to:"/Admin", text:"Admin"},
+        {to:"/AddAdminForm", text:"Add Admin Form"},
+        {to:"/RemoveUser", text:"Remove User"},
+        {to:"/ViewPatientInfo", text:"View Patient Info"},
+        {to:"/ApproveDoctorRequest", text:"Approve Doctor Request"},
+        {to:"/RejectDoctorRequest", text:"Reject Doctor Request"},
+        {to:"/CreateHealthPackage", text:"Create Health Package"},
+        {to:"/UpdateHealthPackage", text:"Update Health Package"},
+        {to:"/DeleteHealthPackage", text:"Delete Health Package"},
+        {to:"/ViewHealthPackages", text:"View Health Packages"},
 
-            <div>
-                <Link to="/Register">
-                    <FaUser /> Register
-                </Link>
-
-            </div>
-        
-
-            <div>
-                <Link to="/Admin">
-                    <FaUser /> Admin
-                </Link>
-
-            </div>
-            <div>
-                <Link to="/AddAdminForm">
-                    <FaUser /> AddAdminForm
-                </Link>
-
-            </div>
-            <div>
-                <Link to="/RemoveUser">
-                    <FaUser /> RemoveUser
-                </Link>
-
-            </div>
-            <div>
-                <Link to="/ViewPatientInfo">
-                    <FaUser /> ViewPatientInfo
-                </Link>
-
-            </div>
-            <div>
-                <Link to="/ApproveDoctorRequest">
-                    <FaUser /> Approve Doctor Request
-             </Link>
-           </div>
-           <div>
-                <Link to="/RejectDoctorRequest">
-                    <FaUser /> Reject Doctor Request
-             </Link>
-           </div>
-           <div>
-           <Link to="/CreateHealthPackage">
-           <FaUser /> Admin Create HP
-           </Link>
-           </div>
-         <div>
-        <Link to="/UpdateHealthPackage">
-          <FaUser /> Admin Update HP
+       ].map((link, index) => (
+        <Link key={index} className="link-button" to={link.to}>
+          {link.text}
         </Link>
-      </div>
-      <div>
-        <Link to="/DeleteHealthPackage">
-          <FaUser /> Admin Delete HP
-        </Link>
-      </div>
-   
-        <div>
-                <Link to="/ViewHealthPackages">
-                    <FaUser /> View Health Packages
-                </Link>
-            </div>
-
-            <br />
-            <hr/>
-            
-      <Link to="/change-password">
-        <button>Change Password</button>
-      </Link>
-      </div>
-      
-
-
-        </div>);
+      ))}
+    </div>
+    <Link to="/change-password" className="link-button link-button-primary">
+      Change Password
+    </Link>
+  </div>
+);
 }
 
 export default AdminPage;
