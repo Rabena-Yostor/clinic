@@ -41,6 +41,11 @@ function DoctorPage() {
                     <FaUser /> DoctorAppointments
                 </Link>
             </div>
+            <div>
+                <Link to="/AddAppointment">
+                    <FaUser /> Add Available Slots
+                </Link>
+            </div>
             <br />
             <hr/>
             

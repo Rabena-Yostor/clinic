@@ -548,6 +548,54 @@ const sendOtpAndSetPassword = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const addAppointment = async (req, res) => {
+  // Retrieve the username and the date from the request
+  const { username, date } = req.body;
+
+  // Validate the input
+  if (!username || !date) {
+      return res.status(400).json({ error: "Please provide both username and date" });
+  }
+
+  try {
+      // Find the doctor by username
+      const doctor = await Doctor.findOne({ username: username });
+      if (!doctor) {
+          return res.status(404).json({ error: "No such doctor found" });
+      }
+
+      // Parse and validate the date
+      const appointmentDate = new Date(date);
+      if (isNaN(appointmentDate.getTime())) {
+          return res.status(400).json({ error: "Invalid date format" });
+      }
+
+      // Create a new appointment object with a default status
+      
+      const newAppointment = {
+          date: appointmentDate,
+         status: "upcoming",
+         
+          // Setting a default status
+      };
+    
+
+      // Add the new appointment to the doctor's appointments array
+      doctor.appointments.push(newAppointment);
+
+      // Save the updated doctor document
+      await doctor.save();
+
+      res.status(200).json({ message: "Appointment added successfully", doctor });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message || 'Internal Server Error' });
+  }
+}
+
+
+
+
 ///////////////////////////////////////// END OF HANA'S FOLDER
 module.exports = {
   getDoctors,
@@ -571,4 +619,5 @@ module.exports = {
   sendOtpAndSetPassword,
   getWalletAmount,
   uploadMiddleware,
+  addAppointment,
 };

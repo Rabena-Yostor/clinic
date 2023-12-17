@@ -44,6 +44,8 @@ import BuyPage from './pages/BuyPage';
 import Payment from './pages/Payment';
 import ViewEmploymentContractInfo from './pages/ViewContracts';
 import LinkFamilyMember from './pages/LinkFamilyMember';
+import AddAppointment from './pages/AddAppointment';
+
 
 
 function App() {
@@ -103,6 +105,7 @@ function App() {
             <Route path = "/payment" element = {<Payment />} />
             <Route path = "/ViewContract" element = {<ViewEmploymentContractInfo/>} />
             <Route path = "/linkFamilyMember" element = {<LinkFamilyMember/>} />
+            <Route path ="/AddAppointment" element = {<AddAppointment/>} />
  
 
             

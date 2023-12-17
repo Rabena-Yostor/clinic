@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
 const ViewEmploymentContractInfo = () => {
   // Define the initial state for contract terms
   const navigate = useNavigate();
+  
   const [contractTerms, setContractTerms] = useState({
     startDate: '01/01/2023',
     endDate: '01/01/2026',
@@ -18,16 +19,27 @@ const ViewEmploymentContractInfo = () => {
 
   const [accepted, setAccepted] = useState(false);
 
+  useEffect(() => {
+    // Check if the contract has already been accepted by checking browser storage.
+    const isContractAccepted = localStorage.getItem('contractAccepted');
+    if (isContractAccepted === 'true') {
+      setAccepted(true);
+    }
+  }, []);
+
   const handleAcceptContract = () => {
-    // You can add your logic here to handle the contract acceptance.
-    // This could involve making an API request to save the acceptance status.
-    
+    // Check if the contract has already been accepted to prevent multiple acceptances.
+    if (!accepted) {
+      // Add your logic here to handle the contract acceptance.
+      // This could involve making an API request to save the acceptance status.
 
-    // For this example, we'll simply set the 'accepted' state to true.
-    setAccepted(true);
-    navigate('/DoctorHomePage');
+      // For this example, we'll simply set the 'accepted' state to true and store it in browser storage.
+      setAccepted(true);
+      localStorage.setItem('contractAccepted', 'true');
+
+      navigate('/DoctorHomePage');
+    }
   };
-
   return (
     <div>
       <h1>Doctor Employment Contract</h1>

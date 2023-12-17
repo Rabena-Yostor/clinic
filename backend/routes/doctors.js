@@ -13,6 +13,7 @@ const {
     updateDoctorEmail,
     updateDoctorHourlyRate,
     addDoctor,
+    addAppointment,
     filterAllApps,
     getPatientsForDoctor,
     addHealthRecord,
@@ -24,7 +25,8 @@ const {
   signUp,
   sendOtpAndSetPassword,
   logout, 
-  uploadMiddleware
+  uploadMiddleware,
+ 
 
 }= require('../controllers/doctorController')
 
@@ -58,7 +60,9 @@ router.post('/addHealthRecord/:username', addHealthRecord)
 router.get('/viewHealthRecords/:username', viewHealthRecords)
 
 router.get('/wallet-amount/:username', getWalletAmount);
-router.post('/signup', signUp)
+router.post('/signup', signUp);
+
+router.post('/addAppointment',addAppointment);
 
 //login
 router.post('/login', login)
