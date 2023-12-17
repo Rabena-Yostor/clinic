@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 const familyMember = require('../models/familyMemberModel')
 const familyMemberModel = require('../models/familyMemberModel')
+const followUpRequest = require('../models/followUpRequest')
 const HealthRecord = require('../models/HealthRecordModel');
 const nodemailer = require('nodemailer');
 const HealthPackage = require('../models/healthPackageModel');
