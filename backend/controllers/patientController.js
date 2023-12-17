@@ -459,7 +459,7 @@ const getHealthPackages = async (req, res) => {
 app.use(bodyParser.json());
 
 const subscribeToHealthPackage = async (req, res) => {
-    const { patientId, healthPackageId, familyMembers, paymentMethod , accountNumber } = req.body;
+    const { patientId, healthPackageId, familyMembers, paymentMethod, accountNumber } = req.body;
 
     try {
         // Check if the health package exists
@@ -469,32 +469,32 @@ const subscribeToHealthPackage = async (req, res) => {
         }
 
         // Calculate total price based on health package and family members
+        // Assuming familyMembers is a number representing the count of family members
         let totalPrice = 0;
+        const basePrices = { silver: 3600, gold: 6000, platinum: 9000 };
 
-        // Logic to calculate total price based on health package type
-        if (healthPackage.type === 'silver') {
-            totalPrice = 3600;
-        } else if (healthPackage.type === 'gold') {
-            totalPrice = 6000;
-        } else if (healthPackage.type === 'platinum') {
-            totalPrice = 9000;
+        // Check for valid health package type
+        if (basePrices[healthPackage.type]) {
+            totalPrice = basePrices[healthPackage.type];
         } else {
             return res.status(400).json({ error: 'Invalid health package type' });
         }
 
-        // Apply discounts based on the health package type
-        const doctorSessionDiscount = healthPackage.type === 'silver' ? 0.4 : healthPackage.type === 'gold' ? 0.6 : 0.8;
-        const medicineDiscount = healthPackage.type === 'silver' ? 0.2 : healthPackage.type === 'gold' ? 0.3 : 0.4;
-        const familySubscriptionDiscount = healthPackage.type === 'silver' ? 0.1 : healthPackage.type === 'gold' ? 0.15 : 0.2;
+        // Calculate discounts
+        const discounts = {
+            silver: { doctorSession: 0.4, medicine: 0.2, familySubscription: 0.1 },
+            gold: { doctorSession: 0.6, medicine: 0.3, familySubscription: 0.15 },
+            platinum: { doctorSession: 0.8, medicine: 0.4, familySubscription: 0.2 }
+        };
 
         // Apply discounts to the total price
-        totalPrice *= (1 - doctorSessionDiscount); // Apply doctor's session discount
-        // Apply other discounts here...
+        const discount = discounts[healthPackage.type];
+        totalPrice *= (1 - discount.doctorSession); // Apply doctor's session discount
+        // Apply other discounts...
 
-        // Handle payment based on the chosen payment method
-        let paymentStatus = 'completed'; // Placeholder for payment status
-        // Implement payment processing logic based on paymentMethod (wallet or credit card)
-        // Update paymentStatus based on the payment processing result
+        // Handle payment processing...
+        // Since the actual payment processing logic is not implemented,
+        // make sure to replace the placeholder logic with real payment processing
 
         // Assuming payment is successful, create a payment record
         const payment = new Payment({
@@ -503,31 +503,32 @@ const subscribeToHealthPackage = async (req, res) => {
             paymentMethod: paymentMethod,
             totalAmount: totalPrice,
             accountNumber: accountNumber,
-            status: paymentStatus, // Set payment status (update based on payment processing)
+            status: 'completed', // Update based on actual payment processing
         });
 
         await payment.save();
 
-        // Assuming payment is successful, create a health package subscription record
-        const HealthPackageSubscriptionInstance = new HealthPackageSubscription({
+        // Create a health package subscription record
+        const healthPackageSubscription = new HealthPackageSubscription({
             patient: patientId,
             healthPackage: healthPackageId,
             familyMembers: familyMembers,
-            totalAmount: totalPrice, // Adjust this based on your calculation logic
+            totalAmount: totalPrice,
             paymentMethod: paymentMethod,
             accountNumber: accountNumber,
-            status: 'active', // Set subscription status to 'active'
-            subscriptionDate: new Date(), // Timestamp when the subscription was created
-          });
-      
-          await HealthPackageSubscriptionInstance.save();
+            status: 'active',
+            subscriptionDate: new Date(),
+        });
+
+        await healthPackageSubscription.save();
 
         res.status(200).json({ message: 'Health package subscribed successfully' });
     } catch (error) {
         console.error('Error subscribing to health package:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
 };
+
 module.exports = subscribeToHealthPackage;
 
 

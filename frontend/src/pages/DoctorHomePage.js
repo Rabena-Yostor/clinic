@@ -27,6 +27,8 @@ function DoctorPage() {
             {to:"/doctorFollowUpRequests", text:"Follow-Up Requests"},
             {to:"/VideoCallComponent", text:"Start a video call"},
             {to:"/patients", text:"View Patients"},
+            {to:"/filter-prescriptions", text:"Filter Prescriptions"},
+            {to:"/viewcontract", text:"View Contract"},
         ].map((link, index) => (
             <Link key={index} className="link-button" to={link.to}>
               {link.text}

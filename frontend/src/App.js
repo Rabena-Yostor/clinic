@@ -54,6 +54,7 @@ import AppointmentFollowUp from './pages/AppointmentFollowUp';
 import DoctorFollowUpRequests from './pages/DoctorFollowUpRequests';
 import VideoCallComponent from './components/VideoCallComponent';
 import RegisterAsPatient from './pages/RegisterAsPatient';
+import ViewEmploymentContractInfo from './pages/viewcontract';
 
 function App() {
   const isLoggedIn = true; // You need to implement the logic to check if the user is logged in
@@ -123,7 +124,7 @@ function App() {
             <Route path = "/doctorFollowUpRequests" element = {<DoctorFollowUpRequests />} />
             <Route path = "/VideoCallComponent" element = {<VideoCallComponent/>} />
             <Route path = "/RegisterAsPatient" element = {<RegisterAsPatient/>} />
-
+            <Route path = "/viewcontract" element = {<ViewEmploymentContractInfo/>} />
           </Routes>
         </div>
       </BrowserRouter>
