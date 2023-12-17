@@ -12,8 +12,9 @@ function PatientHome() {
           { to: "/ViewHealthPackages", text: "View Health Packages" },
           { to: "/SubscriptionStatus", text: "Subscription Status" },
           { to: "/CancelSubscription", text: "Cancel Subscription" },
-          { to: "/AddHealthRecord", text: "Add Health Record" },
-          { to: "/view-health-records", text: "View Health Record" },
+          { to: "/view-patient-records", text: "View Health Record" },
+          { to:"/safina", text:"Add Family Member" },
+          {to:"/doctors", text:"View Doctors"},
           { to: "/wallet-page", text: "View Wallet Amount" },
           { to: "/patientPeter", text: "Patient Appointments" },
           { to: "/patientNotifications", text: "Notifications" },
@@ -22,6 +23,7 @@ function PatientHome() {
           { to: "/addPrescription", text: "Add Prescription" },
           {to:"/filter-prescriptions", text:"Filter Prescriptions"},
           { to: "/hamouda", text: "View Prescription" },
+          {to:"/VideoCallComponent", text:"Video Call"},
         
           { to: "/linkFamilyMember", text: "Link Family Member" },
         ].map((link, index) => (

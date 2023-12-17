@@ -91,14 +91,12 @@ const HomeDoctors = () => {
   
 
  // In your main component, structure your page with a header and main content area
-return (
-  <div className="home">
-    <header className="header">
-      <h1 className="main-title">Rabena Yostor Clinic</h1>
-    </header>
+ return (
+  <div className="home-doctors-container">
     <section className="search-area">
       <input
         type="text"
+        id="searchName"
         className="search-input"
         placeholder="Search by name"
         value={nameSearchTerm}
@@ -125,12 +123,12 @@ return (
           <DoctorDetails
             doctor={doctor}
             key={doctor._id}
-            // onClick removed from here
           />
         ))}
     </section>
   </div>
 );
+
 
 };
 

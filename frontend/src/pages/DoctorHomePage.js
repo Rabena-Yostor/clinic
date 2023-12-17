@@ -14,7 +14,7 @@ function DoctorPage() {
         <div className="links-container">
          {[
             {to:"/addHealthRecord", text:"Add Health Record"},
-            {to:"/viewHealthRecord", text:"View Health Record"},
+            {to:"/view-health-records", text:"View Health Record"},
             {to:"/wallet-doc", text:"View Wallet Amount"},
             {to:"/doctorPeter", text:"Doctor Appointments"},
             {to:"/doctorNotifications", text:"Notifications"},

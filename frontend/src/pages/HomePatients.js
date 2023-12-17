@@ -27,6 +27,14 @@ const HomePatients = () => {
     <div className="home">
 
       <div className="workouts">
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search by patient name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
         {patients &&
           patients
             .filter((patient) =>
@@ -52,16 +60,9 @@ const HomePatients = () => {
             : "Show Upcoming Appointments Only"}
         </button>
       </div>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by patient name"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+     
       
-      <PatientForm />
+     
     </div>
   );
 
