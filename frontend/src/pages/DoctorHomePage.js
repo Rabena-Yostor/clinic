@@ -77,6 +77,11 @@ function DoctorPage() {
                     <FaUser /> Start a video call
                 </Link>
             </div>
+            <div>
+                <Link to="/patients">
+                    <FaUser /> View Patients
+                </Link>
+            </div>
             <br />
             <hr/>
 

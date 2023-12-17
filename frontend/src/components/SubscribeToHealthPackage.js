@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SubscribeToHealthPackage = () => {
     const [formData, setFormData] = useState({
@@ -8,7 +8,26 @@ const SubscribeToHealthPackage = () => {
         paymentMethod: '',
         accountNumber: '',
     });
+    const [healthPackages, setHealthPackages] = useState([]);
     const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        fetchHealthPackages();
+    }, []);
+
+    const fetchHealthPackages = async () => {
+        try {
+            const response = await fetch('http://localhost:4000/api/patient/viewHealthPackage');
+            const data = await response.json();
+            if (response.ok) {
+                setHealthPackages(data);
+            } else {
+                console.error('Error fetching health packages:', data.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     const handleInputChange = (e) => {
         setFormData({
@@ -53,13 +72,30 @@ const SubscribeToHealthPackage = () => {
         } catch (error) {
             console.error('Error subscribing to health package:', error);
             setMessage('Internal Server Error');
-        }
-    };
+        }    };
 
     return (
         <div className="container">
             <h2>Subscribe to Health Package</h2>
             <form onSubmit={handleSubmit}>
+                {/* existing form fields... */}
+                <div className="form-group">
+                    <label htmlFor="healthPackageId">Health Package:</label>
+                    <select
+                        id="healthPackageId"
+                        name="healthPackageId"
+                        value={formData.healthPackageId}
+                        onChange={handleInputChange}
+                        required
+                    >
+                       <option value="">Select a Package</option>
+                        {healthPackages.map((pkg) => (
+                            <option key={pkg._id} value={pkg._id}>
+                                {`${pkg.type.charAt(0).toUpperCase() + pkg.type.slice(1)} - $${pkg.price}`}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <div className="form-group">
                     <label htmlFor="patientId">Patient ID:</label>
                     <input
@@ -67,17 +103,6 @@ const SubscribeToHealthPackage = () => {
                         id="patientId"
                         name="patientId"
                         value={formData.patientId}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="healthPackageId">Health Package ID:</label>
-                    <input
-                        type="text"
-                        id="healthPackageId"
-                        name="healthPackageId"
-                        value={formData.healthPackageId}
                         onChange={handleInputChange}
                         required
                     />
@@ -116,8 +141,8 @@ const SubscribeToHealthPackage = () => {
                     />
                 </div>
                 <button type="submit">Subscribe</button>
-            </form>
-            {message && <p className={message.includes('successfully') ? 'success-message' : 'error-message'}>{message}</p>}
+                            </form>
+            {/* existing message display... */}
         </div>
     );
 };
