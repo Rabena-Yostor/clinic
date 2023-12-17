@@ -6,10 +6,8 @@ import { Link } from "react-router-dom";
 function AdminPage() {
     return ( <div>
         <h1>Welcome Admin</h1>
-        <header>
+       
             <div className= "container">
-
-            </div>
 
             <div>
                 <Link to="/Register">
@@ -54,11 +52,11 @@ function AdminPage() {
              </Link>
            </div>
            <div>
-        <Link to="/CreateHealthPackage">
-          <FaUser /> Admin Create HP
-        </Link>
-      </div>
-      <div>
+           <Link to="/CreateHealthPackage">
+           <FaUser /> Admin Create HP
+           </Link>
+           </div>
+         <div>
         <Link to="/UpdateHealthPackage">
           <FaUser /> Admin Update HP
         </Link>
@@ -68,7 +66,8 @@ function AdminPage() {
           <FaUser /> Admin Delete HP
         </Link>
       </div>
-           <div>
+   
+        <div>
                 <Link to="/ViewHealthPackages">
                     <FaUser /> View Health Packages
                 </Link>
@@ -80,7 +79,8 @@ function AdminPage() {
       <Link to="/change-password">
         <button>Change Password</button>
       </Link>
-        </header>
+      </div>
+      
 
 
         </div>);
