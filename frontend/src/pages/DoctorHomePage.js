@@ -29,7 +29,7 @@ function DoctorPage() {
             {to:"/patients", text:"View Patients"},
            
             {to:"/viewcontract", text:"View Contract"},
-            {to:"/doctors", text:"View Doctors"},
+
         ].map((link, index) => (
             <Link key={index} className="link-button" to={link.to}>
               {link.text}
