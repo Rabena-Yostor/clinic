@@ -10,7 +10,7 @@ function DoctorPage() {
     };
     return (
         <div className="container">
-        <h1 className="main-title">Welcome Patient</h1>
+        <h1 className="main-title">Welcome Doctor</h1>
         <div className="links-container">
          {[
             {to:"/addHealthRecord", text:"Add Health Record"},
@@ -20,14 +20,14 @@ function DoctorPage() {
             {to:"/doctorNotifications", text:"Notifications"},
             {to:"/doctorConversation", text:"Conversation"},
             {to:"/addPrescription", text:"Add Prescription"},
-            {to:"/doctorPrescription", text:"View Prescription"},
+            {to:"/doctorPrescription", text:"View My Patients' Prescription"},
             {to:"/doctorForm", text:"Add DoctorForm"},
             {to:"/DoctorUpdateEdit", text:"Doctor Update Edit"},
-            {to:"/", text:"Edit Prescription"},
+           
             {to:"/doctorFollowUpRequests", text:"Follow-Up Requests"},
             {to:"/VideoCallComponent", text:"Start a video call"},
             {to:"/patients", text:"View Patients"},
-            {to:"/filter-prescriptions", text:"Filter Prescriptions"},
+           
             {to:"/viewcontract", text:"View Contract"},
             {to:"/doctors", text:"View Doctors"},
         ].map((link, index) => (

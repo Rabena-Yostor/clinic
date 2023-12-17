@@ -9,8 +9,8 @@ function AdminPage() {
     <h1 className="main-title">Welcome Admin</h1>
     <div className="links-container">
      {[
-        {to:"/Register", text:"Register"},
-        {to:"/Admin", text:"Admin"},
+        
+        {to:"/Admin", text:"Pending Doctor Requests"},
         {to:"/AddAdminForm", text:"Add Admin Form"},
         {to:"/RemoveUser", text:"Remove User"},
         {to:"/ViewPatientInfo", text:"View Patient Info"},

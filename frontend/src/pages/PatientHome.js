@@ -20,6 +20,7 @@ function PatientHome() {
           { to: "/patientConversation", text: "Conversation" },
           { to: "/patientDocuments", text: "Documents" },
           { to: "/addPrescription", text: "Add Prescription" },
+          {to:"/filter-prescriptions", text:"Filter Prescriptions"},
           { to: "/hamouda", text: "View Prescription" },
         
           { to: "/linkFamilyMember", text: "Link Family Member" },

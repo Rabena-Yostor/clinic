@@ -54,9 +54,9 @@ const ApproveDoctorRequest = () => {
     <>
         <section className="Heading">
             <h1>
-                <FaUserTimes /> Reject Doctor Request
+                <FaUserTimes /> Approve Doctor Request
             </h1>
-            <p>Select a doctor request to reject.</p>
+            <p>Select a doctor request to approve.</p>
         </section>
 
         <section className="form">
